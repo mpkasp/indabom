@@ -1,1 +1,6 @@
-<h1>{{ assembly.description }}</h1>
+<h1>{{part_id}}</h1>
+<ul>
+{% for part in top_level_assemblies %}
+<li><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></li>
+{% endfor %}
+</ul>

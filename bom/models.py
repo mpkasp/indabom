@@ -28,7 +28,7 @@ class Part(models.Model):
     class Meta():
         unique_together = (('number_class', 'number_item', 'number_variation')),
 
-    def atlas_part_number(self):
+    def full_part_number(self):
         return "{0}-{1}-{2}".format(self.number_class.code,self.number_item,self.number_variation)
 
     def save(self):
@@ -44,6 +44,9 @@ class Part(models.Model):
                 self.number_variation = '01'
             else:
                 self.number_variation = "{0:0=2d}".format(int(last_number_variation.number_variation) + 1)
+        if self.manufacturer_part_number == '' and self.manufacturer == '':
+            self.manufacturer_part_number = self.full_part_number()
+            self.manufacturer = 'Atlas Wearables'
         super(Part, self).save()
 
 class Subpart(models.Model):
