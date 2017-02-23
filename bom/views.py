@@ -13,7 +13,7 @@ def export_part_indented(request, part_id):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts_indented.csv"'
 
-    tlp = Part.objects.filter(id=part_id)
+    tlp = Part.objects.filter(id=part_id)[0]
 
     writer = csv.writer(response)
     writer.writerow(['level', 'part number', 'revision', 'description'])
