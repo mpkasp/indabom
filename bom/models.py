@@ -31,15 +31,35 @@ class Part(models.Model):
     def full_part_number(self):
         return "{0}-{1}-{2}".format(self.number_class.code,self.number_item,self.number_variation)
 
+    def indented(self):
+        def indented_given_bom(bom, part, qty=1, indent_level=0):
+            bom.append({
+                'part': part,
+                'quantity': qty,
+                'indent_level': indent_level
+                })
+            
+            indent_level = indent_level + 1
+            if(len(part.subparts.all()) == 0):
+                return
+            else:
+                for sp in part.subparts.all():
+                    qty = Subpart.objects.get(assembly_part=part, assembly_subpart=sp).count
+                    indented_given_bom(bom, sp, qty, indent_level)
+
+        bom = []
+        indented_given_bom(bom, self)
+        return bom
+
     def save(self):
         if self.number_item is None or self.number_item == '':
-            last_number_item = Part.objects.all().order_by('number_item').last()
+            last_number_item = Part.objects.all().filter(number_class=self.number_class).order_by('number_item').last()
             if not last_number_item:
                 self.number_item = '0001'
             else:
                 self.number_item = "{0:0=4d}".format(int(last_number_item.number_item) + 1)
         if self.number_variation is None or self.number_variation == '':
-            last_number_variation = Part.objects.all().filter(number_item=self.number_item).order_by('number_variation').last()
+            last_number_variation = Part.objects.all().filter(number_class=self.number_class, number_item=self.number_item).order_by('number_variation').last()
             if not last_number_variation:
                 self.number_variation = '01'
             else:
