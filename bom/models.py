@@ -48,6 +48,7 @@ class Part(models.Model):
                     indented_given_bom(bom, sp, qty, indent_level)
 
         bom = []
+        cost = 0
         indented_given_bom(bom, self)
         return bom
 
@@ -66,7 +67,7 @@ class Part(models.Model):
                 self.number_variation = "{0:0=2d}".format(int(last_number_variation.number_variation) + 1)
         if self.manufacturer_part_number == '' and self.manufacturer == '':
             self.manufacturer_part_number = self.full_part_number()
-            self.manufacturer = 'Atlas Wearables'
+            self.manufacturer = 'ATLAS WEARABLES'
         super(Part, self).save()
 
 class Subpart(models.Model):

@@ -1,6 +1,23 @@
-<h1>{{part_id}}</h1>
+{% load static %}
+
+<h1>Atlas Wearables Parts List</h1>
+<h2><a href="/bom/export/">Export All</a></h2>
 <ul>
-{% for part in top_level_assemblies %}
-<li><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></li>
-{% endfor %}
+<table style="width:100%; text-align: left;">
+    <tr>
+        <th>Part Number</th>
+        <th>Description</th> 
+        <th>Revision</th>
+        <th>Manufacturer</th>
+        <th>MPN</th>
+    </tr>
+    {% for part in parts %}
+    <tr>
+        <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
+        <td>{{ part.description }}</td> 
+        <td>{{ part.revision }}</td>
+        <td>{{ part.manufacturer }}</td>
+        <td>{{ part.manufacturer_part_number }}</td>
+    </tr>
+    {% endfor %}
 </ul>
