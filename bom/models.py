@@ -31,6 +31,9 @@ class Part(models.Model):
     def full_part_number(self):
         return "{0}-{1}-{2}".format(self.number_class.code,self.number_item,self.number_variation)
 
+    def distributor_parts(self):
+        return DistributorPart.objects.filter(part=self).order_by('distributor', 'minimum_order_quantity')
+
     def indented(self):
         def indented_given_bom(bom, part, qty=1, indent_level=0):
             bom.append({
@@ -51,7 +54,6 @@ class Part(models.Model):
         cost = 0
         indented_given_bom(bom, self)
         return bom
-
     def save(self):
         if self.number_item is None or self.number_item == '':
             last_number_item = Part.objects.all().filter(number_class=self.number_class).order_by('number_item').last()
@@ -74,3 +76,14 @@ class Subpart(models.Model):
     assembly_part = models.ForeignKey(Part, related_name='assembly_part', null=True)
     assembly_subpart = models.ForeignKey(Part, related_name='assembly_subpart', null=True)
     count = models.IntegerField(default=1)
+
+class Distributor(models.Model):
+    name = models.CharField(max_length=128, default=None)
+
+class DistributorPart(models.Model):
+    distributor = models.ForeignKey(Distributor)
+    part = models.ForeignKey(Part)
+    minimum_order_quantity = models.IntegerField(null=True, blank=True)
+    minimum_pack_quantity = models.IntegerField(null=True, blank=True)
+    unit_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
+    lead_time_weeks = models.IntegerField(null=True, blank=True)
