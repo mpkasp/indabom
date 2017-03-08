@@ -1,35 +1,45 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+
 <h1><a href="/bom/"><</a> Indented BOM</h1>
 <h2><a href="/bom/{{ part_id }}/export/">Export Indented</a></h2>
 <h2>Est. Cost: {{ cost }}</h2>
 <ul>
-<table style="width:100%; text-align: left;">
-    <tr>
-        <th>Level</th>
-        <th>Part Number</th>
-        <th>Qty</th>
-        <th>Description</th> 
-        <th>Revision</th>
-        <th>Manufacturer</th>
-        <th>MPN</th>
-        <th>Cost</th>
-    </tr>
-    {% for subpart in parts %}
-    <tr>
-        <td>
-        {% with ''|center:subpart.indent_level as range %}
-        {% for _ in range %}
-            &nbsp;
+    <table style="width:100%; text-align: left;">
+        <tr>
+            <th>Level</th>
+            <th>Part Number</th>
+            <th>Qty</th>
+            <th>Description</th> 
+            <th>Revision</th>
+            <th>Manufacturer</th>
+            <th>MPN</th>
+            <th>Cost</th>
+        </tr>
+        {% for subpart in parts %}
+        <tr>
+            <td>
+            {% with ''|center:subpart.indent_level as range %}
+            {% for _ in range %}
+                &nbsp;
+            {% endfor %}
+            {% endwith %}
+            {{ subpart.indent_level }}
+            </td> 
+            <td><a href="/bom/{{ subpart.part.id }}/">{{ subpart.part.full_part_number }}</a></td>
+            <td>{{ subpart.quantity }}</td> 
+            <td>{{ subpart.part.description }}</td> 
+            <td>{{ subpart.part.revision }}</td>
+            <td>{{ subpart.part.manufacturer }}</td>
+            <td>{{ subpart.part.manufacturer_part_number }}</td>
+            <td>{{ subpart.part.unit_cost | default:"-"}}</td>
+        </tr>
         {% endfor %}
-        {% endwith %}
-        {{ subpart.indent_level }}
-        </td> 
-        <td><a href="/bom/{{ subpart.part.id }}/">{{ subpart.part.full_part_number }}</a></td>
-        <td>{{ subpart.quantity }}</td> 
-        <td>{{ subpart.part.description }}</td> 
-        <td>{{ subpart.part.revision }}</td>
-        <td>{{ subpart.part.manufacturer }}</td>
-        <td>{{ subpart.part.manufacturer_part_number }}</td>
-        <td>{{ subpart.part.unit_cost }}</td>
-    </tr>
-    {% endfor %}
+    </table>
 </ul>
+<h3>Upload to root level of indented BOM:</h3>
+<form action="/bom/{{ part_id }}/upload/" method="post">
+    {% csrf_token %}
+    <input type="file" name="csv_file"/>
+    <input type="submit" value="Upload"/>
+</form>

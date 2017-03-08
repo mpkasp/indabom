@@ -1,0 +1,9 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+
+<h1>UPLOAD SUCCESS</h1>
+<ul>
+    {% for part in parts %}
+        <p>{{ part }}</p> 
+    {% endfor %}
+</ul>

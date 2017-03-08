@@ -1,8 +1,9 @@
 import csv, export
 
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from .models import Part
+from .forms import UploadFileForm
 
 def index(request):
     # get all top level assemblies
@@ -45,6 +46,19 @@ def export_part_indented(request, part_id):
         writer.writerow(row)
 
     return response
+
+# TODO: Upload Part Handling...
+def upload_part_indented(request, part_id):
+    test = []
+    if request.POST and request.FILES:
+        csvfile = request.FILES['csv_file']
+        dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
+        csvfile.open()
+        reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+        for row in reader:
+            test.append(row)
+        
+    return render(request, 'bom/upload-success.html', {'parts': test})
 
 def export_part_list(request):
     response = HttpResponse(content_type='text/csv')
