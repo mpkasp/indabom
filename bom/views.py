@@ -1,4 +1,4 @@
-import csv, export
+import csv, export, codecs
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
@@ -7,7 +7,8 @@ from django.db import IntegrityError
 
 from json import loads, dumps
 
-from .models import Part
+from .convert import full_part_number_to_broken_part
+from .models import Part, PartClass, Subpart
 from .forms import UploadFileForm
 from .octopart_parts_match import match_part
 
@@ -55,16 +56,70 @@ def export_part_indented(request, part_id):
 
 # TODO: Upload Part Handling...
 def upload_part_indented(request, part_id):
-    test = []
+    response = {
+        'errors': [],
+        'status': 'ok',
+    }
+
+    parts = []
+    part = get_object_or_404(Part, id=part_id)
+    response['part'] = part.description
+
     if request.POST and request.FILES:
         csvfile = request.FILES['csv_file']
         dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
         csvfile.open()
         reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+        headers = reader.next()
+
+        Subpart.objects.filter(assembly_part=part).delete()
+
         for row in reader:
-            test.append(row)
+            partData = {}
+            for idx, item in enumerate(row):
+                partData[headers[idx]] = item
+            if 'part_number' in partData and 'quantity' in partData:
+                civ = full_part_number_to_broken_part(partData['part_number'])
+                subparts = Part.objects.filter(number_class=civ['class'], number_item=civ['item'], number_variation=civ['variation'])
+                
+                if len(subparts) == 0:
+                    response['status'] = 'failed'
+                    response['errors'].append('subpart doesn''t exist')
+                    return HttpResponse(dumps(response), content_type='application/json')
+
+                subpart = subparts[0]
+                count = partData['quantity']
+
+                sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
+                sp.save()
     
-    return render(request, 'bom/upload-success.html', {'parts': test})
+    response['parts'] = parts
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+
+def upload_parts(request):
+    response = {
+        'errors': [],
+        'status': 'ok',
+    }
+    parts = []
+
+    if request.POST and request.FILES:
+        csvfile = request.FILES['csv_file']
+        dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
+        csvfile.open()
+        reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+        headers = reader.next()
+
+        for row in reader:
+            partData = {}
+            for idx, item in enumerate(row):
+                partData[headers[idx]] = item
+            parts.append(partData)
+
+    response['parts'] = parts
+
+    return HttpResponse(dumps(response), content_type='application/json')
 
 def export_part_list(request):
     response = HttpResponse(content_type='text/csv')

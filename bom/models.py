@@ -78,6 +78,14 @@ class Subpart(models.Model):
     assembly_subpart = models.ForeignKey(Part, related_name='assembly_subpart', null=True)
     count = models.IntegerField(default=1)
 
+    # def save(self):
+    #     sps = Subpart.objects.filter(assembly_part=self.assembly_part, assembly_subpart=self.assembly_subpart)
+    #     if len(sps) > 0:
+    #         sps[0].count += int(self.count)
+    #         return
+    #     else:
+    #         super(Subpart, self).save()
+
 class Distributor(models.Model):
     name = models.CharField(max_length=128, default=None)
 
