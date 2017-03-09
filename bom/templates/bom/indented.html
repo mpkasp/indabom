@@ -3,8 +3,8 @@
 
 <h1><a href="/bom/"><</a> Indented BOM</h1>
 <h2><a href="/bom/{{ part_id }}/export/">Export Indented</a></h2>
-<h2><a href="/bom/{{ part_id }}/part_match_indented/">Match Indented</a></h2>
-<h2>Est. Cost: {{ cost }}</h2>
+<h2><a href="/bom/{{ part_id }}/part_match/">Match Part</a></h2>
+<h2>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</h2>
 <ul>
     <table style="width:100%; text-align: left;">
         <tr>
@@ -15,7 +15,10 @@
             <th>Revision</th>
             <th>Manufacturer</th>
             <th>MPN</th>
-            <th>Cost</th>
+            <th><i>Ext. Qty</i></th>
+            <th><i>Dist.</i></th>
+            <th><i>Dist. Price</i></th>
+            <th><i>Ext Cost</i></th>
         </tr>
         {% for subpart in parts %}
         <tr>
@@ -33,7 +36,10 @@
             <td>{{ subpart.part.revision }}</td>
             <td>{{ subpart.part.manufacturer }}</td>
             <td>{{ subpart.part.manufacturer_part_number }}</td>
-            <td>{{ subpart.part.unit_cost | default:"-"}}</td>
+            <td>{{ subpart.extended_quantity }}</td>
+            <td>{{ subpart.distributor_part.distributor.name | default:"-" }}</td>
+            <td>{{ subpart.distributor_price | default:"-"}}</td>
+            <td>{{ subpart.extended_cost | default:"-" }}</td>
         </tr>
         {% endfor %}
     </table>

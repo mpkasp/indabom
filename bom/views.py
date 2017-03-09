@@ -8,7 +8,7 @@ from django.db import IntegrityError
 from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
-from .models import Part, PartClass, Subpart
+from .models import Part, PartClass, Subpart, DistributorPart
 from .forms import UploadFileForm
 from .octopart_parts_match import match_part
 
@@ -19,11 +19,33 @@ def index(request):
 
 def indented(request, part_id):
     parts = Part.objects.filter(id=part_id)[0].indented()
-
-    cost = 0
+    qty = 100
+    extended_cost_complete = True
+    
+    unit_cost = 0
     for item in parts:
-        if item['part'].unit_cost != None:
-            cost = cost + item['part'].unit_cost
+        # for each item, get the extended quantity,
+        eq = qty * item['quantity']
+        item['extended_quantity'] = eq
+        # then get the lowest price & distributor at that quantity, 
+        p = item['part']
+        dps = DistributorPart.objects.filter(part=p)
+        disty_price = None
+        disty = None
+        for dp in dps:
+            if dp.minimum_order_quantity < eq and (disty_price is None or dp.unit_cost < disty_price):
+                disty_price = dp.unit_cost
+                disty = dp
+        item['distributor_price'] = disty_price
+        item['distributor_part'] = disty
+        # then extend that price
+        item['extended_cost'] = eq * disty_price if disty_price is not None and eq is not None else None
+
+        unit_cost = unit_cost + disty_price * item['quantity'] if disty_price is not None else unit_cost
+        if disty is None:
+            extended_cost_complete = False
+
+    extended_cost = unit_cost * qty
     
     return TemplateResponse(request, 'bom/indented.html', locals())
 
@@ -169,6 +191,10 @@ def octopart_part_match(request, part_id):
                 dp.save()
             except IntegrityError:
                 continue
+    else:
+        response['status'] = 'failed'
+        response['errors'].append('octopart wasn''t able to find ant parts with given manufacturer_part_number')
+        return HttpResponse(dumps(response), content_type='application/json')
         
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
