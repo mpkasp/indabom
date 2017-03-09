@@ -15,7 +15,7 @@ class DistributorAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
 class DistributorPartAdmin(admin.ModelAdmin):
-    list_display = ('part', 'distributor', 'minimum_order_quantity', 'minimum_pack_quantity', 'unit_cost', 'lead_time_weeks')
+    list_display = ('part', 'distributor', 'minimum_order_quantity', 'minimum_pack_quantity', 'unit_cost', 'lead_time_days')
 
 class DistributorPartAdminInline(admin.TabularInline):
     model = DistributorPart

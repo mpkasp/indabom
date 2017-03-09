@@ -26,7 +26,7 @@ class Part(models.Model):
     unit_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
 
     class Meta():
-        unique_together = (('number_class', 'number_item', 'number_variation')),
+        unique_together = ['number_class', 'number_item', 'number_variation']
 
     def full_part_number(self):
         return "{0}-{1}-{2}".format(self.number_class.code,self.number_item,self.number_variation)
@@ -54,6 +54,7 @@ class Part(models.Model):
         cost = 0
         indented_given_bom(bom, self)
         return bom
+
     def save(self):
         if self.number_item is None or self.number_item == '':
             last_number_item = Part.objects.all().filter(number_class=self.number_class).order_by('number_item').last()
@@ -86,4 +87,7 @@ class DistributorPart(models.Model):
     minimum_order_quantity = models.IntegerField(null=True, blank=True)
     minimum_pack_quantity = models.IntegerField(null=True, blank=True)
     unit_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
-    lead_time_weeks = models.IntegerField(null=True, blank=True)
+    lead_time_days = models.IntegerField(null=True, blank=True)
+
+    class Meta():
+        unique_together = ['distributor', 'part', 'minimum_order_quantity', 'unit_cost']

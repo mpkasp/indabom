@@ -2,13 +2,19 @@ import csv, export
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
+from django.template.response import TemplateResponse
+from django.db import IntegrityError
+
+from json import loads, dumps
+
 from .models import Part
 from .forms import UploadFileForm
+from .octopart_parts_match import match_part
 
 def index(request):
     # get all top level assemblies
     parts = Part.objects.all().order_by('number_class__code', 'number_item', 'number_variation')
-    return render(request, 'bom/dashboard.html', {'parts': parts})
+    return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 def indented(request, part_id):
     parts = Part.objects.filter(id=part_id)[0].indented()
@@ -18,7 +24,7 @@ def indented(request, part_id):
         if item['part'].unit_cost != None:
             cost = cost + item['part'].unit_cost
     
-    return render(request, 'bom/indented.html', {'part_id': part_id, 'parts': parts, 'cost': cost})
+    return TemplateResponse(request, 'bom/indented.html', locals())
 
 def export_part_indented(request, part_id):
     response = HttpResponse(content_type='text/csv')
@@ -57,7 +63,7 @@ def upload_part_indented(request, part_id):
         reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
         for row in reader:
             test.append(row)
-        
+    
     return render(request, 'bom/upload-success.html', {'parts': test})
 
 def export_part_list(request):
@@ -84,3 +90,27 @@ def export_part_list(request):
         writer.writerow(row)
 
     return response
+
+def octopart_part_match(request, part_id):
+    response = {
+        'errors': [],
+        'status': 'ok',
+    }
+
+    parts = Part.objects.filter(id=part_id)
+
+    if len(parts) == 0:
+        response['status'] = 'failed'
+        response['errors'].append('no parts found with given part_id')
+        return HttpResponse(dumps(response), content_type='application/json')
+
+    distributor_parts = match_part(parts[0])
+    
+    if len(distributor_parts) > 0:
+        for dp in distributor_parts:
+            try:
+                dp.save()
+            except IntegrityError:
+                continue
+        
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
