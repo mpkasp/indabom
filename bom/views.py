@@ -54,7 +54,6 @@ def export_part_indented(request, part_id):
 
     return response
 
-# TODO: Upload Part Handling...
 def upload_part_indented(request, part_id):
     response = {
         'errors': [],
@@ -98,6 +97,9 @@ def upload_part_indented(request, part_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
 def upload_parts(request):
+    
+    # TODO: Finish this endpoint
+    
     response = {
         'errors': [],
         'status': 'ok',
@@ -167,5 +169,31 @@ def octopart_part_match(request, part_id):
                 dp.save()
             except IntegrityError:
                 continue
+        
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+
+def octopart_part_match_indented(request, part_id):
+    response = {
+        'errors': [],
+        'status': 'ok',
+    }
+
+    parts = Part.objects.filter(id=part_id)
+
+    if len(parts) == 0:
+        response['status'] = 'failed'
+        response['errors'].append('no parts found with given part_id')
+        return HttpResponse(dumps(response), content_type='application/json')
+
+    subparts = parts[0].subparts.all()
+
+    for part in subparts:
+        distributor_parts = match_part(part)
+        if len(distributor_parts) > 0:
+            for dp in distributor_parts:
+                try:
+                    dp.save()
+                except IntegrityError:
+                    continue
         
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
