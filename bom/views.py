@@ -27,17 +27,25 @@ def indented(request, part_id):
         # for each item, get the extended quantity,
         eq = qty * item['quantity']
         item['extended_quantity'] = eq
+
         # then get the lowest price & distributor at that quantity, 
         p = item['part']
         dps = DistributorPart.objects.filter(part=p)
         disty_price = None
         disty = None
         for dp in dps:
-            if dp.minimum_order_quantity < eq and (disty_price is None or dp.unit_cost < disty_price):
+            if dp.minimum_order_quantity < eq and (disty is None or dp.unit_cost < disty_price):
                 disty_price = dp.unit_cost
                 disty = dp
+            elif disty is None:
+                disty_price = dp.unit_cost
+                disty = dp
+                if dp.minimum_order_quantity > eq:
+                    eq = dp.minimum_order_quantity
+
         item['distributor_price'] = disty_price
         item['distributor_part'] = disty
+        
         # then extend that price
         item['extended_cost'] = eq * disty_price if disty_price is not None and eq is not None else None
 
