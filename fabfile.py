@@ -97,7 +97,7 @@ def pip_install():
 
 def install_reqs():
     run('apt-get update')
-    run('apt-get -y install libmysqlclient-dev supervisor python-virtualenv git python-pip python-dev')
+    run('apt-get -y install libmysqlclient-dev supervisor python-virtualenv git python-pip python-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev')
 
 def install_newnginx():
     """

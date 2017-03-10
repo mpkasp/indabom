@@ -33,6 +33,7 @@ def indented(request, part_id):
         dps = DistributorPart.objects.filter(part=p)
         disty_price = None
         disty = None
+        order_qty = eq
         for dp in dps:
             if dp.minimum_order_quantity < eq and (disty is None or dp.unit_cost < disty_price):
                 disty_price = dp.unit_cost
@@ -41,10 +42,11 @@ def indented(request, part_id):
                 disty_price = dp.unit_cost
                 disty = dp
                 if dp.minimum_order_quantity > eq:
-                    eq = dp.minimum_order_quantity
+                    order_qty = dp.minimum_order_quantity
 
         item['distributor_price'] = disty_price
         item['distributor_part'] = disty
+        item['order_quantity'] = order_qty
         
         # then extend that price
         item['extended_cost'] = eq * disty_price if disty_price is not None and eq is not None else None

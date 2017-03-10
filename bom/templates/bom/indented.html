@@ -12,13 +12,15 @@
             <th>Part Number</th>
             <th>Qty</th>
             <th>Description</th> 
-            <th>Revision</th>
+            <th>Rev</th>
             <th>Manufacturer</th>
             <th>MPN</th>
             <th><i>Ext. Qty</i></th>
+            <th><i>Order Qty</i></th>
             <th><i>Seller</i></th>
             <th><i>Price</i></th>
             <th><i>Ext Cost</i></th>
+            <th><i>Match</i></th>
         </tr>
         {% for subpart in parts %}
         <tr>
@@ -37,9 +39,11 @@
             <td>{{ subpart.part.manufacturer }}</td>
             <td>{{ subpart.part.manufacturer_part_number }}</td>
             <td>{{ subpart.extended_quantity }}</td>
+            <td>{{ subpart.order_quantity }}</td>
             <td>{{ subpart.distributor_part.distributor.name | default:"-" }}</td>
             <td>{{ subpart.distributor_price | default:"-"}}</td>
             <td>{{ subpart.extended_cost | default:"-" }}</td>
+            <td><a href="/bom/{{ subpart.part.id }}/part_match/">Octopart Match</a></td>
         </tr>
         {% endfor %}
     </table>
