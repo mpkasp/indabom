@@ -59,6 +59,16 @@ def restart_web():
     """
     run('supervisorctl restart indabom')
 
+def install_supervisor():
+    """
+    Needs to be run as root (see prod:user=root) because supervisorctl must be called as root :/ annoying
+    """
+    run('rm -f /etc/supervisor/conf.d/*.conf')
+    run('cp /home/indabom/web/site/scripts/supervisord/*.conf /etc/supervisor/conf.d/')
+
+    run('supervisorctl reread')
+    run('supervisorctl update')
+
 def supervisor_status():
     """
     Needs to be run as root (see prod:user=root) because supervisorctl must be called as root :/ annoying
@@ -197,7 +207,8 @@ def make_web_server():
 
     #install_newnginx() # TODO: why?
     #install_nginx_config() # TODO: generate nginx config
-
+    install_supervisor()
+    
     # todo: mount for image uploads
     # todo: stock local_settings.py maybe?
 
