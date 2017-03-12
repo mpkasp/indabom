@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NAME="indabom"                                      # Name of the application
-DJANGODIR=/home/indabom/web/site/indabom            # Django project directory
+DJANGODIR=/home/indabom/web/site            # Django project directory
 SOCKFILE=/var/run/indabom/gunicorn.sock             # we will communicte using this unix socket
 USER=indabom                                        # the user to run as
 GROUP=indabom                                       # the group to run as
