@@ -107,7 +107,7 @@ def pip_install():
 
 def install_reqs():
     run('apt-get update')
-    run('apt-get -y install libmysqlclient-dev supervisor python-virtualenv git python-pip python-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev')
+    run('apt-get -y install libmysqlclient-dev supervisor python-virtualenv git python-pip python-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev nginx')
 
 def install_newnginx():
     """
@@ -208,7 +208,7 @@ def make_web_server():
     #install_newnginx() # TODO: why?
     #install_nginx_config() # TODO: generate nginx config
     install_supervisor()
-    
+
     # todo: mount for image uploads
     # todo: stock local_settings.py maybe?
 
