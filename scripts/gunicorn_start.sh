@@ -1,11 +1,11 @@
 #!/bin/bash
 
-NAME="indabom"                                  # Name of the application
-DJANGODIR=/home/indabom/web/site/indabom             # Django project directory
-SOCKFILE=unix:/var/run/indabom/gunicorn.sock  # we will communicte using this unix socket
+NAME="indabom"                                      # Name of the application
+DJANGODIR=/home/indabom/web/site/indabom            # Django project directory
+SOCKFILE=/var/run/indabom/gunicorn.sock             # we will communicte using this unix socket
 USER=indabom                                        # the user to run as
-GROUP=indabom                                     # the group to run as
-NUM_WORKERS=3                                     # how many worker processes should Gunicorn spawn
+GROUP=indabom                                       # the group to run as
+NUM_WORKERS=3                                       # how many worker processes should Gunicorn spawn
 DJANGO_SETTINGS_MODULE=indabom.settings             # which settings file should Django use
 DJANGO_WSGI_MODULE=indabom.wsgi                     # WSGI module name
 
