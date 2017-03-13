@@ -1,5 +1,5 @@
 upstream django {
-    server unix:/var/run/indabom/gunicorn.sock; fail_timeout=0;
+    server unix:/var/run/indabom/gunicorn.sock;
 }
 
 server {
