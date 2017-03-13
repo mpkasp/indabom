@@ -26,6 +26,7 @@ except ImportError:
 # Application definition
 
 INSTALLED_APPS = [
+    'indabom',
     'bom.apps.BomConfig',
     'django.contrib.admin',
     'django.contrib.auth',
