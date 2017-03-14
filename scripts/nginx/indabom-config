@@ -3,6 +3,12 @@ upstream django {
 }
 
 server {
+    server_name indabom.com;
+    listen 80;
+    return 301 https://indabom.com$request_uri;
+}
+
+server {
 
     listen   443;
 
