@@ -13,7 +13,7 @@ server {
     client_max_body_size 200m;
  
     location /static {
-            alias /home/indabom/web/site/indabom/static/;
+            alias /home/indabom/web/site/static/;
             access_log  off;
             error_log off;
     }

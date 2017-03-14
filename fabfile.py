@@ -32,7 +32,7 @@ def deploy():
     with cd('/home/indabom/web/site'):
         run('git checkout {0}'.format(branch))
         run('git pull')
-        run('./manage.py collectstatic -v0 --noinput')
+        run('source /home/indabom/web/bin/activate && ./manage.py collectstatic -v0 --noinput')
 
 def test():
     with cd('/home/indabom/web/site/src'):
