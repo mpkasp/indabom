@@ -4,7 +4,12 @@ upstream django {
 
 server {
 
-    listen   80;
+    listen   443;
+
+    ssl    on;
+    ssl_certificate    /etc/letsencrypt/live/indabom.com/fullchain.pem;
+    ssl_certificate_key    /etc/letsencrypt/live/indabom.com/privkey.pem;
+    
     server_name indabom.com;
 
     root /usr/share/nginx/html;

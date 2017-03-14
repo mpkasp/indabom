@@ -189,6 +189,14 @@ def add_indabom_user():
 
     if fabric.contrib.files.exists('/home/indabom/.ssh/id_dsa.pub') == False:
         ssh_keygen('indabom')
+        
+def install_certbot_ssl():
+    """
+    Needs to be run as root
+    """
+    run('wget https://dl.eff.org/certbot-auto')
+    run('chmod a+x certbot-auto')
+    run('./certbot-auto certonly --standalone -d indabom.com')
 
 def make_web_server():
     update_time()
@@ -209,6 +217,7 @@ def make_web_server():
     #install_newnginx() # TODO: why?
     #install_nginx_config() # TODO: generate nginx config
     install_supervisor()
+    install_certbot_ssl()
 
     # todo: mount for image uploads
     # todo: stock local_settings.py maybe?
