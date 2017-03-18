@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
 
 from json import loads, dumps
 
@@ -12,11 +13,13 @@ from .models import Part, PartClass, Subpart, DistributorPart
 from .forms import UploadFileForm
 from .octopart_parts_match import match_part
 
-def index(request):
+@login_required
+def home(request):
     # get all top level assemblies
     parts = Part.objects.all().order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
+@login_required
 def indented(request, part_id):
     parts = Part.objects.filter(id=part_id)[0].indented()
     qty = 100
@@ -59,6 +62,7 @@ def indented(request, part_id):
     
     return TemplateResponse(request, 'bom/indented.html', locals())
 
+@login_required
 def export_part_indented(request, part_id):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts_indented.csv"'
@@ -86,6 +90,7 @@ def export_part_indented(request, part_id):
 
     return response
 
+@login_required
 def upload_part_indented(request, part_id):
     response = {
         'errors': [],
@@ -128,6 +133,7 @@ def upload_part_indented(request, part_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
+@login_required
 def upload_parts(request):
     
     # TODO: Finish this endpoint
@@ -155,6 +161,7 @@ def upload_parts(request):
 
     return HttpResponse(dumps(response), content_type='application/json')
 
+@login_required
 def export_part_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts.csv"'
@@ -180,6 +187,7 @@ def export_part_list(request):
 
     return response
 
+@login_required
 def octopart_part_match(request, part_id):
     response = {
         'errors': [],
@@ -208,6 +216,7 @@ def octopart_part_match(request, part_id):
         
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
+@login_required
 def octopart_part_match_indented(request, part_id):
     response = {
         'errors': [],
