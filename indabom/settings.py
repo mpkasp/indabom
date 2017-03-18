@@ -51,7 +51,7 @@ ROOT_URLCONF = 'indabom.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'indabom/templates/indabom')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
