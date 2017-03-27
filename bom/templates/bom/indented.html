@@ -1,9 +1,14 @@
+{% extends 'base.html' %}
+
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
 
-<h1><a href="/bom/"><</a> Indented BOM</h1>
+{% block title %}Indented Bill of Materials{% endblock %}
+
+{% block content %}
+
+<h3><a href="/bom/">Back to Parts List</a></h3>
 <h2><a href="/bom/{{ part_id }}/export/">Export Indented</a></h2>
-<h2><a href="/bom/{{ part_id }}/part_match/">Match Part</a></h2>
 <h2>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</h2>
 <ul>
     <table style="width:100%; text-align: left;">
@@ -54,3 +59,5 @@
     <input type="file" name="csv_file"/>
     <input type="submit" value="Upload"/>
 </form>
+
+{% endblock %}

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="style.css" />
-    <title>{% block title %}IndaBOM{% endblock %}</title>
+    <div><h1>IndaBOM</h1></div>
+    {% if user.is_authenticated %}<div><a href="/logout/">Logout</a></div>{% endif %}
+    <div><h2>{% block title %}{% endblock %}</h2></div>
 </head>
 
 <body>
