@@ -3,11 +3,9 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
 
-{% block title %}Parts List{% endblock %}
+{% block title %}Parts List <a href="/bom/export/">[Export]</a>{% endblock %}
 
 {% block content %}
-
-<h2><a href="/bom/export/">Export All</a></h2>
 <ul>
 <table style="width:100%; text-align: left;">
     <tr>
