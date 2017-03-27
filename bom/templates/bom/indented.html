@@ -51,6 +51,7 @@
     </table>
 </ul>
 <h3>Upload to root level of indented BOM:</h3>
+<p>Formatting Rules: Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</p>
 <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="file" name="csv_file"/>
