@@ -74,20 +74,49 @@ def export_part_indented(request, part_id):
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
     for item in bom:
+        # for each item, get the extended quantity,
+        eq = qty * item['quantity']
+        item['extended_quantity'] = eq
+        # then get the lowest price & distributor at that quantity, 
+        p = item['part']
+        dps = DistributorPart.objects.filter(part=p)
+        disty_price = None
+        disty = None
+        order_qty = eq
+        for dp in dps:
+            if dp.minimum_order_quantity < eq and (disty is None or dp.unit_cost < disty_price):
+                disty_price = dp.unit_cost
+                disty = dp
+            elif disty is None:
+                disty_price = dp.unit_cost
+                disty = dp
+                if dp.minimum_order_quantity > eq:
+                    order_qty = dp.minimum_order_quantity
+
+        item['distributor_price'] = disty_price
+        item['distributor_part'] = disty
+        item['order_quantity'] = order_qty
+        
+        # then extend that price
+        item['extended_cost'] = eq * disty_price if disty_price is not None and eq is not None else None
+
+        unit_cost = unit_cost + disty_price * item['quantity'] if disty_price is not None else unit_cost
+
         row = {
         'level': item['indent_level'], 
         'part_number': item['part'].full_part_number(), 
+        'quantity': item['quantity'], 
         'part_description': item['part'].description, 
         'part_revision': item['part'].revision, 
-        'quantity': item['quantity'], 
         'part_manufacturer': item['part'].manufacturer, 
         'part_manufacturer_part_number': item['part'].manufacturer_part_number, 
-        'part_minimum_order_quantity': item['part'].minimum_order_quantity, 
-        'part_minimum_pack_quantity': item['part'].minimum_pack_quantity,
-        'part_unit_cost': item['part'].unit_cost,
+        'part_ext_qty': item['part'].extended_quantity,
+        'part_order_qty': item['part'].order_quantity,
+        'part_seller': item['part'].distributor_part.distributor.name,
+        'part_cost': item['part'].distributor_price,
+        'part_ext_cost': item['part'].extended_cost,
         }
         writer.writerow(row)
-
     return response
 
 @login_required
