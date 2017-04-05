@@ -112,11 +112,11 @@ def export_part_indented(request, part_id):
         'part_revision': item['part'].revision, 
         'part_manufacturer': item['part'].manufacturer, 
         'part_manufacturer_part_number': item['part'].manufacturer_part_number, 
-        'part_ext_qty': item['part'].extended_quantity,
-        'part_order_qty': item['part'].order_quantity,
-        'part_seller': item['part'].distributor_part.distributor.name,
-        'part_cost': item['part'].distributor_price,
-        'part_ext_cost': item['part'].extended_cost,
+        'part_ext_qty': item['extended_quantity'],
+        'part_order_qty': item['order_quantity'],
+        'part_seller': item['distributor_part'].distributor.name,
+        'part_cost': item['distributor_price'],
+        'part_ext_cost': item['extended_cost'],
         }
         writer.writerow(row)
     return response
