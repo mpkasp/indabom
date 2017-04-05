@@ -69,6 +69,7 @@ def export_part_indented(request, part_id):
 
     bom = Part.objects.filter(id=part_id)[0].indented()
     qty = 100
+    unit_cost = 0
     
     fieldnames = ['level', 'part_number', 'quantity', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_ext_qty', 'part_order_qty', 'part_seller', 'part_cost', 'part_ext_cost']
 
