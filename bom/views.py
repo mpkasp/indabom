@@ -114,9 +114,9 @@ def export_part_indented(request, part_id):
         'part_manufacturer_part_number': item['part'].manufacturer_part_number, 
         'part_ext_qty': item['extended_quantity'],
         'part_order_qty': item['order_quantity'],
-        'part_seller': item['distributor_part'].distributor.name,
-        'part_cost': item['distributor_price'],
-        'part_ext_cost': item['extended_cost'],
+        'part_seller': item['distributor_part'].distributor.name if item['distributor_part'] is not None else '',
+        'part_cost': item['distributor_price'] if item['distributor_price'] is not None else 0,
+        'part_ext_cost': item['extended_cost'] if item['extended_cost'] is not None else 0,
         }
         writer.writerow(row)
     return response
