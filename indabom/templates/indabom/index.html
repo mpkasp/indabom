@@ -6,6 +6,7 @@
 <div style="text-align: center; margin-top: 25vh;">
 <h1>Welcome To IndaBOM</h1>
 <p>A simple <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</p>
-<p><a href="/login/">Log In</a></p>
+{% if not user.is_authenticated %}<p><a href="/login/">Log In</a></p>{% endif %}
+{% if user.is_authenticated %}<p><a href="/bom/">Enter</a></p>{% endif %}
 </div>
 {% endblock %}
