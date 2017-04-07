@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+{% load staticfiles %}
 
-{% block title %}Parts List <a href="/bom/export/">[Export]</a>{% endblock %}
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+Parts List <a href="/bom/export/">[Export]</a>
+{% endblock %}
 
 {% block content %}
 <ul>
