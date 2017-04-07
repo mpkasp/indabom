@@ -1,9 +1,1 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
-
-h1, h2, h3, td, th, p {
-    font-family: 'Roboto', sans-serif;
-}
-
-td, tr {
-    font-size: .75em !important;
-}
