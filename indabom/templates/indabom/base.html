@@ -18,18 +18,16 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="{% static 'indabom/js/materialize.min.js' %}"></script>
 
-    <div class="title-bar">
-        <div class="row">
-            <div class="col s11">
-                IndaBOM
-            </div>
-            <div class="col s1">
-                {% if user.is_authenticated %}<a href="/logout/">Logout</a>{% endif %}
-            </div>
+    <nav class="green lighten-1">
+        <div class="nav-wrapper">
+            <a href="/" class="brand-logo">IndaBOM</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                {% if user.is_authenticated %}<li><a href="/logout/">Logout</a></li>{% endif %}
+            </ul>
         </div>
-    </div>
+    </nav>
     
-    <div><h2>{% block title %}{% endblock %}</h2></div>
+    <div class="container"><h2>{% block title %}{% endblock %}</h2></div>
 
     <div id="content" class="container">
         {% block content %}{% endblock %}

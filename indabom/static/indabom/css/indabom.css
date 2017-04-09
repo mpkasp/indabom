@@ -1,15 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-.title-bar {
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
-
-body {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
 td, tr {
     font-size: .8em !important;
 }

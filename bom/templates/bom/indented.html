@@ -4,11 +4,12 @@
 
 {% block title %}
 <link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
-<a href="/bom/"><</a> Indented Bill of Materials <a href="/bom/{{ part_id }}/export/">[Export]</a>
+<a href="/bom/"><</a> Indented Bill of Materials
 {% endblock %}
 
 {% block content %}
-<h3>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</h3>
+<a href="/bom/{{ part_id }}/export/">[Export]</a>
+<span>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</span>
 <ul>
     <table class="highlight">
         <thead>
