@@ -20,8 +20,10 @@ def home(request):
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 @login_required
-def indented(request, part_id):
+def part_info(request, part_id):
     parts = Part.objects.filter(id=part_id)[0].indented()
+    part = Part.objects.get(id=part_id)
+
     qty = 100
     extended_cost_complete = True
     
@@ -60,7 +62,7 @@ def indented(request, part_id):
 
     extended_cost = unit_cost * qty
     
-    return TemplateResponse(request, 'bom/indented.html', locals())
+    return TemplateResponse(request, 'bom/part-info.html', locals())
 
 @login_required
 def export_part_indented(request, part_id):
