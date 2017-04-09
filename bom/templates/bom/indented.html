@@ -7,8 +7,11 @@
 <a href="/bom/"><</a> Indented Bill of Materials
 {% endblock %}
 
+{% block menu %}
+<li><a href="/bom/{{ part_id }}/export/">Export</a></li>
+{% endblock%}
+
 {% block content %}
-<a href="/bom/{{ part_id }}/export/">[Export]</a>
 <span>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</span>
 <ul>
     <table class="highlight">
