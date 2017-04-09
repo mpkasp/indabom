@@ -2,15 +2,35 @@
 <html lang="en">
 {% load staticfiles %}
 <head>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="{% static 'indabom/style.css' %}">
-    <div><h1>IndaBOM</h1></div>
-    {% if user.is_authenticated %}<div><a href="/logout/">Logout</a></div>{% endif %}
-    <div><h2>{% block title %}{% endblock %}</h2></div>
+    <!-- Materialize, eventually pull this into the project -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="{% static 'indabom/css/materialize.min.css' %}"  media="screen,projection"/>    
+    
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Custom -->
+    <link rel="stylesheet" href="{% static 'indabom/css/indabom.css' %}">
 </head>
 
 <body>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{% static 'indabom/js/materialize.min.js' %}"></script>
+
+    <div class="title-bar">
+        <div class="row">
+            <div class="col">
+                <h1>IndaBOM</h1>
+            </div>
+            <div class="col s1">
+                {% if user.is_authenticated %}<a href="/logout/">Logout</a>{% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div><h2>{% block title %}{% endblock %}</h2></div>
+
     <div id="content">
         {% block content %}{% endblock %}
     </div>
