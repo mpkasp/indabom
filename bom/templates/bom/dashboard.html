@@ -9,23 +9,27 @@ Parts List <a href="/bom/export/">[Export]</a>
 
 {% block content %}
 <ul>
-<table style="width:100%; text-align: left;">
-    <tr>
-        <th>Part Number</th>
-        <th>Description</th> 
-        <th>Revision</th>
-        <th>Manufacturer</th>
-        <th>MPN</th>
-    </tr>
-    {% for part in parts %}
-    <tr>
-        <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
-        <td>{{ part.description }}</td>
-        <td>{{ part.revision }}</td>
-        <td>{{ part.manufacturer }}</td>
-        <td>{{ part.manufacturer_part_number }}</td>
-        <!-- <td><a href="/bom/{{ part.id }}/part_match/">Octopart Match</a></td> -->
-    </tr>
-    {% endfor %}
+<table class="highlight">
+    <thead>
+        <tr>
+            <th>Part Number</th>
+            <th>Description</th> 
+            <th>Revision</th>
+            <th>Manufacturer</th>
+            <th>MPN</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for part in parts %}
+        <tr>
+            <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
+            <td>{{ part.description }}</td>
+            <td>{{ part.revision }}</td>
+            <td>{{ part.manufacturer }}</td>
+            <td>{{ part.manufacturer_part_number }}</td>
+            <!-- <td><a href="/bom/{{ part.id }}/part_match/">Octopart Match</a></td> -->
+        </tr>
+        {% endfor %}
+    </tbody>
 </ul>
 {% endblock %}

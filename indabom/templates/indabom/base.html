@@ -20,8 +20,8 @@
 
     <div class="title-bar">
         <div class="row">
-            <div class="col">
-                <h1>IndaBOM</h1>
+            <div class="col s11">
+                IndaBOM
             </div>
             <div class="col s1">
                 {% if user.is_authenticated %}<a href="/logout/">Logout</a>{% endif %}
@@ -31,7 +31,7 @@
     
     <div><h2>{% block title %}{% endblock %}</h2></div>
 
-    <div id="content">
+    <div id="content" class="container">
         {% block content %}{% endblock %}
     </div>
 </body>
