@@ -20,17 +20,16 @@ def home(request):
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 @login_required
-def part_info(request, part_id):
+def part_info(request, part_id, qty=100):
     parts = Part.objects.filter(id=part_id)[0].indented()
     part = Part.objects.get(id=part_id)
 
-    qty = 100
     extended_cost_complete = True
     
     unit_cost = 0
     for item in parts:
         # for each item, get the extended quantity,
-        eq = qty * item['quantity']
+        eq = int(qty) * item['quantity']
         item['extended_quantity'] = eq
 
         # then get the lowest price & distributor at that quantity, 
@@ -60,7 +59,7 @@ def part_info(request, part_id):
         if disty is None:
             extended_cost_complete = False
 
-    extended_cost = unit_cost * qty
+    extended_cost = unit_cost * int(qty)
     
     return TemplateResponse(request, 'bom/part-info.html', locals())
 
@@ -162,7 +161,7 @@ def upload_part_indented(request, part_id):
                     response['status'] = 'failed'
                     response['errors'].append('recursive part association: a part can''t be a subpart of itsself')
                     return HttpResponse(dumps(response), content_type='application/json')
-                    
+
                 sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
                 sp.save()
     
