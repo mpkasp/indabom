@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+{{ part.full_part_number}}
+{% endblock %}
+
+{% block menu %}
+<li><a href="/bom/{{ part_id }}/export/">Export</a></li>
+{% endblock%}
+
+{% block content %}
+<h5>Part Information</h5>
+<p>Description: {{ part.description }}</p>
+<p>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</p>
+
+<ul>
+    <table class="highlight">
+        <thead>
+            <tr>
+                <th>Level</th>
+                <th>Part Number</th>
+                <th>Qty</th>
+                <th>Description</th> 
+                <th>Rev</th>
+                <th>Manufacturer</th>
+                <th>MPN</th>
+                <th><i>Ext. Qty</i></th>
+                <th><i>Order Qty</i></th>
+                <th><i>Seller</i></th>
+                <th><i>Price</i></th>
+                <th><i>Ext Cost</i></th>
+                <th><i>Match</i></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subpart in parts %}
+            <tr>
+                <td>
+                {% with ''|center:subpart.indent_level as range %}
+                {% for _ in range %}
+                    &nbsp;
+                {% endfor %}
+                {% endwith %}
+                {{ subpart.indent_level }}
+                </td> 
+                <td><a href="/bom/{{ subpart.part.id }}/">{{ subpart.part.full_part_number }}</a></td>
+                <td>{{ subpart.quantity }}</td> 
+                <td>{{ subpart.part.description }}</td> 
+                <td>{{ subpart.part.revision }}</td>
+                <td>{{ subpart.part.manufacturer }}</td>
+                <td>{{ subpart.part.manufacturer_part_number }}</td>
+                <td>{{ subpart.extended_quantity }}</td>
+                <td>{{ subpart.order_quantity }}</td>
+                <td>{{ subpart.distributor_part.distributor.name | default:"-" }}</td>
+                <td>{{ subpart.distributor_price | default:"-"}}</td>
+                <td>{{ subpart.extended_cost | default:"-" }}</td>
+                <td><a href="/bom/{{ subpart.part.id }}/part_match/">Octopart Match</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</ul>
+<h5>Upload to root level of indented BOM:</h5>
+<p><i>Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
+<form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col file-field input-field" style="width:50%">
+            <div class="btn green lighten-1">
+                <span>File</span>
+                <input type="file" name="csv_file">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+            </div>
+        </div>
+        <div class="col s2 file-field input-field">
+            <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Upload"/>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

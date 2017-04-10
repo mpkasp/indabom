@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 td, tr {
-    font-size: .8em !important;
+    font-size: .8em;
+}
+
+.brand-logo {
+    padding-left: 15px !important;
 }

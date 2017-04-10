@@ -158,7 +158,11 @@ def upload_part_indented(request, part_id):
 
                 subpart = subparts[0]
                 count = partData['quantity']
-
+                if part == subpart:
+                    response['status'] = 'failed'
+                    response['errors'].append('recursive part association: a part can''t be a subpart of itsself')
+                    return HttpResponse(dumps(response), content_type='application/json')
+                    
                 sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
                 sp.save()
     
