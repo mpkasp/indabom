@@ -14,7 +14,6 @@
 {% block content %}
 <h5>Part Information</h5>
 <p>Description: {{ part.description }}</p>
-<p>Est. Cost: ${{ unit_cost }} at {{ qty }} units. {% if not extended_cost_complete %}(!){% endif %}</p>
 <p>
     <form action="/bom/{{ part_id }}/{{ qty }}/" method="post">
     {% csrf_token %}
