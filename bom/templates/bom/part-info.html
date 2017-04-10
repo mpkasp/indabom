@@ -12,8 +12,7 @@
 {% endblock%}
 
 {% block content %}
-<h5>Part Information</h5>
-<p>Description: {{ part.description }}</p>
+<p>{{ part.description }}</p>
 <p>
     <form action="/bom/{{ part_id }}/{{ qty }}/" method="post">
     {% csrf_token %}
@@ -72,6 +71,7 @@
         </tbody>
     </table>
 </ul>
+<br>
 <h5>Upload to root level of indented BOM:</h5>
 <p><i>Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
 <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
