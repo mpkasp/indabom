@@ -14,12 +14,12 @@
 {% block content %}
 <p>{{ part.description }}</p>
 <p>
-    <form action="/bom/{{ part_id }}/{{ qty }}/" method="post">
+    <form action="/bom/{{ part_id }}/" method="post">
     {% csrf_token %}
         Est. Cost: ${{ unit_cost }} at 
         <div class="input-field inline">
-            <input id="qty" type="number" value="{{ qty }}">
-            <label for="qty">Quantity</label>
+            <input id="quantity" type="number" value="{{ qty }}">
+            <label for="quantity">Quantity</label>
         </div>
          units. {% if not extended_cost_complete %}(!){% endif %}
     </form>

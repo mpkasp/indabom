@@ -23,7 +23,6 @@ def match_part(part):
     
     # print mpn's
     for result in response['results']:
-        print "Reference: %s" % result['reference']
         for item in result['items']:
             for offer in item['offers']:
                 if offer['seller']['id'] == DIGI_KEY_SELLER_ID or offer['seller']['id'] == MOUSER_SELLER_ID:

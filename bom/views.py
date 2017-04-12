@@ -20,9 +20,13 @@ def home(request):
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 @login_required
-def part_info(request, part_id, qty=100):
+def part_info(request, part_id):
     parts = Part.objects.filter(id=part_id)[0].indented()
     part = Part.objects.get(id=part_id)
+    qty = 100
+
+    if request.method == 'POST':
+        qty = request.POST.get("quantity", 100)
 
     extended_cost_complete = True
     
