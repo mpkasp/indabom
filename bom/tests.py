@@ -9,9 +9,9 @@ from .octopart_parts_match import match_part
 class TestBOM(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user('kasper', 'kasper@friendlyghost.com', 'ghostpassword')
+        self.user = User.objects.create_user('kasper', 'kasper@McFadden.com', 'ghostpassword')
 
-    @skip("only test when we want to hit octopart's api")
+    # @skip("only test when we want to hit octopart's api")
     def test_match_part(self):
         self.client.login(username='kasper', password='ghostpassword')
 
