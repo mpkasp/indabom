@@ -27,8 +27,8 @@ class PartClassAdmin(admin.ModelAdmin):
 class PartAdmin(admin.ModelAdmin):
     ordering = ('number_class__code', 'number_item', 'number_variation')
     readonly_fields = ('get_full_part_number', )
-    list_display = ('get_full_part_number', 'revision', 'description', 'manufacturer_name', 'manufacturer_part_number', )
-    raw_id_fields = ('number_class',)
+    list_display = ('get_full_part_number', 'revision', 'description', 'manufacturer', 'manufacturer_part_number', )
+    raw_id_fields = ('number_class', 'manufacturer', )
     inlines = [
         SubpartInline,
         SellerPartAdminInline,

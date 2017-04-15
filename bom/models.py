@@ -22,7 +22,6 @@ class Part(models.Model):
     description = models.CharField(max_length=255, default=None)
     revision = models.CharField(max_length=2)
     manufacturer_part_number = models.CharField(max_length=128, default='', blank=True)
-    manufacturer_name = models.CharField(max_length=128, default=None, blank=True)
     manufacturer = models.ForeignKey(Manufacturer, default=None, blank=True, null=True)
     subparts = models.ManyToManyField('self', blank=True, symmetrical=False, through='Subpart', through_fields=('assembly_part', 'assembly_subpart'))
 
