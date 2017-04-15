@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.validators import MaxValueValidator
 
+
 class PartClass(models.Model):
     code = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=255, default=None)
@@ -11,8 +12,10 @@ class PartClass(models.Model):
     def __unicode__(self):
         return u'%s' % (self.code)
 
+
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, default=None)
+
 
 # Numbering scheme is hard coded for now, may want to change this to a setting depending on a part numbering scheme
 class Part(models.Model):
@@ -86,6 +89,7 @@ class Part(models.Model):
             self.manufacturer = Manufacturer.objects.get(name='ATLAS WEARABLES')
         super(Part, self).save()
 
+
 class Subpart(models.Model):
     assembly_part = models.ForeignKey(Part, related_name='assembly_part', null=True)
     assembly_subpart = models.ForeignKey(Part, related_name='assembly_subpart', null=True)
@@ -99,8 +103,10 @@ class Subpart(models.Model):
         else:
             self.save()
 
+
 class Seller(models.Model):
     name = models.CharField(max_length=128, default=None)
+
 
 class SellerPart(models.Model):
     seller = models.ForeignKey(Seller)
@@ -114,6 +120,7 @@ class SellerPart(models.Model):
 
     class Meta():
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
+
 
 class PartFile(models.Model):
     file = models.FileField(upload_to='partfiles/')
