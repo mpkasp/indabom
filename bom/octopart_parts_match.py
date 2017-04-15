@@ -1,7 +1,7 @@
 import json
 import urllib
 
-from .models import Part, Distributor, DistributorPart
+from .models import Part, Seller, SellerPart
 from indabom.local_settings import OCTOPART_API_KEY
 
 def match_part(part):
@@ -19,18 +19,18 @@ def match_part(part):
     DIGI_KEY_SELLER_ID = '459'
     MOUSER_SELLER_ID = '2401'
 
-    dps = []
+    seller_parts = []
     
     # print mpn's
     for result in response['results']:
         for item in result['items']:
             for offer in item['offers']:
                 if offer['seller']['id'] == DIGI_KEY_SELLER_ID or offer['seller']['id'] == MOUSER_SELLER_ID:
-                    disty = Distributor.objects.filter(name=offer['seller']['name'])[0]
+                    seller = Seller.objects.filter(name=offer['seller']['name'])[0]
                     ltd = offer['factory_lead_days']
                     for price in offer['prices']['USD']:
                         moq = price[0]
                         price = price[1]
-                        dps.append(DistributorPart(distributor=disty, part=part, minimum_order_quantity=moq, unit_cost=price, lead_time_days=ltd))
+                        seller_parts.append(SellerPart(seller=seller, part=part, minimum_order_quantity=moq, unit_cost=price, lead_time_days=ltd))
 
-    return dps
+    return seller_parts

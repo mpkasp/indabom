@@ -86,7 +86,7 @@
                 <thead>
                     <tr>
                         <th>Level</th>
-                        <th>Part Number</th>
+                        <th>Part No.</th>
                         <th>Qty</th>
                         <th>Description</th> 
                         <th>Rev</th>
@@ -97,7 +97,7 @@
                         <th><i>Seller</i></th>
                         <th><i>Price</i></th>
                         <th><i>Ext Cost</i></th>
-                        <th><i>Match</i></th>
+                        <th><i>Octopart Match</i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -119,10 +119,10 @@
                         <td>{{ subpart.part.manufacturer_part_number }}</td>
                         <td>{{ subpart.extended_quantity }}</td>
                         <td>{{ subpart.order_quantity }}</td>
-                        <td>{{ subpart.distributor_part.distributor.name | default:"-" }}</td>
-                        <td>{{ subpart.distributor_price | default:"-"}}</td>
+                        <td>{{ subpart.seller_part.seller.name | default:"-" }}</td>
+                        <td>{{ subpart.seller_price | default:"-"}}</td>
                         <td>{{ subpart.extended_cost | default:"-" }}</td>
-                        <td><a href="/bom/{{ subpart.part.id }}/part_match/">Octopart Match</a></td>
+                        <td><a href="/bom/{{ subpart.part.id }}/part_match/">Match</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

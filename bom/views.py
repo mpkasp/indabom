@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
-from .models import Part, PartClass, Subpart, DistributorPart
+from .models import Part, PartClass, Subpart, SellerPart
 from .forms import PartInfoForm
 from .octopart_parts_match import match_part
 
@@ -41,29 +41,29 @@ def part_info(request, part_id):
         item['extended_quantity'] = extended_quantity
 
         p = item['part']
-        dps = DistributorPart.objects.filter(part=p)
-        disty_price = None
-        disty = None
+        dps = SellerPart.objects.filter(part=p)
+        seller_price = None
+        seller = None
         order_qty = extended_quantity
         for dp in dps:
-            if dp.minimum_order_quantity < extended_quantity and (disty is None or dp.unit_cost < disty_price):
-                disty_price = dp.unit_cost
-                disty = dp
-            elif disty is None:
-                disty_price = dp.unit_cost
-                disty = dp
+            if dp.minimum_order_quantity < extended_quantity and (seller is None or dp.unit_cost < seller_price):
+                seller_price = dp.unit_cost
+                seller = dp
+            elif seller is None:
+                seller_price = dp.unit_cost
+                seller = dp
                 if dp.minimum_order_quantity > extended_quantity:
                     order_qty = dp.minimum_order_quantity
 
-        item['distributor_price'] = disty_price
-        item['distributor_part'] = disty
+        item['seller_price'] = seller_price
+        item['seller_part'] = seller
         item['order_quantity'] = order_qty
         
         # then extend that price
-        item['extended_cost'] = extended_quantity * disty_price if disty_price is not None and extended_quantity is not None else None
+        item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
 
-        unit_cost = unit_cost + disty_price * item['quantity'] if disty_price is not None else unit_cost
-        if disty is None:
+        unit_cost = unit_cost + seller_price * item['quantity'] if seller_price is not None else unit_cost
+        if seller is None:
             extended_cost_complete = False
 
     extended_cost = unit_cost * int(qty)
@@ -89,30 +89,30 @@ def export_part_indented(request, part_id):
         # for each item, get the extended quantity,
         extended_quantity = qty * item['quantity']
         item['extended_quantity'] = extended_quantity
-        # then get the lowest price & distributor at that quantity, 
+        # then get the lowest price & seller at that quantity, 
         p = item['part']
-        dps = DistributorPart.objects.filter(part=p)
-        disty_price = None
-        disty = None
+        dps = SellerPart.objects.filter(part=p)
+        seller_price = None
+        seller = None
         order_qty = extended_quantity
         for dp in dps:
-            if dp.minimum_order_quantity < extended_quantity and (disty is None or dp.unit_cost < disty_price):
-                disty_price = dp.unit_cost
-                disty = dp
-            elif disty is None:
-                disty_price = dp.unit_cost
-                disty = dp
+            if dp.minimum_order_quantity < extended_quantity and (seller is None or dp.unit_cost < seller_price):
+                seller_price = dp.unit_cost
+                seller = dp
+            elif seller is None:
+                seller_price = dp.unit_cost
+                seller = dp
                 if dp.minimum_order_quantity > extended_quantity:
                     order_qty = dp.minimum_order_quantity
 
-        item['distributor_price'] = disty_price
-        item['distributor_part'] = disty
+        item['seller_price'] = seller_price
+        item['seller_part'] = seller
         item['order_quantity'] = order_qty
         
         # then extend that price
-        item['extended_cost'] = extended_quantity * disty_price if disty_price is not None and extended_quantity is not None else None
+        item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
 
-        unit_cost = unit_cost + disty_price * item['quantity'] if disty_price is not None else unit_cost
+        unit_cost = unit_cost + seller_price * item['quantity'] if seller_price is not None else unit_cost
 
         row = {
         'level': item['indent_level'], 
@@ -124,8 +124,8 @@ def export_part_indented(request, part_id):
         'part_manufacturer_part_number': item['part'].manufacturer_part_number, 
         'part_ext_qty': item['extended_quantity'],
         'part_order_qty': item['order_quantity'],
-        'part_seller': item['distributor_part'].distributor.name if item['distributor_part'] is not None else '',
-        'part_cost': item['distributor_price'] if item['distributor_price'] is not None else 0,
+        'part_seller': item['seller_part'].seller.name if item['seller_part'] is not None else '',
+        'part_cost': item['seller_price'] if item['seller_price'] is not None else 0,
         'part_ext_cost': item['extended_cost'] if item['extended_cost'] is not None else 0,
         }
         writer.writerow(row)
@@ -246,10 +246,10 @@ def octopart_part_match(request, part_id):
         response['errors'].append('no parts found with given part_id')
         return HttpResponse(dumps(response), content_type='application/json')
 
-    distributor_parts = match_part(parts[0])
+    seller_parts = match_part(parts[0])
     
-    if len(distributor_parts) > 0:
-        for dp in distributor_parts:
+    if len(seller_parts) > 0:
+        for dp in seller_parts:
             try:
                 dp.save()
             except IntegrityError:
@@ -278,9 +278,9 @@ def octopart_part_match_indented(request, part_id):
     subparts = parts[0].subparts.all()
 
     for part in subparts:
-        distributor_parts = match_part(part)
-        if len(distributor_parts) > 0:
-            for dp in distributor_parts:
+        seller_parts = match_part(part)
+        if len(seller_parts) > 0:
+            for dp in seller_parts:
                 try:
                     dp.save()
                 except IntegrityError:

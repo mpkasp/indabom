@@ -1,5 +1,5 @@
 from bom.octopart_parts_match import match_part
-from bom.models import Part, PartClass, Distributor, DistributorPart, Subpart
+from bom.models import Part, PartClass, Seller, SellerPart, Subpart
 
 def create_some_fake_part_classes():
     pc1 = PartClass(code=500,name='Wendy',comment='Mechanical Switches')
@@ -20,21 +20,21 @@ def create_a_fake_subpart(assembly_part, assembly_subpart, count=4):
 
 
 def create_some_fake_sellers():
-    s1 = Distributor(name='Mouser')
+    s1 = Seller(name='Mouser')
     s1.save()
     
-    s2 = Distributor(name='Digi-Key')
+    s2 = Seller(name='Digi-Key')
     s2.save()
 
-    s3 = Distributor(name='Archibald')
+    s3 = Seller(name='Archibald')
     s3.save()
 
     return s1, s2, s3
 
 
-def create_a_fake_seller_part(distributor, part, moq, mpq, unit_cost, lead_time_days):
-    sp1 = DistributorPart(distributor=distributor, part=part, minimum_order_quantity=moq, 
-                            minimum_pack_quantity=mpq, unit_cost=unit_cost, lead_time_days=lead_time_days)
+def create_a_fake_seller_part(seller, part, moq, mpq, unit_cost, lead_time_days):
+    sp1 = SellerPart(seller=seller, part=part, minimum_order_quantity=moq, 
+                        minimum_pack_quantity=mpq, unit_cost=unit_cost, lead_time_days=lead_time_days)
     sp1.save()
 
     return sp1

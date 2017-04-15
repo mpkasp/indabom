@@ -11,15 +11,15 @@ class SubpartInline(admin.TabularInline):
         return obj.assembly_subpart.full_part_number()
     get_full_part_number.short_description = 'PartNumber'
 
-class DistributorAdmin(admin.ModelAdmin):
+class SellerAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
-class DistributorPartAdmin(admin.ModelAdmin):
-    list_display = ('part', 'distributor', 'minimum_order_quantity', 'minimum_pack_quantity', 'unit_cost', 'lead_time_days')
+class SellerPartAdmin(admin.ModelAdmin):
+    list_display = ('part', 'seller', 'minimum_order_quantity', 'minimum_pack_quantity', 'unit_cost', 'lead_time_days')
 
-class DistributorPartAdminInline(admin.TabularInline):
-    model = DistributorPart
-    raw_id_fields = ('distributor', 'part', )
+class SellerPartAdminInline(admin.TabularInline):
+    model = SellerPart
+    raw_id_fields = ('seller', 'part', )
 
 class PartClassAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'comment', )
@@ -31,7 +31,7 @@ class PartAdmin(admin.ModelAdmin):
     raw_id_fields = ('number_class',)
     inlines = [
         SubpartInline,
-        DistributorPartAdminInline,
+        SellerPartAdminInline,
     ]
 
     def get_full_part_number(self, obj):
@@ -39,7 +39,7 @@ class PartAdmin(admin.ModelAdmin):
     get_full_part_number.short_description = 'PartNumber'
     get_full_part_number.admin_order_field = 'number_class__part_number'
 
-admin.site.register(Distributor, DistributorAdmin)
-admin.site.register(DistributorPart, DistributorPartAdmin)
+admin.site.register(Seller, SellerAdmin)
+admin.site.register(SellerPart, SellerPartAdmin)
 admin.site.register(PartClass, PartClassAdmin)
 admin.site.register(Part, PartAdmin)
