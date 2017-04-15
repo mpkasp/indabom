@@ -7,3 +7,17 @@ td, tr {
 .brand-logo {
     padding-left: 15px !important;
 }
+
+.tabs .tab a{
+    color:#a5d6a7;
+}
+.tabs .tab a:hover,.tabs .tab a.active {
+    background-color:transparent;
+    color:#66bb6a;
+}
+.tabs .tab.disabled a,.tabs .tab.disabled a:hover {
+    color:rgba(165,214,167,0.5);    
+}
+.tabs .indicator {
+    background-color:#66bb6a;
+}

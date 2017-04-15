@@ -4,3 +4,7 @@ td {
     font-size: .75em !important;
     padding: 5px 5px;
 }
+
+.text-right {
+    text-align: right;
+}

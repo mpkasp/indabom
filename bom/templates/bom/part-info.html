@@ -4,7 +4,6 @@
 
 {% block title %}
 <link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
-{{ part.full_part_number}}
 {% endblock %}
 
 {% block menu %}
@@ -12,83 +11,175 @@
 {% endblock%}
 
 {% block content %}
-<p>{{ part.description }}</p>
-<p>
-    <form action="/bom/{{ part_id }}/" method="post">
-    {% csrf_token %}
-        Est. Cost: ${{ unit_cost }} at 
-        <div class="input-field inline">
-            {{ form }}
-        </div>
-         units. {% if not extended_cost_complete %}(!){% endif %}
-    </form>
-</p>
-<ul>
-    <table class="highlight">
-        <thead>
-            <tr>
-                <th>Level</th>
-                <th>Part Number</th>
-                <th>Qty</th>
-                <th>Description</th> 
-                <th>Rev</th>
-                <th>Manufacturer</th>
-                <th>MPN</th>
-                <th><i>Ext. Qty</i></th>
-                <th><i>Order Qty</i></th>
-                <th><i>Seller</i></th>
-                <th><i>Price</i></th>
-                <th><i>Ext Cost</i></th>
-                <th><i>Match</i></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for subpart in parts %}
-            <tr>
-                <td>
-                {% with ''|center:subpart.indent_level as range %}
-                {% for _ in range %}
-                    &nbsp;
-                {% endfor %}
-                {% endwith %}
-                {{ subpart.indent_level }}
-                </td> 
-                <td><a href="/bom/{{ subpart.part.id }}/">{{ subpart.part.full_part_number }}</a></td>
-                <td>{{ subpart.quantity }}</td> 
-                <td>{{ subpart.part.description }}</td> 
-                <td>{{ subpart.part.revision }}</td>
-                <td>{{ subpart.part.manufacturer }}</td>
-                <td>{{ subpart.part.manufacturer_part_number }}</td>
-                <td>{{ subpart.extended_quantity }}</td>
-                <td>{{ subpart.order_quantity }}</td>
-                <td>{{ subpart.distributor_part.distributor.name | default:"-" }}</td>
-                <td>{{ subpart.distributor_price | default:"-"}}</td>
-                <td>{{ subpart.extended_cost | default:"-" }}</td>
-                <td><a href="/bom/{{ subpart.part.id }}/part_match/">Octopart Match</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</ul>
-<br>
-<h5>Upload to root level of indented BOM:</h5>
-<p><i>Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
-<form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col file-field input-field" style="width:50%">
-            <div class="btn green lighten-1">
-                <span>File</span>
-                <input type="file" name="csv_file">
+<p>Item #{{ part.full_part_number}}</p>
+<h5>{{ part.description }}</h5>
+
+<div class="row">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab col s3"><a href="#specs">Specifications</a></li>
+            <li class="tab col s3"><a class="active" href="#bom">Bill of Materials</a></li>
+            <li class="tab col s3"><a href="#used">Where Used</a></li>
+            <li class="tab col s3 disabled"><a href="#sourcing">Sourcing</a></li>
+        </ul>
+    </div>
+
+    <div id="specs" class="col s12">
+        <br>
+        <div>
+            <div class="row">
+                <div class="col s4 text-right">
+                    Description:
+                </div>
+                <div class="col s8">
+                    {{ part.description }}
+                </div>
             </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
+            <div class="row">
+                <div class="col s4 text-right">
+                    Revision:
+                </div>
+                <div class="col s8">
+                    {{ part.revision }}
+                </div>
             </div>
-        </div>
-        <div class="col s2 file-field input-field">
-            <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Upload"/>
+            <div class="row">
+                <div class="col s4 text-right">
+                    Manufacturer:
+                </div>
+                <div class="col s8">
+                    {{ part.manufacturer }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s4 text-right">
+                    Manufacturer Part Number:
+                </div>
+                <div class="col s8">
+                    {{ part.manufacturer_part_number }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s4 text-right">
+                    Files:
+                </div>
+                <div class="col s8">
+                    None
+                </div>
+            </div>
         </div>
     </div>
-</form>
+
+    <div id="bom" class="col s12">
+        <p>
+            <form action="/bom/{{ part_id }}/" method="post">
+            {% csrf_token %}
+                Est. Cost: ${{ unit_cost }} at 
+                <div class="input-field inline">
+                    {{ form }}
+                </div>
+                 units. {% if not extended_cost_complete %}(!){% endif %}
+            </form>
+        </p>
+        <ul>
+            <table class="highlight">
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Part Number</th>
+                        <th>Qty</th>
+                        <th>Description</th> 
+                        <th>Rev</th>
+                        <th>Manufacturer</th>
+                        <th>MPN</th>
+                        <th><i>Ext. Qty</i></th>
+                        <th><i>Order Qty</i></th>
+                        <th><i>Seller</i></th>
+                        <th><i>Price</i></th>
+                        <th><i>Ext Cost</i></th>
+                        <th><i>Match</i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subpart in parts %}
+                    <tr>
+                        <td>
+                        {% with ''|center:subpart.indent_level as range %}
+                        {% for _ in range %}
+                            &nbsp;
+                        {% endfor %}
+                        {% endwith %}
+                        {{ subpart.indent_level }}
+                        </td> 
+                        <td><a href="/bom/{{ subpart.part.id }}/">{{ subpart.part.full_part_number }}</a></td>
+                        <td>{{ subpart.quantity }}</td> 
+                        <td>{{ subpart.part.description }}</td> 
+                        <td>{{ subpart.part.revision }}</td>
+                        <td>{{ subpart.part.manufacturer }}</td>
+                        <td>{{ subpart.part.manufacturer_part_number }}</td>
+                        <td>{{ subpart.extended_quantity }}</td>
+                        <td>{{ subpart.order_quantity }}</td>
+                        <td>{{ subpart.distributor_part.distributor.name | default:"-" }}</td>
+                        <td>{{ subpart.distributor_price | default:"-"}}</td>
+                        <td>{{ subpart.extended_cost | default:"-" }}</td>
+                        <td><a href="/bom/{{ subpart.part.id }}/part_match/">Octopart Match</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </ul>
+        <br>
+        <h5>Upload to root level of indented BOM:</h5>
+        <p><i>Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
+        <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col file-field input-field" style="width:50%">
+                    <div class="btn green lighten-1">
+                        <span>File</span>
+                        <input type="file" name="csv_file">
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+                <div class="col s2 file-field input-field">
+                    <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Upload"/>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="used" class="col s12">
+        <ul>
+            <table class="highlight">
+                <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Description</th> 
+                        <th>Rev</th>
+                        <th>Manufacturer</th>
+                        <th>MPN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for part in where_used %}
+                    <tr>
+                        <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
+                        <td>{{ part.description }}</td> 
+                        <td>{{ part.revision }}</td>
+                        <td>{{ part.manufacturer }}</td>
+                        <td>{{ part.manufacturer_part_number }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </ul>
+    </div>
+
+    <div id="sourcing" class="col s12">
+
+    </div>
+</div>
 
 {% endblock %}

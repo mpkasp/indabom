@@ -17,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
-    # get all top level assemblies
     parts = Part.objects.all().order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
@@ -38,24 +37,22 @@ def part_info(request, part_id):
     
     unit_cost = 0
     for item in parts:
-        # for each item, get the extended quantity,
-        eq = int(qty) * item['quantity']
-        item['extended_quantity'] = eq
+        extended_quantity = int(qty) * item['quantity']
+        item['extended_quantity'] = extended_quantity
 
-        # then get the lowest price & distributor at that quantity, 
         p = item['part']
         dps = DistributorPart.objects.filter(part=p)
         disty_price = None
         disty = None
-        order_qty = eq
+        order_qty = extended_quantity
         for dp in dps:
-            if dp.minimum_order_quantity < eq and (disty is None or dp.unit_cost < disty_price):
+            if dp.minimum_order_quantity < extended_quantity and (disty is None or dp.unit_cost < disty_price):
                 disty_price = dp.unit_cost
                 disty = dp
             elif disty is None:
                 disty_price = dp.unit_cost
                 disty = dp
-                if dp.minimum_order_quantity > eq:
+                if dp.minimum_order_quantity > extended_quantity:
                     order_qty = dp.minimum_order_quantity
 
         item['distributor_price'] = disty_price
@@ -63,13 +60,15 @@ def part_info(request, part_id):
         item['order_quantity'] = order_qty
         
         # then extend that price
-        item['extended_cost'] = eq * disty_price if disty_price is not None and eq is not None else None
+        item['extended_cost'] = extended_quantity * disty_price if disty_price is not None and extended_quantity is not None else None
 
         unit_cost = unit_cost + disty_price * item['quantity'] if disty_price is not None else unit_cost
         if disty is None:
             extended_cost_complete = False
 
     extended_cost = unit_cost * int(qty)
+
+    where_used = part.where_used()
     
     return TemplateResponse(request, 'bom/part-info.html', locals())
 
@@ -88,22 +87,22 @@ def export_part_indented(request, part_id):
     writer.writeheader()
     for item in bom:
         # for each item, get the extended quantity,
-        eq = qty * item['quantity']
-        item['extended_quantity'] = eq
+        extended_quantity = qty * item['quantity']
+        item['extended_quantity'] = extended_quantity
         # then get the lowest price & distributor at that quantity, 
         p = item['part']
         dps = DistributorPart.objects.filter(part=p)
         disty_price = None
         disty = None
-        order_qty = eq
+        order_qty = extended_quantity
         for dp in dps:
-            if dp.minimum_order_quantity < eq and (disty is None or dp.unit_cost < disty_price):
+            if dp.minimum_order_quantity < extended_quantity and (disty is None or dp.unit_cost < disty_price):
                 disty_price = dp.unit_cost
                 disty = dp
             elif disty is None:
                 disty_price = dp.unit_cost
                 disty = dp
-                if dp.minimum_order_quantity > eq:
+                if dp.minimum_order_quantity > extended_quantity:
                     order_qty = dp.minimum_order_quantity
 
         item['distributor_price'] = disty_price
@@ -111,7 +110,7 @@ def export_part_indented(request, part_id):
         item['order_quantity'] = order_qty
         
         # then extend that price
-        item['extended_cost'] = eq * disty_price if disty_price is not None and eq is not None else None
+        item['extended_cost'] = extended_quantity * disty_price if disty_price is not None and extended_quantity is not None else None
 
         unit_cost = unit_cost + disty_price * item['quantity'] if disty_price is not None else unit_cost
 

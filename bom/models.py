@@ -31,6 +31,11 @@ class Part(models.Model):
     def distributor_parts(self):
         return DistributorPart.objects.filter(part=self).order_by('distributor', 'minimum_order_quantity')
 
+    def where_used(self):
+        used_in_subparts = Subpart.objects.filter(assembly_subpart=self)
+        used_in_parts = [subpart.assembly_part for subpart in used_in_subparts]
+        return used_in_parts
+
     def indented(self):
         def indented_given_bom(bom, part, qty=1, indent_level=0):
             bom.append({
