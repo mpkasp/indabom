@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.validators import MaxValueValidator
+from indabom.settings import MEDIA_ROOT
 
 class PartClass(models.Model):
     code = models.CharField(max_length=3, unique=True)
@@ -116,6 +117,6 @@ class SellerPart(models.Model):
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
 
 class PartFile(models.Model):
-    file = models.FileField(upload_to='partfiles/')
+    file = models.FileField(upload_to='/partfiles')
     upload_date = models.DateField(auto_now=True)
     part = models.ForeignKey(Part)

@@ -1,5 +1,7 @@
 import csv, export, codecs, logging
 
+from indabom.settings import MEDIA_URL
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
@@ -23,8 +25,9 @@ def home(request):
 @login_required
 def part_info(request, part_id):
     qty = 100
+    media_url = MEDIA_URL
     form = PartInfoForm(initial={'quantity': 100})
-    
+
     if request.method == 'POST':
         form = PartInfoForm(request.POST)
         if form.is_valid():
