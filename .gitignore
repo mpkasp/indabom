@@ -1,5 +1,5 @@
 #Project Specific
-partfiles/
+media/
 
 #led / optimized / DLL files
 __pycache__/
