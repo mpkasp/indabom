@@ -21,9 +21,6 @@ class Part(models.Model):
     manufacturer_part_number = models.CharField(max_length=128, default='', blank=True)
     manufacturer = models.CharField(max_length=128, default=None, blank=True)
     subparts = models.ManyToManyField('self', blank=True, symmetrical=False, through='Subpart', through_fields=('assembly_part', 'assembly_subpart'))
-    minimum_order_quantity = models.IntegerField(null=True, blank=True)
-    minimum_pack_quantity = models.IntegerField(null=True, blank=True)
-    unit_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
 
     class Meta():
         unique_together = ['number_class', 'number_item', 'number_variation']
