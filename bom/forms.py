@@ -1,4 +1,4 @@
 from django import forms
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()
+class PartInfoForm(forms.Form):
+    quantity = forms.IntegerField(label='Quantity', min_value=1)

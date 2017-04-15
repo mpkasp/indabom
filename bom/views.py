@@ -1,4 +1,4 @@
-import csv, export, codecs
+import csv, export, codecs, logging
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,8 +10,10 @@ from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
 from .models import Part, PartClass, Subpart, DistributorPart
-from .forms import UploadFileForm
+from .forms import PartInfoForm
 from .octopart_parts_match import match_part
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
@@ -21,12 +23,16 @@ def home(request):
 
 @login_required
 def part_info(request, part_id):
-    parts = Part.objects.filter(id=part_id)[0].indented()
-    part = Part.objects.get(id=part_id)
     qty = 100
-
+    form = PartInfoForm(initial={'quantity': 100})
+    
     if request.method == 'POST':
-        qty = request.POST.get("quantity", 100)
+        form = PartInfoForm(request.POST)
+        if form.is_valid():
+            qty = request.POST.get('quantity', 100)
+
+    parts = Part.objects.filter(id=part_id)[0].indented()
+    part = Part.objects.get(id=part_id)  
 
     extended_cost_complete = True
     

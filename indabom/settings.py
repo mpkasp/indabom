@@ -130,7 +130,13 @@ LOGGING = {
         # Indabom app
         'indabom': {
             'handlers': ['logfile'],
-            'level': 'WARNING', # Or maybe INFO or DEBUG
+            'level': 'INFO', # Or maybe INFO or DEBUG
+            'propagate': False
+        },
+        # Indabom app
+        'bom': {
+            'handlers': ['logfile'],
+            'level': 'INFO', # Or maybe INFO or DEBUG
             'propagate': False
         },
     },
