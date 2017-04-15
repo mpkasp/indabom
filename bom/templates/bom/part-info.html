@@ -48,7 +48,7 @@
                     Manufacturer:
                 </div>
                 <div class="col s8">
-                    {{ part.manufacturer }}
+                    {{ part.manufacturer.name }}
                 </div>
             </div>
             <div class="row">
@@ -113,7 +113,7 @@
                         <td>{{ subpart.quantity }}</td> 
                         <td>{{ subpart.part.description }}</td> 
                         <td>{{ subpart.part.revision }}</td>
-                        <td>{{ subpart.part.manufacturer }}</td>
+                        <td>{{ subpart.part.manufacturer.name }}</td>
                         <td>{{ subpart.part.manufacturer_part_number }}</td>
                         <td>{{ subpart.extended_quantity }}</td>
                         <td>{{ subpart.order_quantity }}</td>
@@ -166,7 +166,7 @@
                         <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
                         <td>{{ part.description }}</td> 
                         <td>{{ part.revision }}</td>
-                        <td>{{ part.manufacturer }}</td>
+                        <td>{{ part.manufacturer.name }}</td>
                         <td>{{ part.manufacturer_part_number }}</td>
                     </tr>
                     {% endfor %}
