@@ -117,6 +117,6 @@ class SellerPart(models.Model):
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
 
 class PartFile(models.Model):
-    file = models.FileField(upload_to='/partfiles')
+    file = models.FileField(upload_to=MEDIA_ROOT + '/partfiles')
     upload_date = models.DateField(auto_now=True)
     part = models.ForeignKey(Part)
