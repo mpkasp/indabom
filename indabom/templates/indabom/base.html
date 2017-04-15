@@ -22,6 +22,7 @@
         <div class="nav-wrapper">
             <a href="/" class="brand-logo">IndaBOM</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
+                {% if user.is_superuser %}<li><a href="/admin/">Admin</a></li>{% endif %}
                 {% block menu %}{% endblock %}
                 {% if user.is_authenticated %}<li><a href="/logout/">Logout</a></li>{% endif %}
             </ul>
