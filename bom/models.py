@@ -19,7 +19,7 @@ class Part(models.Model):
     description = models.CharField(max_length=255, default=None)
     revision = models.CharField(max_length=2)
     manufacturer_part_number = models.CharField(max_length=128, default='', blank=True)
-    manufacturer = models.CharField(max_length=128, default=None, blank=True)
+    manufacturer_name = models.CharField(max_length=128, default=None, blank=True)
     subparts = models.ManyToManyField('self', blank=True, symmetrical=False, through='Subpart', through_fields=('assembly_part', 'assembly_subpart'))
 
     class Meta():
@@ -104,3 +104,12 @@ class SellerPart(models.Model):
 
     class Meta():
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
+
+class Manufacturer(models.Model):
+    name = models.CharField(max_length=128, default=None)
+
+class PartFile(models.Model):
+    name = models.CharField(max_length=128, default=None, blank=True)
+    file = models.FileField(upload_to='partfiles/')
+    upload_date = models.DateField(auto_now=True)
+    part = models.ForeignKey(Part)
