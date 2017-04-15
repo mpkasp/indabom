@@ -69,6 +69,7 @@ def part_info(request, part_id):
     extended_cost = unit_cost * int(qty)
 
     where_used = part.where_used()
+    files = part.files()
     
     return TemplateResponse(request, 'bom/part-info.html', locals())
 

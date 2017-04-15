@@ -21,6 +21,18 @@ class SellerPartAdminInline(admin.TabularInline):
     model = SellerPart
     raw_id_fields = ('seller', 'part', )
 
+class PartFileAdmin(admin.ModelAdmin):
+    list_display = ('file', 'upload_date', 'get_full_part_number')
+    raw_id_fields = ('part',)
+
+    def get_full_part_number(self, obj):
+        return obj.part.full_part_number()
+    get_full_part_number.short_description = 'PartNumber'
+    
+class PartFileAdminInline(admin.TabularInline):
+    model = PartFile
+    raw_id_fields = ('part', )
+
 class PartClassAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'comment', )
 
@@ -32,6 +44,7 @@ class PartAdmin(admin.ModelAdmin):
     inlines = [
         SubpartInline,
         SellerPartAdminInline,
+        PartFileAdminInline,
     ]
 
     def get_full_part_number(self, obj):
@@ -42,14 +55,6 @@ class PartAdmin(admin.ModelAdmin):
 class ManufacturerAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
-class PartFileAdmin(admin.ModelAdmin):
-    list_display = ('file', 'upload_date', 'get_full_part_number')
-    raw_id_fields = ('part',)
-
-    def get_full_part_number(self, obj):
-        return obj.part.full_part_number()
-    get_full_part_number.short_description = 'PartNumber'
-    
 admin.site.register(Seller, SellerAdmin)
 admin.site.register(SellerPart, SellerPartAdmin)
 admin.site.register(PartClass, PartClassAdmin)

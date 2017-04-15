@@ -61,18 +61,26 @@
             </div>
             <div class="row">
                 <div class="col s4 text-right">
-                    Files:
-                </div>
-                <div class="col s8">
-                    None
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s4 text-right">
                     Est. Cost:
                 </div>
                 <div class="col s8">
                     ${{ unit_cost }} at {{ qty }} units
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s4 text-right">
+                    Files:
+                </div>
+                <div class="col s8">
+                    {% if not files %}
+                        <i>None Found</i>
+                    {% else %}
+                    <ul>
+                    {% for file in files %}
+                        <li><a href="{{ file.url }}">{{ file.name }}</a></li>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -127,7 +135,7 @@
             </table>
         </ul>
         <br>
-        <h5>Upload to root level of indented BOM:</h5>
+        <h5>Upload Subparts To {{ part.full_part_number }}:</h5>
         <p><i>Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
         <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
             {% csrf_token %}

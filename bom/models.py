@@ -42,6 +42,11 @@ class Part(models.Model):
         used_in_parts = [subpart.assembly_part for subpart in used_in_subparts]
         return used_in_parts
 
+    def files(self):
+        partfiles = PartFile.objects.filter(part=self)
+        files = [partfile.file for partfile in partfiles]
+        return files   
+
     def indented(self):
         def indented_given_bom(bom, part, qty=1, indent_level=0):
             bom.append({
@@ -111,7 +116,6 @@ class SellerPart(models.Model):
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
 
 class PartFile(models.Model):
-    name = models.CharField(max_length=128, default=None, blank=True)
     file = models.FileField(upload_to='partfiles/')
     upload_date = models.DateField(auto_now=True)
     part = models.ForeignKey(Part)
