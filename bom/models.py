@@ -91,20 +91,6 @@ class Subpart(models.Model):
     #     else:
     #         super(Subpart, self).save()
 
-class Distributor(models.Model):
-    name = models.CharField(max_length=128, default=None)
-
-class DistributorPart(models.Model):
-    distributor = models.ForeignKey(Distributor)
-    part = models.ForeignKey(Part)
-    minimum_order_quantity = models.IntegerField(null=True, blank=True)
-    minimum_pack_quantity = models.IntegerField(null=True, blank=True)
-    unit_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
-    lead_time_days = models.IntegerField(null=True, blank=True)
-
-    class Meta():
-        unique_together = ['distributor', 'part', 'minimum_order_quantity', 'unit_cost']
-
 class Seller(models.Model):
     name = models.CharField(max_length=128, default=None)
 
