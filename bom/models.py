@@ -77,9 +77,9 @@ class Part(models.Model):
                 self.number_variation = '01'
             else:
                 self.number_variation = "{0:0=2d}".format(int(last_number_variation.number_variation) + 1)
-        if self.manufacturer_part_number == '' and self.manufacturer == '':
+        if self.manufacturer_part_number == '' and self.manufacturer is None:
             self.manufacturer_part_number = self.full_part_number()
-            self.manufacturer = 'ATLAS WEARABLES'
+            self.manufacturer = Manufacturer.objects.get(name='ATLAS WEARABLES')
         super(Part, self).save()
 
 class Subpart(models.Model):

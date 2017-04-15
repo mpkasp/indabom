@@ -39,7 +39,20 @@ class PartAdmin(admin.ModelAdmin):
     get_full_part_number.short_description = 'PartNumber'
     get_full_part_number.admin_order_field = 'number_class__part_number'
 
+class ManufacturerAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+class PartFileAdmin(admin.ModelAdmin):
+    list_display = ('file', 'upload_date', 'get_full_part_number')
+    raw_id_fields = ('part',)
+
+    def get_full_part_number(self, obj):
+        return obj.part.full_part_number()
+    get_full_part_number.short_description = 'PartNumber'
+    
 admin.site.register(Seller, SellerAdmin)
 admin.site.register(SellerPart, SellerPartAdmin)
 admin.site.register(PartClass, PartClassAdmin)
 admin.site.register(Part, PartAdmin)
+admin.site.register(Manufacturer, ManufacturerAdmin)
+admin.site.register(PartFile, PartFileAdmin)

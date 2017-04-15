@@ -1,4 +1,7 @@
-led / optimized / DLL files
+#Project Specific
+partfiles/
+
+#led / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
