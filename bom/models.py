@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.validators import MaxValueValidator
-from indabom.settings import MEDIA_ROOT
 
 class PartClass(models.Model):
     code = models.CharField(max_length=3, unique=True)
