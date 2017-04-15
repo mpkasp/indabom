@@ -11,6 +11,9 @@ class PartClass(models.Model):
     def __unicode__(self):
         return u'%s' % (self.code)
 
+class Manufacturer(models.Model):
+    name = models.CharField(max_length=128, default=None)
+
 # Numbering scheme is hard coded for now, may want to change this to a setting depending on a part numbering scheme
 class Part(models.Model):
     number_class = models.ForeignKey(PartClass, default=None, related_name='number_class')
@@ -20,6 +23,7 @@ class Part(models.Model):
     revision = models.CharField(max_length=2)
     manufacturer_part_number = models.CharField(max_length=128, default='', blank=True)
     manufacturer_name = models.CharField(max_length=128, default=None, blank=True)
+    manufacturer = models.ForeignKey(Manufacturer, default=None, blank=True, null=True)
     subparts = models.ManyToManyField('self', blank=True, symmetrical=False, through='Subpart', through_fields=('assembly_part', 'assembly_subpart'))
 
     class Meta():
@@ -83,13 +87,13 @@ class Subpart(models.Model):
     assembly_subpart = models.ForeignKey(Part, related_name='assembly_subpart', null=True)
     count = models.IntegerField(default=1)
 
-    # def save(self):
-    #     sps = Subpart.objects.filter(assembly_part=self.assembly_part, assembly_subpart=self.assembly_subpart)
-    #     if len(sps) > 0:
-    #         sps[0].count += int(self.count)
-    #         return
-    #     else:
-    #         super(Subpart, self).save()
+    def combine_similar(self):
+        sps = Subpart.objects.filter(assembly_part=self.assembly_part, assembly_subpart=self.assembly_subpart)
+        if len(sps) > 0:
+            sps[0].count += int(self.count)
+            return
+        else:
+            self.save()
 
 class Seller(models.Model):
     name = models.CharField(max_length=128, default=None)
@@ -104,9 +108,6 @@ class SellerPart(models.Model):
 
     class Meta():
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
-
-class Manufacturer(models.Model):
-    name = models.CharField(max_length=128, default=None)
 
 class PartFile(models.Model):
     name = models.CharField(max_length=128, default=None, blank=True)
