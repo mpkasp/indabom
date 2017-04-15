@@ -104,6 +104,8 @@ class SellerPart(models.Model):
     minimum_pack_quantity = models.IntegerField(null=True, blank=True)
     unit_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
     lead_time_days = models.IntegerField(null=True, blank=True)
+    nre_cost = models.DecimalField(null=True, max_digits=8, decimal_places=4, blank=True)
+    ncnr = models.BooleanField(default=False)
 
     class Meta():
         unique_together = ['seller', 'part', 'minimum_order_quantity', 'unit_cost']
