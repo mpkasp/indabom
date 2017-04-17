@@ -19,14 +19,14 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
-    parts = Part.objects.all().order_by('number_class__code', 'number_item', 'number_variation')
+    org = request.user.bom_profile().organization
+    parts = Part.objects.filter(organization=org).order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 
 @login_required
 def part_info(request, part_id):
     qty = 100
-    media_url = MEDIA_URL
     form = PartInfoForm(initial={'quantity': 100})
 
     if request.method == 'POST':
@@ -34,8 +34,12 @@ def part_info(request, part_id):
         if form.is_valid():
             qty = request.POST.get('quantity', 100)
 
+    org = request.user.bom_profile().organization
     parts = Part.objects.filter(id=part_id)[0].indented()
-    part = Part.objects.get(id=part_id)  
+    part = Part.objects.get(id=part_id)
+
+    if part.organization is not org:
+        return HttpResponseRedirect(request.META.get('/bom/'))
 
     extended_cost_complete = True
     
@@ -83,7 +87,12 @@ def export_part_indented(request, part_id):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts_indented.csv"'
 
-    bom = Part.objects.filter(id=part_id)[0].indented()
+    org = request.user.bom_profile().organization
+    part = Part.objects.filter(id=part_id)[0]
+    if part.organization is not org:
+        return HttpResponseRedirect(request.META.get('/bom/'))
+
+    bom = part.indented()
     qty = 100
     unit_cost = 0
     
@@ -92,9 +101,9 @@ def export_part_indented(request, part_id):
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
     for item in bom:
-        # for each item, get the extended quantity,
         extended_quantity = qty * item['quantity']
         item['extended_quantity'] = extended_quantity
+        
         # then get the lowest price & seller at that quantity, 
         p = item['part']
         dps = SellerPart.objects.filter(part=p)
@@ -219,8 +228,9 @@ def upload_parts(request):
 def export_part_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts.csv"'
-
-    parts = Part.objects.all().order_by('number_class__code', 'number_item', 'number_variation')
+    
+    org = request.user.bom_profile().organization
+    parts = Part.objects.filter(organization=org).order_by('number_class__code', 'number_item', 'number_variation')
 
     fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_minimum_order_quantity', 'part_minimum_pack_quantity', 'part_unit_cost']
 
