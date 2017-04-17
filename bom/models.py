@@ -2,6 +2,29 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.validators import MaxValueValidator
+from django.contrib.auth.models import User, Group
+
+
+class Organization(models.Model):
+    name = models.CharField(max_length=255, default=None)
+    subscription = models.CharField(max_length=1, choices=(('F', 'Free'), ('P', 'Pro'), ))
+    owner = models.ForeignKey(User)
+    
+    def __unicode__(self):
+        return u'%s' % (self.name)
+
+
+class UserMeta(models.Model):
+    user = models.OneToOneField(User, db_index=True)
+    organization = models.ForeignKey(Organization)
+    role = models.CharField(max_length=1, choices=(('A', 'Admin'), ('V', 'Viewer'), ))
+
+
+def _user_meta(self):
+    return UserMeta.objects.get_or_create(user=self)[0]
+
+
+User.add_to_class('bom_profile', _user_meta)
 
 
 class PartClass(models.Model):
@@ -15,10 +38,15 @@ class PartClass(models.Model):
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, default=None)
+    organization = models.ForeignKey(Organization)
+
+    def __unicode__(self):
+        return u'%s' % (self.name)
 
 
 # Numbering scheme is hard coded for now, may want to change this to a setting depending on a part numbering scheme
 class Part(models.Model):
+    organization = models.ForeignKey(Organization)
     number_class = models.ForeignKey(PartClass, default=None, related_name='number_class')
     number_item = models.CharField(max_length=4, default=None, blank=True)
     number_variation = models.CharField(max_length=2, default=None, blank=True)
@@ -88,6 +116,8 @@ class Part(models.Model):
             self.manufacturer_part_number = self.full_part_number()
             self.manufacturer = Manufacturer.objects.get(name='ATLAS WEARABLES')
         super(Part, self).save()
+    def __unicode__(self):
+        return u'%s' % (self.full_part_number())
 
 
 class Subpart(models.Model):
@@ -105,8 +135,9 @@ class Subpart(models.Model):
 
 
 class Seller(models.Model):
+    organization = models.ForeignKey(Organization)
     name = models.CharField(max_length=128, default=None)
-
+    
 
 class SellerPart(models.Model):
     seller = models.ForeignKey(Seller)

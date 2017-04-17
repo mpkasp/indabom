@@ -1,5 +1,21 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import *
+
+
+class UserMetaInline(admin.TabularInline):
+    model = UserMeta
+    raw_id_fields = ('organization', )
+    can_delete = False
+
+
+class UserAdmin(UserAdmin):
+    inlines = (UserMetaInline, )
+
+
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    
 
 class SubpartInline(admin.TabularInline):
     model = Subpart
@@ -11,15 +27,19 @@ class SubpartInline(admin.TabularInline):
         return obj.assembly_subpart.full_part_number()
     get_full_part_number.short_description = 'PartNumber'
 
+
 class SellerAdmin(admin.ModelAdmin):
     list_display = ('name', )
+
 
 class SellerPartAdmin(admin.ModelAdmin):
     list_display = ('part', 'seller', 'minimum_order_quantity', 'minimum_pack_quantity', 'unit_cost', 'lead_time_days', 'nre_cost', 'ncnr')
 
+
 class SellerPartAdminInline(admin.TabularInline):
     model = SellerPart
     raw_id_fields = ('seller', 'part', )
+
 
 class PartFileAdmin(admin.ModelAdmin):
     list_display = ('file', 'upload_date', 'get_full_part_number')
@@ -29,12 +49,15 @@ class PartFileAdmin(admin.ModelAdmin):
         return obj.part.full_part_number()
     get_full_part_number.short_description = 'PartNumber'
     
+
 class PartFileAdminInline(admin.TabularInline):
     model = PartFile
     raw_id_fields = ('part', )
 
+
 class PartClassAdmin(admin.ModelAdmin):
     list_display = ('code', 'name', 'comment', )
+
 
 class PartAdmin(admin.ModelAdmin):
     ordering = ('number_class__code', 'number_item', 'number_variation')
@@ -52,9 +75,14 @@ class PartAdmin(admin.ModelAdmin):
     get_full_part_number.short_description = 'PartNumber'
     get_full_part_number.admin_order_field = 'number_class__part_number'
 
+
 class ManufacturerAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
+admin.site.unregister(User)
+
+admin.site.register(User, UserAdmin)
+admin.site.register(Organization, OrganizationAdmin)
 admin.site.register(Seller, SellerAdmin)
 admin.site.register(SellerPart, SellerPartAdmin)
 admin.site.register(PartClass, PartClassAdmin)

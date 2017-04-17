@@ -22,6 +22,7 @@ def home(request):
     parts = Part.objects.all().order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
+
 @login_required
 def part_info(request, part_id):
     qty = 100
@@ -75,6 +76,7 @@ def part_info(request, part_id):
     files = part.files()
     
     return TemplateResponse(request, 'bom/part-info.html', locals())
+
 
 @login_required
 def export_part_indented(request, part_id):
@@ -135,6 +137,7 @@ def export_part_indented(request, part_id):
         writer.writerow(row)
     return response
 
+
 @login_required
 def upload_part_indented(request, part_id):
     response = {
@@ -182,6 +185,7 @@ def upload_part_indented(request, part_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
+
 @login_required
 def upload_parts(request):
     
@@ -210,6 +214,7 @@ def upload_parts(request):
 
     return HttpResponse(dumps(response), content_type='application/json')
 
+
 @login_required
 def export_part_list(request):
     response = HttpResponse(content_type='text/csv')
@@ -235,6 +240,7 @@ def export_part_list(request):
         writer.writerow(row)
 
     return response
+
 
 @login_required
 def octopart_part_match(request, part_id):
@@ -264,6 +270,7 @@ def octopart_part_match(request, part_id):
         return HttpResponse(dumps(response), content_type='application/json')
         
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+
 
 @login_required
 def octopart_part_match_indented(request, part_id):
