@@ -102,7 +102,7 @@ class Part(models.Model):
         indented_given_bom(bom, self)
         return bom
 
-    def save(self):
+    def save(self, **kwargs):
         if self.number_item is None or self.number_item == '':
             last_number_item = Part.objects.all().filter(number_class=self.number_class).order_by('number_item').last()
             if not last_number_item:
@@ -119,6 +119,7 @@ class Part(models.Model):
             self.manufacturer_part_number = self.full_part_number()
             self.manufacturer = Manufacturer.objects.get(name='ATLAS WEARABLES')
         super(Part, self).save()
+    
     def __unicode__(self):
         return u'%s' % (self.full_part_number())
 

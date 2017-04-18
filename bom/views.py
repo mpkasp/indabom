@@ -339,6 +339,7 @@ def create_part(request):
                 number_class=form.cleaned_data['number_class'],
                 manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
                 manufacturer=form.cleaned_data['manufacturer'],
+                organization=request.user.bom_profile().organization,
                 defaults={'description': form.cleaned_data['description'],
                             'revision': form.cleaned_data['revision'],
                 }
@@ -347,4 +348,4 @@ def create_part(request):
     else:
         form = NewPartForm() 
 
-    return TemplateResponse(request, 'bom/new-part.html', locals())
+    return TemplateResponse(request, 'bom/create-part.html', locals())
