@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^(?P<part_id>[0-9]+)/part_match/$', views.octopart_part_match, name='octopart-part-match'),
     url(r'^(?P<part_id>[0-9]+)/part_match_indented/$', views.octopart_part_match_indented, name='octopart-part-match-indented'),
     url(r'^export/$', views.export_part_list, name='export-part-list'),
+    url(r'^create-part/$', views.create_part, name='create-part'),
 ]

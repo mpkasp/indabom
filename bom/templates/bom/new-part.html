@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<h5>Create New Part</h5>
+
+<form action="/create-part/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Create" />
+</form>
+{% endblock %}

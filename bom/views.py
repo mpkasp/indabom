@@ -12,7 +12,7 @@ from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
 from .models import Part, PartClass, Subpart, SellerPart, Organization
-from .forms import PartInfoForm
+from .forms import PartInfoForm, NewPartForm
 from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
@@ -329,3 +329,22 @@ def octopart_part_match_indented(request, part_id):
                     continue
         
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+
+@login_required
+def create_part(request):
+    if request.method == 'POST':
+        form = NewPartForm(request.POST)
+        if form.is_valid():
+            new_part, created = Part.objects.get_or_create(
+                number_class=form.cleaned_data['number_class'],
+                manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
+                manufacturer=form.cleaned_data['manufacturer'],
+                defaults={'description': form.cleaned_data['description'],
+                            'revision': form.cleaned_data['revision'],
+                }
+            )
+            return HttpResponseRedirect('/bom/')
+    else:
+        form = NewPartForm() 
+
+    return TemplateResponse(request, 'bom/new-part.html', locals())

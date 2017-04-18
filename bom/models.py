@@ -33,12 +33,15 @@ class PartClass(models.Model):
     comment = models.CharField(max_length=255, default=None, blank=True)
 
     def __unicode__(self):
-        return u'%s' % (self.code)
+        return u'%s' % (self.code + ': ' + self.name)
 
 
 class Manufacturer(models.Model):
     name = models.CharField(max_length=128, default=None)
     organization = models.ForeignKey(Organization)
+
+    class Meta:
+        ordering = ['name']
 
     def __unicode__(self):
         return u'%s' % (self.name)
