@@ -330,6 +330,7 @@ def octopart_part_match_indented(request, part_id):
         
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
+
 @login_required
 def create_part(request):
     org = request.user.bom_profile().organization
@@ -351,3 +352,35 @@ def create_part(request):
         form = NewPartForm(organization=org) 
 
     return TemplateResponse(request, 'bom/create-part.html', locals())
+
+
+@login_required
+def edit_part(request, part_id):
+    org = request.user.bom_profile().organization
+    part = Part.objects.filter(id=part_id)[0]
+
+    if request.method == 'POST':
+        form = NewPartForm(request.POST, organization=org)
+        if form.is_valid():
+            new_part, created = Part.objects.get_or_create(
+                number_class=form.cleaned_data['number_class'],
+                manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
+                manufacturer=form.cleaned_data['manufacturer'],
+                organization=org,
+                defaults={'description': form.cleaned_data['description'],
+                            'revision': form.cleaned_data['revision'],
+                }
+            )
+            return HttpResponseRedirect('/bom/' + part_id + '/')
+    else:
+        form = NewPartForm({'number_class': part.number_class,
+                                'number_item': part.number_item,
+                                'number_variation': part.number_variation,
+                                'description': part.description,
+                                'revision': part.revision,
+                                'manufacturer_part_number': part.manufacturer_part_number,
+                                'manufacturer': part.manufacturer,}
+                                , organization=org) 
+
+    return TemplateResponse(request, 'bom/edit-part.html', locals())
+

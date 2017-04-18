@@ -17,8 +17,8 @@
 <div class="row">
     <div class="col s12">
         <ul class="tabs">
-            <li class="tab col s3"><a href="#specs">Specifications</a></li>
-            <li class="tab col s3"><a class="active" href="#bom">Bill of Materials</a></li>
+            <li class="tab col s3"><a class="active" href="#specs">Specifications</a></li>
+            <li class="tab col s3"><a href="#bom">Bill of Materials</a></li>
             <li class="tab col s3"><a href="#used">Where Used</a></li>
             <li class="tab col s3"><a href="#sourcing">Sourcing</a></li>
         </ul>
@@ -82,6 +82,9 @@
                     </ul>
                     {% endif %}
                 </div>
+            </div>
+            <div class="row text-center">
+                <a class="waves-effect waves-light btn green lighten-1" href="/bom/{{part.id}}/edit/">Edit Part</a>
             </div>
         </div>
     </div>
