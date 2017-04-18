@@ -33,3 +33,13 @@ class NewPartForm(forms.Form):
             obj = Manufacturer(name=new_mfg, organization=self.organization)
             obj.save()
             cleaned_data['manufacturer'] = obj
+
+class AddSubpartForm(forms.Form):
+    assembly_subpart = forms.ModelChoiceField(queryset=None, required=True, label="SubPart")
+    count = forms.IntegerField(required=True, label='Quantity')
+
+    def __init__(self, *args, **kwargs):
+        self.organization = kwargs.pop('organization', None)
+        super(AddSubpartForm, self).__init__(*args, **kwargs)
+        self.fields['assembly_subpart'].queryset = Part.objects.filter(organization=self.organization)
+        self.fields['assembly_subpart'].label_from_instance = lambda obj: "%s" % obj.full_part_number() + ' ' + obj.description

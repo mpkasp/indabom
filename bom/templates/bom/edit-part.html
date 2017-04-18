@@ -5,10 +5,11 @@
 {% block content %}
 <h5>Edit Part {{ part.full_part_number }}</h5>
 
-<form action="/bom/{{part.id}}/edit/" method="post">
+<form action="/bom/{{ part.id }}/edit/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Save" />
     <a href="javascript:history.back()" class="waves-effect waves-light btn green lighten-1">Cancel</a>
+    <a href="/bom/{{ part.id }}/delete/" onclick="return confirm('Are you sure? This part will be deleted forever!')" class="waves-effect waves-light btn red lighten-1">Delete Part</a>
 </form>
 {% endblock %}

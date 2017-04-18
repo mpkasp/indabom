@@ -129,10 +129,11 @@ class Subpart(models.Model):
     assembly_subpart = models.ForeignKey(Part, related_name='assembly_subpart', null=True)
     count = models.IntegerField(default=1)
 
-    def combine_similar(self):
+    def save(self, **kwargs):
         sps = Subpart.objects.filter(assembly_part=self.assembly_part, assembly_subpart=self.assembly_subpart)
         if len(sps) > 0:
             sps[0].count += int(self.count)
+            sps[0].save()
             return
         else:
             self.save()

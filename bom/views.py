@@ -12,7 +12,7 @@ from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
 from .models import Part, PartClass, Subpart, SellerPart, Organization
-from .forms import PartInfoForm, NewPartForm
+from .forms import PartInfoForm, NewPartForm, AddSubpartForm
 from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
@@ -47,20 +47,23 @@ def bom_signup(request):
 
 @login_required
 def part_info(request, part_id):
-    qty = 100
-    form = PartInfoForm(initial={'quantity': 100})
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
 
-    if request.method == 'POST':
-        form = PartInfoForm(request.POST)
-        if form.is_valid():
-            qty = request.POST.get('quantity', 100)
-
-    organization = request.user.bom_profile().organization
     parts = Part.objects.filter(id=part_id)[0].indented()
     part = Part.objects.get(id=part_id)
-
     if part.organization != organization:
         return HttpResponseRedirect('/bom/')
+
+    part_info_form = PartInfoForm(initial={'quantity': 100})
+    add_subpart_form = AddSubpartForm({'count': 1, }, organization=organization)
+    
+    qty = 100
+    if request.method == 'POST':
+        part_info_form = PartInfoForm(request.POST)
+        if part_info_form.is_valid():
+            qty = request.POST.get('quantity', 100)
 
     extended_cost_complete = True
     
@@ -384,3 +387,37 @@ def edit_part(request, part_id):
 
     return TemplateResponse(request, 'bom/edit-part.html', locals())
 
+
+@login_required
+def delete_part(request, part_id):
+    part = Part.objects.filter(id=part_id)[0]
+    part.delete()
+    
+    return HttpResponseRedirect('/bom/')
+
+
+@login_required
+def add_subpart(request, part_id):
+    org = request.user.bom_profile().organization
+    part = Part.objects.filter(id=part_id)[0]
+
+    if request.method == 'POST':
+        form = AddSubpartForm(request.POST, organization=org)
+        if form.is_valid():
+            new_part = Subpart.objects.create(
+                assembly_part=part,
+                assembly_subpart=form.cleaned_data['assembly_subpart'],
+                count=form.cleaned_data['assembly_subpart']
+            )
+    
+    return HttpResponseRedirect('/bom/' + part_id + '/#bom')
+
+
+@login_required
+def remove_subpart(request, part_id, subpart_id):
+    part = Part.objects.filter(id=part_id)[0]
+    sub_part = Part.objects.filter(id=subpart_id)[0]
+    subpart = Subpart.objects.filter(assembly_part=part,assembly_subpart=sub_part)[0]
+    subpart.delete()
+    
+    return HttpResponseRedirect('/bom/' + part_id + '/#bom')

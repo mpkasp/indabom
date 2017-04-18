@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block menu %}
+{% if profile.role == 'A' %}
+<li><a href="/bom/{{part.id}}/edit/">Edit Part</a></li>
+{% endif %}
 <li><a href="/bom/{{ part_id }}/export/">Export</a></li>
 {% endblock%}
 
@@ -83,9 +86,6 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="row text-center">
-                <a class="waves-effect waves-light btn green lighten-1" href="/bom/{{part.id}}/edit/">Edit Part</a>
-            </div>
         </div>
     </div>
 
@@ -106,7 +106,10 @@
                         <th><i>Seller</i></th>
                         <th><i>Price</i></th>
                         <th><i>Ext Cost</i></th>
+                        {% if profile.role == 'A' %}
                         <th><i>Octopart Match</i></th>
+                        <th><i></i></th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -131,15 +134,25 @@
                         <td>{{ subpart.seller_part.seller.name | default:"-" }}</td>
                         <td>{{ subpart.seller_price | default:"-"}}</td>
                         <td>{{ subpart.extended_cost | default:"-" }}</td>
+                        {% if profile.role == 'A' %}
                         <td><a href="/bom/{{ subpart.part.id }}/part_match/">Match</a></td>
+                            {% if part.id != subpart.part.id %}
+                            <td><a href="/bom/{{ part.id }}/remove-subpart/{{ subpart.part.id }}/" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
+                            {% endif %}
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </ul>
         <br>
-        <h5>Upload Subparts To {{ part.full_part_number }}:</h5>
-        <p><i>Must contain at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
+        {% if profile.role == 'A' %}
+        <h5>Add Subparts</h5>
+        <form action="/bom/{{ part_id }}/add-subpart/" method="post">
+            {% csrf_token %}
+            {{ add_subpart_form.as_p }}
+        </form>
+        <p><i>To add batch subparts, upload a csv that contains at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
         <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
@@ -157,6 +170,7 @@
                 </div>
             </div>
         </form>
+        {% endif %}
     </div>
 
     <div id="used" class="col s12">
@@ -192,7 +206,7 @@
             {% csrf_token %}
                 Est. Cost: ${{ unit_cost }} at 
                 <div class="input-field inline">
-                    {{ form }}
+                    {{ part_info_form }}
                 </div>
                  units. {% if not extended_cost_complete %}(!){% endif %}
             </form>
