@@ -23,6 +23,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^signup/', views.signup, name='signup'),
     url(r'^bom/', include('bom.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'template_name': 'indabom/login.html', 'redirect_authenticated_user': True}, name='login'),

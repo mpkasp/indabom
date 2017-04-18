@@ -6,7 +6,7 @@
 <div style="text-align: center; margin-top: 25vh;">
 <h1>Welcome To IndaBOM</h1>
 <p>A simple <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</p>
-{% if not user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="/login/">Login</a></p>{% endif %}
+{% if not user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="/signup/">Sign Up</a></p>{% endif %}
 {% if user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="/bom/">Enter</a></p>{% endif %}
 </div>
 {% endblock %}

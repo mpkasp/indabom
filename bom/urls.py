@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.home, name='home'),
+    url(r'^bom-signup/$', views.bom_signup, name='bom-signup'),
     url(r'^(?P<part_id>[0-9]+)/$', views.part_info, name='part-info'),
     url(r'^(?P<part_id>[0-9]+)/export/$', views.export_part_indented, name='export-part-indented'),
     url(r'^(?P<part_id>[0-9]+)/upload/$', views.upload_part_indented, name='upload-part-indented'),

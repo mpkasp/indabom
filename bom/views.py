@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
-from .models import Part, PartClass, Subpart, SellerPart
+from .models import Part, PartClass, Subpart, SellerPart, Organization
 from .forms import PartInfoForm
 from .octopart_parts_match import match_part
 
@@ -19,9 +19,25 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
-    org = request.user.bom_profile().organization
-    parts = Part.objects.filter(organization=org).order_by('number_class__code', 'number_item', 'number_variation')
+    organization, created = Organization.objects.get_or_create(
+        owner=request.user,
+        defaults={'name': request.user.first_name + ' ' + request.user.last_name,
+                    'subscription': 'F'},
+    )
+
+    parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
+
+
+@login_required
+def bom_signup(request):
+    user = request.user
+    organization = user.bom_profile().organization
+    
+    if organization is not None:
+        return HttpResponseRedirect('/bom/')
+
+    return TemplateResponse(request, 'bom/bom-signup.html', locals())
 
 
 @login_required
@@ -34,12 +50,12 @@ def part_info(request, part_id):
         if form.is_valid():
             qty = request.POST.get('quantity', 100)
 
-    org = request.user.bom_profile().organization
+    organization = request.user.bom_profile().organization
     parts = Part.objects.filter(id=part_id)[0].indented()
     part = Part.objects.get(id=part_id)
 
-    if part.organization is not org:
-        return HttpResponseRedirect(request.META.get('/bom/'))
+    if part.organization != organization:
+        return HttpResponseRedirect('/bom/')
 
     extended_cost_complete = True
     
@@ -87,9 +103,9 @@ def export_part_indented(request, part_id):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts_indented.csv"'
 
-    org = request.user.bom_profile().organization
+    organization = request.user.bom_profile().organization
     part = Part.objects.filter(id=part_id)[0]
-    if part.organization is not org:
+    if part.organization is not organization:
         return HttpResponseRedirect(request.META.get('/bom/'))
 
     bom = part.indented()
@@ -229,8 +245,8 @@ def export_part_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts.csv"'
     
-    org = request.user.bom_profile().organization
-    parts = Part.objects.filter(organization=org).order_by('number_class__code', 'number_item', 'number_variation')
+    organization = request.user.bom_profile().organization
+    parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
 
     fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_minimum_order_quantity', 'part_minimum_pack_quantity', 'part_unit_cost']
 
