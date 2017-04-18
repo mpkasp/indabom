@@ -25,6 +25,11 @@ def home(request):
                     'subscription': 'F'},
     )
 
+    if created:
+        profile = request.user.bom_profile(organization)
+        profile.role = 'A'
+        profile.save()
+
     parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 

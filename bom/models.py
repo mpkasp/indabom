@@ -20,8 +20,8 @@ class UserMeta(models.Model):
     role = models.CharField(max_length=1, choices=(('A', 'Admin'), ('V', 'Viewer'), ))
 
 
-def _user_meta(self):
-    return UserMeta.objects.get_or_create(user=self)[0]
+def _user_meta(self, organization=None):
+    return UserMeta.objects.get_or_create(user=self, defaults={'organization': organization})[0]
 
 
 User.add_to_class('bom_profile', _user_meta)
