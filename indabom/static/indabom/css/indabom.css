@@ -21,3 +21,7 @@ td, tr {
 .tabs .indicator {
     background-color:#66bb6a;
 }
+
+.errorlist {
+    color: red;
+}

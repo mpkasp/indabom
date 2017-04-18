@@ -332,20 +332,22 @@ def octopart_part_match_indented(request, part_id):
 
 @login_required
 def create_part(request):
+    org = request.user.bom_profile().organization
+    
     if request.method == 'POST':
-        form = NewPartForm(request.POST)
+        form = NewPartForm(request.POST, organization=org)
         if form.is_valid():
             new_part, created = Part.objects.get_or_create(
                 number_class=form.cleaned_data['number_class'],
                 manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
                 manufacturer=form.cleaned_data['manufacturer'],
-                organization=request.user.bom_profile().organization,
+                organization=org,
                 defaults={'description': form.cleaned_data['description'],
                             'revision': form.cleaned_data['revision'],
                 }
             )
             return HttpResponseRedirect('/bom/')
     else:
-        form = NewPartForm() 
+        form = NewPartForm(organization=org) 
 
     return TemplateResponse(request, 'bom/create-part.html', locals())
