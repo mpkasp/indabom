@@ -407,7 +407,7 @@ def add_subpart(request, part_id):
             new_part = Subpart.objects.create(
                 assembly_part=part,
                 assembly_subpart=form.cleaned_data['assembly_subpart'],
-                count=form.cleaned_data['assembly_subpart']
+                count=form.cleaned_data['count']
             )
     
     return HttpResponseRedirect('/bom/' + part_id + '/#bom')
@@ -415,9 +415,8 @@ def add_subpart(request, part_id):
 
 @login_required
 def remove_subpart(request, part_id, subpart_id):
-    part = Part.objects.filter(id=part_id)[0]
-    sub_part = Part.objects.filter(id=subpart_id)[0]
-    subpart = Subpart.objects.filter(assembly_part=part,assembly_subpart=sub_part)[0]
+    # part = Part.objects.filter(id=part_id)[0]
+    subpart = Subpart.objects.get(id=subpart_id)
     subpart.delete()
     
     return HttpResponseRedirect('/bom/' + part_id + '/#bom')

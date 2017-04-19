@@ -35,7 +35,7 @@ class NewPartForm(forms.Form):
             cleaned_data['manufacturer'] = obj
 
 class AddSubpartForm(forms.Form):
-    assembly_subpart = forms.ModelChoiceField(queryset=None, required=True, label="SubPart")
+    assembly_subpart = forms.ModelChoiceField(queryset=None, required=True, label="Subpart")
     count = forms.IntegerField(required=True, label='Quantity')
 
     def __init__(self, *args, **kwargs):

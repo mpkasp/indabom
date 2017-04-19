@@ -82,11 +82,12 @@ class Part(models.Model):
         return files   
 
     def indented(self):
-        def indented_given_bom(bom, part, qty=1, indent_level=0):
+        def indented_given_bom(bom, part, qty=1, indent_level=0, subpart=None):
             bom.append({
                 'part': part,
                 'quantity': qty,
-                'indent_level': indent_level
+                'indent_level': indent_level,
+                'subpart': subpart,
                 })
             
             indent_level = indent_level + 1
@@ -94,8 +95,9 @@ class Part(models.Model):
                 return
             else:
                 for sp in part.subparts.all():
-                    qty = Subpart.objects.get(assembly_part=part, assembly_subpart=sp).count
-                    indented_given_bom(bom, sp, qty, indent_level)
+                    subpart = Subpart.objects.get(assembly_part=part, assembly_subpart=sp)
+                    qty = subpart.count
+                    indented_given_bom(bom, sp, qty, indent_level, subpart)
 
         bom = []
         cost = 0
@@ -136,7 +138,7 @@ class Subpart(models.Model):
             sps[0].save()
             return
         else:
-            self.save()
+            super(Subpart, self).save()
 
 
 class Seller(models.Model):

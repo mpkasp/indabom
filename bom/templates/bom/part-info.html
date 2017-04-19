@@ -136,8 +136,8 @@
                         <td>{{ subpart.extended_cost | default:"-" }}</td>
                         {% if profile.role == 'A' %}
                         <td><a href="/bom/{{ subpart.part.id }}/part_match/">Match</a></td>
-                            {% if part.id != subpart.part.id %}
-                            <td><a href="/bom/{{ part.id }}/remove-subpart/{{ subpart.part.id }}/" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
+                            {% if subpart.indent_level == 1 and subpart.subpart is not None %}
+                            <td><a href="/bom/{{ part.id }}/remove-subpart/{{ subpart.subpart.id }}/" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
                             {% endif %}
                         {% endif %}
                     </tr>
@@ -151,6 +151,7 @@
         <form action="/bom/{{ part_id }}/add-subpart/" method="post">
             {% csrf_token %}
             {{ add_subpart_form.as_p }}
+            <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Add Subpart"/>
         </form>
         <p><i>To add batch subparts, upload a csv that contains at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
         <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
