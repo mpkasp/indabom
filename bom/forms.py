@@ -5,6 +5,7 @@ from .models import Part, PartClass, Manufacturer
 class PartInfoForm(forms.Form):
     quantity = forms.IntegerField(label='Quantity', min_value=1)
 
+
 class NewPartForm(forms.Form):
     partclasses = PartClass.objects.all()
 
@@ -33,6 +34,7 @@ class NewPartForm(forms.Form):
             obj = Manufacturer(name=new_mfg, organization=self.organization)
             obj.save()
             cleaned_data['manufacturer'] = obj
+
 
 class AddSubpartForm(forms.Form):
     assembly_subpart = forms.ModelChoiceField(queryset=None, required=True, label="Subpart")

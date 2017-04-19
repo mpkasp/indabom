@@ -57,7 +57,7 @@ def part_info(request, part_id):
         return HttpResponseRedirect('/bom/')
 
     part_info_form = PartInfoForm(initial={'quantity': 100})
-    add_subpart_form = AddSubpartForm({'count': 1, }, organization=organization)
+    add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
     
     qty = 100
     if request.method == 'POST':
@@ -376,7 +376,7 @@ def edit_part(request, part_id):
             )
             return HttpResponseRedirect('/bom/' + part_id + '/')
     else:
-        form = NewPartForm({'number_class': part.number_class,
+        form = NewPartForm(initial={'number_class': part.number_class,
                                 'number_item': part.number_item,
                                 'number_variation': part.number_variation,
                                 'description': part.description,
