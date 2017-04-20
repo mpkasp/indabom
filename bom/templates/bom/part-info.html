@@ -79,8 +79,8 @@
                         <i>None Found</i>
                     {% else %}
                     <ul>
-                    {% for file in files %}
-                        <li><a href="{{ file.url }}">{{ file.name }}</a></li>
+                    {% for partfile in files %}
+                        <li><a href="{{ partfile.file.url }}">{{ partfile.file.name }}</a>&nbsp;[<a href="/bom/{{ part_id }}/delete-file/{{ partfile.id }}/">delete</a>]</li>
                     {% endfor %}
                     </ul>
                     {% endif %}
@@ -90,6 +90,8 @@
                         {{ upload_file_to_part_form.as_p }}
                         <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Upload"/>
                     </form>
+                    {% elif organization.subscription == 'F' %}
+                    <i>Upgrade to pro to upload files.</i>
                     {% endif %}
                 </div>
             </div>

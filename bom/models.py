@@ -78,8 +78,7 @@ class Part(models.Model):
 
     def files(self):
         partfiles = PartFile.objects.filter(part=self)
-        files = [partfile.file for partfile in partfiles]
-        return files   
+        return partfiles
 
     def indented(self):
         def indented_given_bom(bom, part, qty=1, indent_level=0, subpart=None):

@@ -439,3 +439,12 @@ def upload_file_to_part(request, part_id):
 
     # TODO: Handle failed hits to this view
     return HttpResponseRedirect('/bom/' + part_id + '/')
+
+
+@login_required
+def delete_file_from_part(request, part_id, partfile_id):
+    # part = Part.objects.filter(id=part_id)[0]
+    partfile = PartFile.objects.get(id=partfile_id)
+    partfile.delete()
+    
+    return HttpResponseRedirect('/bom/' + part_id + '/#specs')
