@@ -81,7 +81,7 @@ def part_info(request, part_id):
         seller = None
         order_qty = extended_quantity
         for sellerpart in sellerparts:
-            if sellerpart.minimum_order_quantity =< extended_quantity and (seller is None or sellerpart.unit_cost < seller_price) and sellerpart.unit_cost is not None:
+            if sellerpart.minimum_order_quantity <= extended_quantity and (seller is None or sellerpart.unit_cost < seller_price) and sellerpart.unit_cost is not None:
                 seller_price = sellerpart.unit_cost
                 seller = dp
             elif seller is None:
