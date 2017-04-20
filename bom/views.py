@@ -352,6 +352,8 @@ def create_part(request):
         if form.is_valid():
             new_part, created = Part.objects.get_or_create(
                 number_class=form.cleaned_data['number_class'],
+                number_item=form.cleaned_data['number_item'],
+                number_variation=form.cleaned_data['number_variation'],
                 manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
                 manufacturer=form.cleaned_data['manufacturer'],
                 organization=org,
@@ -359,7 +361,7 @@ def create_part(request):
                             'revision': form.cleaned_data['revision'],
                 }
             )
-            return HttpResponseRedirect('/bom/' + new_part.id + '/')
+            return HttpResponseRedirect('/bom/' + str(new_part.id) + '/')
     else:
         form = NewPartForm(organization=org) 
 
@@ -376,6 +378,8 @@ def edit_part(request, part_id):
         if form.is_valid():
             new_part, created = Part.objects.get_or_create(
                 number_class=form.cleaned_data['number_class'],
+                number_item=form.cleaned_data['number_item'],
+                number_variation=form.cleaned_data['number_variation'],
                 manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
                 manufacturer=form.cleaned_data['manufacturer'],
                 organization=org,
