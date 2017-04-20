@@ -76,17 +76,17 @@ def part_info(request, part_id):
         item['extended_quantity'] = extended_quantity
 
         p = item['part']
-        dps = SellerPart.objects.filter(part=p)
+        sellerparts = SellerPart.objects.filter(part=p)
         seller_price = None
         seller = None
         order_qty = extended_quantity
-        for dp in dps:
-            if dp.minimum_order_quantity < extended_quantity and (seller is None or dp.unit_cost < seller_price):
-                seller_price = dp.unit_cost
+        for sellerpart in sellerparts:
+            if sellerpart.minimum_order_quantity =< extended_quantity and (seller is None or sellerpart.unit_cost < seller_price) and sellerpart.unit_cost is not None:
+                seller_price = sellerpart.unit_cost
                 seller = dp
             elif seller is None:
-                seller_price = dp.unit_cost
-                seller = dp
+                seller_price = sellerpart.unit_cost
+                seller = sellerpart
                 if dp.minimum_order_quantity > extended_quantity:
                     order_qty = dp.minimum_order_quantity
 
@@ -386,7 +386,7 @@ def edit_part(request, part_id):
             old_part.description = form.cleaned_data['description']
             old_part.revision = form.cleaned_data['revision']
             old_part.save()
-            
+
             return HttpResponseRedirect('/bom/' + part_id + '/')
     else:
         form = PartForm(initial={'number_class': part.number_class,
