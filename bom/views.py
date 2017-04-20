@@ -71,6 +71,7 @@ def part_info(request, part_id):
     extended_cost_complete = True
     
     unit_cost = 0
+    unit_nre = 0
     for item in parts:
         extended_quantity = int(qty) * item['quantity']
         item['extended_quantity'] = extended_quantity
@@ -78,26 +79,31 @@ def part_info(request, part_id):
         p = item['part']
         sellerparts = SellerPart.objects.filter(part=p)
         seller_price = None
+        seller_nre = None
         seller = None
         order_qty = extended_quantity
         for sellerpart in sellerparts:
             if sellerpart.minimum_order_quantity <= extended_quantity and (seller is None or sellerpart.unit_cost < seller_price) and sellerpart.unit_cost is not None:
                 seller_price = sellerpart.unit_cost
+                seller_nre = sellerpart.nre_cost
                 seller = sellerpart
             elif seller is None:
                 seller_price = sellerpart.unit_cost
+                seller_nre = sellerpart.nre_cost
                 seller = sellerpart
                 if sellerpart.minimum_order_quantity > extended_quantity:
                     order_qty = sellerpart.minimum_order_quantity
 
         item['seller_price'] = seller_price
+        item['seller_nre'] = seller_nre
         item['seller_part'] = seller
         item['order_quantity'] = order_qty
         
         # then extend that price
         item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
 
-        unit_cost = unit_cost + seller_price * item['quantity'] if seller_price is not None else unit_cost
+        unit_cost = (unit_cost + seller_price * item['quantity']) if seller_price is not None else unit_cost
+        unit_nre = (unit_nre + seller_nre) if seller_nre is not None else unit_nre
         if seller is None:
             extended_cost_complete = False
 
@@ -116,14 +122,14 @@ def export_part_indented(request, part_id):
 
     organization = request.user.bom_profile().organization
     part = Part.objects.filter(id=part_id)[0]
-    if part.organization is not organization:
-        return HttpResponseRedirect(request.META.get('/bom/'))
+    if part.organization != organization:
+        return HttpResponseRedirect('/bom/')
 
     bom = part.indented()
     qty = 100
     unit_cost = 0
     
-    fieldnames = ['level', 'part_number', 'quantity', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_ext_qty', 'part_order_qty', 'part_seller', 'part_cost', 'part_ext_cost']
+    fieldnames = ['level', 'part_number', 'quantity', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_ext_qty', 'part_order_qty', 'part_seller', 'part_cost', 'part_ext_cost', 'part_nre']
 
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
@@ -150,7 +156,7 @@ def export_part_indented(request, part_id):
         item['seller_price'] = seller_price
         item['seller_part'] = seller
         item['order_quantity'] = order_qty
-        
+        item['nre'] = seller.nre_cost if seller is not None else None
         # then extend that price
         item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
 
@@ -162,13 +168,14 @@ def export_part_indented(request, part_id):
         'quantity': item['quantity'], 
         'part_description': item['part'].description, 
         'part_revision': item['part'].revision, 
-        'part_manufacturer': item['part'].manufacturer.name, 
+        'part_manufacturer': item['part'].manufacturer.name if item['part'].manufacturer is not None else '', 
         'part_manufacturer_part_number': item['part'].manufacturer_part_number, 
         'part_ext_qty': item['extended_quantity'],
         'part_order_qty': item['order_quantity'],
         'part_seller': item['seller_part'].seller.name if item['seller_part'] is not None else '',
         'part_cost': item['seller_price'] if item['seller_price'] is not None else 0,
         'part_ext_cost': item['extended_cost'] if item['extended_cost'] is not None else 0,
+        'part_nre': item['nre'] if item['nre'] is not None else 0,
         }
         writer.writerow(row)
     return response
