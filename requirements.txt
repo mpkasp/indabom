@@ -1,5 +1,6 @@
 appdirs==1.4.0
 Django==1.10.5
+django-widget-tweaks==1.4.1
 export==0.1.2
 gunicorn==19.7.0
 packaging==16.8
