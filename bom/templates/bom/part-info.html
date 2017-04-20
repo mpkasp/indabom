@@ -137,6 +137,7 @@
                             <th><i>Seller</i></th>
                             <th><i>Price</i></th>
                             <th><i>Ext Cost</i></th>
+                            <th><i>NRE</i></th>
                             {% if profile.role == 'A' %}
                             <th><i>Octopart Match</i></th>
                             <th><i></i></th>
@@ -165,6 +166,7 @@
                             <td>{{ subpart.seller_part.seller.name | default:"-" }}</td>
                             <td>{{ subpart.seller_price | default:"-"}}</td>
                             <td>{{ subpart.extended_cost | default:"-" }}</td>
+                            <td>{{ subpart.seller_nre | default:"-" }}</td>
                             {% if profile.role == 'A' %}
                             <td><a href="/bom/{{ subpart.part.id }}/part_match/">Match</a></td>
                                 {% if subpart.indent_level == 1 and subpart.subpart is not None %}
