@@ -84,7 +84,7 @@
                     {% endfor %}
                     </ul>
                     {% endif %}
-                    {% if profile.role == 'A' %}
+                    {% if profile.role == 'A' and organization.subscription == 'P' %}
                     <form action="/bom/{{ part_id }}/upload-file/" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ upload_file_to_part_form.as_p }}
