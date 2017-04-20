@@ -11,8 +11,8 @@ from django.contrib.auth.decorators import login_required
 from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
-from .models import Part, PartClass, Subpart, SellerPart, Organization
-from .forms import PartInfoForm, NewPartForm, AddSubpartForm
+from .models import Part, PartClass, Subpart, SellerPart, Organization, PartFile
+from .forms import PartInfoForm, NewPartForm, AddSubpartForm, UploadFileToPartForm, UploadSubpartsCSVForm
 from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,9 @@ def part_info(request, part_id):
 
     part_info_form = PartInfoForm(initial={'quantity': 100})
     add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
-    
+    upload_file_to_part_form = UploadFileToPartForm()
+    upload_subparts_csv_form = UploadSubpartsCSVForm()
+
     qty = 100
     if request.method == 'POST':
         part_info_form = PartInfoForm(request.POST)
@@ -183,39 +185,40 @@ def upload_part_indented(request, part_id):
     response['part'] = part.description
 
     if request.POST and request.FILES:
-        csvfile = request.FILES['csv_file']
-        dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
-        csvfile.open()
-        reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
-        headers = reader.next()
+        form = UploadSubpartsCSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            csvfile = request.FILES['csv_file']
+            dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
+            csvfile.open()
+            reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+            headers = reader.next()
 
-        Subpart.objects.filter(assembly_part=part).delete()
+            Subpart.objects.filter(assembly_part=part).delete()
 
-        for row in reader:
-            partData = {}
-            for idx, item in enumerate(row):
-                partData[headers[idx]] = item
-            if 'part_number' in partData and 'quantity' in partData:
-                civ = full_part_number_to_broken_part(partData['part_number'])
-                subparts = Part.objects.filter(number_class=civ['class'], number_item=civ['item'], number_variation=civ['variation'])
-                
-                if len(subparts) == 0:
-                    response['status'] = 'failed'
-                    response['errors'].append('subpart doesn''t exist')
-                    return HttpResponse(dumps(response), content_type='application/json')
+            for row in reader:
+                partData = {}
+                for idx, item in enumerate(row):
+                    partData[headers[idx]] = item
+                if 'part_number' in partData and 'quantity' in partData:
+                    civ = full_part_number_to_broken_part(partData['part_number'])
+                    subparts = Part.objects.filter(number_class=civ['class'], number_item=civ['item'], number_variation=civ['variation'])
+                    
+                    if len(subparts) == 0:
+                        response['status'] = 'failed'
+                        response['errors'].append('subpart doesn''t exist')
+                        return HttpResponse(dumps(response), content_type='application/json')
 
-                subpart = subparts[0]
-                count = partData['quantity']
-                if part == subpart:
-                    response['status'] = 'failed'
-                    response['errors'].append('recursive part association: a part can''t be a subpart of itsself')
-                    return HttpResponse(dumps(response), content_type='application/json')
+                    subpart = subparts[0]
+                    count = partData['quantity']
+                    if part == subpart:
+                        response['status'] = 'failed'
+                        response['errors'].append('recursive part association: a part can''t be a subpart of itsself')
+                        return HttpResponse(dumps(response), content_type='application/json')
 
-                sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
-                sp.save()
-    
+                    sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
+                    sp.save()
+        
     response['parts'] = parts
-
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
 
@@ -231,17 +234,19 @@ def upload_parts(request):
     parts = []
 
     if request.POST and request.FILES:
-        csvfile = request.FILES['csv_file']
-        dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
-        csvfile.open()
-        reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
-        headers = reader.next()
+        form = UploadSubpartsCSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            csvfile = request.FILES['csv_file']
+            dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
+            csvfile.open()
+            reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+            headers = reader.next()
 
-        for row in reader:
-            partData = {}
-            for idx, item in enumerate(row):
-                partData[headers[idx]] = item
-            parts.append(partData)
+            for row in reader:
+                partData = {}
+                for idx, item in enumerate(row):
+                    partData[headers[idx]] = item
+                parts.append(partData)
 
     response['parts'] = parts
 
@@ -350,7 +355,7 @@ def create_part(request):
                             'revision': form.cleaned_data['revision'],
                 }
             )
-            return HttpResponseRedirect('/bom/')
+            return HttpResponseRedirect('/bom/' + new_part.id + '/')
     else:
         form = NewPartForm(organization=org) 
 
@@ -420,3 +425,17 @@ def remove_subpart(request, part_id, subpart_id):
     subpart.delete()
     
     return HttpResponseRedirect('/bom/' + part_id + '/#bom')
+
+
+@login_required
+def upload_file_to_part(request, part_id):
+    if request.method == 'POST':
+        form = UploadFileToPartForm(request.POST, request.FILES)
+        if form.is_valid():
+            part = Part.objects.get(id=part_id)
+            partfile = PartFile(file=request.FILES['file'], part=part)
+            partfile.save()
+            return HttpResponseRedirect('/bom/' + part_id + '/')
+
+    # TODO: Handle failed hits to this view
+    return HttpResponseRedirect('/bom/' + part_id + '/')

@@ -84,6 +84,13 @@
                     {% endfor %}
                     </ul>
                     {% endif %}
+                    {% if profile.role == 'A' %}
+                    <form action="/bom/{{ part_id }}/upload-file/" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ upload_file_to_part_form.as_p }}
+                        <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Upload"/>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -157,15 +164,7 @@
         <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
-                <div class="col file-field input-field" style="width:50%">
-                    <div class="btn green lighten-1">
-                        <span>File</span>
-                        <input type="file" name="csv_file">
-                    </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate" type="text">
-                    </div>
-                </div>
+                {{ upload_subparts_csv_form.as_p }}
                 <div class="col s2 file-field input-field">
                     <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Upload"/>
                 </div>
