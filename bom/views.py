@@ -206,7 +206,7 @@ def upload_part_indented(request, part_id):
                     
                     if len(subparts) == 0:
                         response['status'] = 'failed'
-                        response['errors'].append('subpart doesn''t exist')
+                        response['errors'].append('subpart: {} doesn''t exist'.format(partData['part_number']))
                         return HttpResponse(dumps(response), content_type='application/json')
 
                     subpart = subparts[0]
