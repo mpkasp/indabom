@@ -185,10 +185,10 @@ def upload_part_indented(request, part_id):
     part = get_object_or_404(Part, id=part_id)
     response['part'] = part.description
 
-    if request.POST and request.FILES:
+    if request.method == 'POST':
         form = UploadSubpartsCSVForm(request.POST, request.FILES)
         if form.is_valid():
-            csvfile = request.FILES['csv_file']
+            csvfile = request.FILES['file']
             dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
             csvfile.open()
             reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
@@ -215,9 +215,12 @@ def upload_part_indented(request, part_id):
                         response['status'] = 'failed'
                         response['errors'].append('recursive part association: a part can''t be a subpart of itsself')
                         return HttpResponse(dumps(response), content_type='application/json')
-
                     sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
                     sp.save()
+        else:
+            response['status'] = 'failed'
+            response['errors'].append('File form not valid: {}'.format(form.errors))
+            return HttpResponse(dumps(response), content_type='application/json')
         
     response['parts'] = parts
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))

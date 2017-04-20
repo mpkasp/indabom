@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load widget_tweaks %}
 
 {% block title %}
 <link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
@@ -93,11 +92,11 @@
                                 <div class="col s8 file-field input-field">
                                     <div class="green lighten-1 btn">
                                         <span>File</span>
-                                        <input type="file">
+                                        {{ upload_file_to_part_form.file }}
                                     </div>
                                     <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text" placeholder="Upload a file.">
                                         {{ upload_file_to_part_form.file.errors }}
-                                        {{ upload_file_to_part_form.file | add_class:"file-path validate" | attr:"type:text" | attr:"placeholder:Upload a file"}}
                                     </div>
                                 </div>
                                 <div class="col s1 input-field">
@@ -197,11 +196,11 @@
                     <div class="col s9 file-field input-field">
                         <div class="green lighten-1 btn">
                             <span>File</span>
-                            <input type="file">
+                            {{ upload_subparts_csv_form.file }}
                         </div>
                         <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload a file.">
                             {{ upload_subparts_csv_form.file.errors }}
-                            {{ upload_subparts_csv_form.file | add_class:"file-path validate" | attr:"type:text" | attr:"placeholder:Upload a file"}}
                         </div>
                     </div>
                     <div class="col s1 input-field">
