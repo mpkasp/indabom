@@ -429,6 +429,16 @@ def remove_subpart(request, part_id, subpart_id):
 
 
 @login_required
+def remove_all_subparts(request, part_id):
+    # part = Part.objects.filter(id=part_id)[0]
+    subparts = Subpart.objects.filter(assembly_part=part_id)
+    for subpart in subparts:
+        subpart.delete()
+    
+    return HttpResponseRedirect('/bom/' + part_id + '/#bom')
+
+
+@login_required
 def upload_file_to_part(request, part_id):
     if request.method == 'POST':
         form = UploadFileToPartForm(request.POST, request.FILES)

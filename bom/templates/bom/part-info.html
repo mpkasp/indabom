@@ -209,6 +209,9 @@
                     </div>
                 </div>
             </form>
+            <div class="center">
+                <a class="waves-effect waves-light red lighten-2 btn" href="/bom/{{ part.id }}/remove-all-subparts/" onclick="return confirm('Are you sure you want to remove ALL subparts from {{ part.full_part_number }}?')">Remove All Subparts</a>
+            </div>
             {% endif %}
         </div>
 
