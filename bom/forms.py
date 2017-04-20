@@ -50,5 +50,6 @@ class AddSubpartForm(forms.Form):
 class UploadFileToPartForm(forms.Form):
     file = forms.FileField()
 
+
 class UploadSubpartsCSVForm(forms.Form):
     file = forms.FileField()

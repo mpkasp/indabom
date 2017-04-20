@@ -17,6 +17,7 @@ from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
 
+
 @login_required
 def home(request):
     organization, created = Organization.objects.get_or_create(
