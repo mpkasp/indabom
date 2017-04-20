@@ -6,7 +6,7 @@ class PartInfoForm(forms.Form):
     quantity = forms.IntegerField(label='Quantity', min_value=1)
 
 
-class NewPartForm(forms.Form):
+class PartForm(forms.Form):
     partclasses = PartClass.objects.all()
 
     number_class = forms.ModelChoiceField(queryset=partclasses, label='Part Class*')

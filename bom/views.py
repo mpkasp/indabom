@@ -12,7 +12,7 @@ from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
 from .models import Part, PartClass, Subpart, SellerPart, Organization, PartFile
-from .forms import PartInfoForm, NewPartForm, AddSubpartForm, UploadFileToPartForm, UploadSubpartsCSVForm
+from .forms import PartInfoForm, PartForm, AddSubpartForm, UploadFileToPartForm, UploadSubpartsCSVForm
 from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
@@ -348,7 +348,7 @@ def create_part(request):
     org = request.user.bom_profile().organization
     
     if request.method == 'POST':
-        form = NewPartForm(request.POST, organization=org)
+        form = PartForm(request.POST, organization=org)
         if form.is_valid():
             new_part, created = Part.objects.get_or_create(
                 number_class=form.cleaned_data['number_class'],
@@ -363,7 +363,7 @@ def create_part(request):
             )
             return HttpResponseRedirect('/bom/' + str(new_part.id) + '/')
     else:
-        form = NewPartForm(organization=org) 
+        form = PartForm(organization=org) 
 
     return TemplateResponse(request, 'bom/create-part.html', locals())
 
@@ -374,22 +374,22 @@ def edit_part(request, part_id):
     part = Part.objects.filter(id=part_id)[0]
 
     if request.method == 'POST':
-        form = NewPartForm(request.POST, organization=org)
+        form = PartForm(request.POST, organization=org)
         if form.is_valid():
-            new_part, created = Part.objects.get_or_create(
-                number_class=form.cleaned_data['number_class'],
-                number_item=form.cleaned_data['number_item'],
-                number_variation=form.cleaned_data['number_variation'],
-                manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
-                manufacturer=form.cleaned_data['manufacturer'],
-                organization=org,
-                defaults={'description': form.cleaned_data['description'],
-                            'revision': form.cleaned_data['revision'],
-                }
-            )
+            old_part = Part.objects.get(id=part_id)
+
+            old_part.number_class = form.cleaned_data['number_class']
+            old_part.number_item = form.cleaned_data['number_item']
+            old_part.number_variation = form.cleaned_data['number_variation']
+            old_part.manufacturer_part_number = form.cleaned_data['manufacturer_part_number']
+            old_part.manufacturer = form.cleaned_data['manufacturer']
+            old_part.description = form.cleaned_data['description']
+            old_part.revision = form.cleaned_data['revision']
+            old_part.save()
+            
             return HttpResponseRedirect('/bom/' + part_id + '/')
     else:
-        form = NewPartForm(initial={'number_class': part.number_class,
+        form = PartForm(initial={'number_class': part.number_class,
                                 'number_item': part.number_item,
                                 'number_variation': part.number_variation,
                                 'description': part.description,
