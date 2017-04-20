@@ -20,11 +20,11 @@ class PartForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.organization = kwargs.pop('organization', None)
-        super(NewPartForm, self).__init__(*args, **kwargs)
+        super(PartForm, self).__init__(*args, **kwargs)
         self.fields['manufacturer'].queryset = Manufacturer.objects.filter(organization=self.organization)
 
     def clean(self):
-        cleaned_data = super(NewPartForm, self).clean()
+        cleaned_data = super(PartForm, self).clean()
         mfg = cleaned_data.get("manufacturer")
         new_mfg = cleaned_data.get("new_manufacturer")
 
