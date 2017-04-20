@@ -72,6 +72,7 @@ def part_info(request, part_id):
     
     unit_cost = 0
     unit_nre = 0
+    unit_out_of_pocket_cost = 0
     for item in parts:
         extended_quantity = int(qty) * item['quantity']
         item['extended_quantity'] = extended_quantity
@@ -101,8 +102,10 @@ def part_info(request, part_id):
         
         # then extend that price
         item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
+        item['out_of_pocket_cost'] = order_qty * seller_price if seller_price is not None and order_qty is not None else None
 
         unit_cost = (unit_cost + seller_price * item['quantity']) if seller_price is not None else unit_cost
+        unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['extended_cost'] if item['extended_cost'] is not None else unit_out_of_pocket_cost
         unit_nre = (unit_nre + seller_nre) if seller_nre is not None else unit_nre
         if seller is None:
             extended_cost_complete = False
