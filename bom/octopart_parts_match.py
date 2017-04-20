@@ -28,9 +28,10 @@ def match_part(part):
                 if offer['seller']['id'] == DIGI_KEY_SELLER_ID or offer['seller']['id'] == MOUSER_SELLER_ID:
                     seller = Seller.objects.filter(name=offer['seller']['name'])[0]
                     ltd = offer['factory_lead_days']
-                    for price in offer['prices']['USD']:
-                        moq = price[0]
-                        price = price[1]
-                        seller_parts.append(SellerPart(seller=seller, part=part, minimum_order_quantity=moq, unit_cost=price, lead_time_days=ltd))
+                    if 'USD' in offer['prices']:
+                        for price in offer['prices']['USD']:
+                            moq = price[0]
+                            price = price[1]
+                            seller_parts.append(SellerPart(seller=seller, part=part, minimum_order_quantity=moq, unit_cost=price, lead_time_days=ltd))
 
     return seller_parts
