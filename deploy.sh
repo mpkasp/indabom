@@ -1,6 +1,5 @@
 #!/bin/bash
 source ../bin/activate
 python manage.py test
-fab prod deploy
-fab prod migrate
+fab prod deploy_all
 fab all restart_web

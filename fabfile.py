@@ -223,3 +223,9 @@ def make_web_server():
     # todo: stock local_settings.py maybe?
 
     #print "Don't forget to GRANT INSERT, SELECT, UPDATE, CREATE, DELETE, INDEX ON indabom.* TO 'dbclient'@'[new server local name]' IDENTIFIED BY '[password]'"
+
+
+def deploy_full():
+    deploy()
+    pip_install()
+    migrate()

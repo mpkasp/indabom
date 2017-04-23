@@ -5,6 +5,7 @@ from unittest import skip
 
 from .helpers import create_some_fake_parts, create_a_fake_organization, create_a_fake_subpart, create_a_fake_partfile, \
 create_some_fake_part_classes
+from .models import PartFile
 from .forms import PartInfoForm, PartForm, AddSubpartForm
 from .octopart_parts_match import match_part
 
@@ -157,7 +158,7 @@ class TestBOM(TransactionTestCase):
         self.assertEqual(response.status_code, 302)
 
 
-    def test_upload_file_to_part(self):
+    def test_upload_file_to_part_and_delete(self):
         self.client.login(username='kasper', password='ghostpassword')
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
@@ -165,6 +166,11 @@ class TestBOM(TransactionTestCase):
             response = self.client.post(reverse('upload-file-to-part', kwargs={'part_id': p1.id}), {'file': test_csv})
         self.assertEqual(response.status_code, 302)
 
+        partfiles = PartFile.objects.filter(part=p1)
+        for pf in partfiles:
+            response = self.client.post(reverse('delete-file-from-part', kwargs={'part_id': p1.id, 'partfile_id': pf.id}))
+            self.assertEqual(response.status_code, 302)
+            #TODO: Make sure the file gets deleted !!
 
     def test_delete_file_from_part(self):
         self.client.login(username='kasper', password='ghostpassword')
