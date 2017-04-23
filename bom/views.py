@@ -355,7 +355,7 @@ def create_part(request):
     organization = profile.organization
     
     if request.method == 'POST':
-        form = PartForm(request.POST, organization=org)
+        form = PartForm(request.POST, organization=organization)
         if form.is_valid():
             new_part, created = Part.objects.get_or_create(
                 number_class=form.cleaned_data['number_class'],
