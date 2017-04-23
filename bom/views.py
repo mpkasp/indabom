@@ -7,6 +7,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
+from django.contrib import messages
 
 from json import loads, dumps
 
@@ -35,13 +38,19 @@ def home(request):
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 
+def error(request):
+    msgs = messages.get_messages(request)
+
+    return TemplateResponse(request, 'bom/error.html', locals())
+
+
 @login_required
 def bom_signup(request):
     user = request.user
     organization = user.bom_profile().organization
     
     if organization is not None:
-        return HttpResponseRedirect('/bom/')
+        return HttpResponseRedirect(reverse('home'))
 
     return TemplateResponse(request, 'bom/bom-signup.html', locals())
 
@@ -52,10 +61,16 @@ def part_info(request, part_id):
     profile = user.bom_profile()
     organization = profile.organization
 
-    parts = Part.objects.filter(id=part_id)[0].indented()
-    part = Part.objects.get(id=part_id)
+    try:
+        part = Part.objects.get(id=part_id)
+        parts = part.indented()
+    except ObjectDoesNotExist:
+        messages.error(request, "Part object does not exist.")
+        return HttpResponseRedirect(reverse('error'))
+    
     if part.organization != organization:
-        return HttpResponseRedirect('/bom/')
+        messages.error(request, "Cant access a part that is not yours!")
+        return HttpResponseRedirect(reverse('error'))
 
     part_info_form = PartInfoForm(initial={'quantity': 100})
     add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
@@ -69,7 +84,6 @@ def part_info(request, part_id):
             qty = request.POST.get('quantity', 100)
 
     extended_cost_complete = True
-    
     unit_cost = 0
     unit_nre = 0
     unit_out_of_pocket_cost = 0
@@ -120,13 +134,22 @@ def part_info(request, part_id):
 
 @login_required
 def export_part_indented(request, part_id):
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
+    
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts_indented.csv"'
 
-    organization = request.user.bom_profile().organization
-    part = Part.objects.filter(id=part_id)[0]
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "Part object does not exist.")
+        return HttpResponseRedirect(reverse('error'))
+
     if part.organization != organization:
-        return HttpResponseRedirect('/bom/')
+        messages.error(request, "Cant export a part that is not yours!")
+        return HttpResponseRedirect(reverse('error'))
 
     bom = part.indented()
     qty = 100

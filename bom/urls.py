@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^(?P<part_id>[0-9]+)/remove-all-subparts/$', views.remove_all_subparts, name='remove-all-subparts'),
     url(r'^export/$', views.export_part_list, name='export-part-list'),
     url(r'^create-part/$', views.create_part, name='create-part'),
+    url(r'^error/$', views.error, name='error'),
 ]
