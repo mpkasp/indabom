@@ -144,7 +144,7 @@ class TestBOM(TransactionTestCase):
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         s1 = create_a_fake_subpart(p1, p3, count=10)
         
-        response = self.client.post(reverse('remove-subpart', kwargs={'subpart_id': s1.id}))
+        response = self.client.post(reverse('remove-subpart', kwargs={'part_id': p1.id, 'subpart_id': s1.id}))
         self.assertEqual(response.status_code, 302)
 
 
@@ -172,7 +172,7 @@ class TestBOM(TransactionTestCase):
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         with open('bom/test_parts.csv') as test_csv:
             pf1 = create_a_fake_partfile(test_csv, p1)
-            response = self.client.post(reverse('delete-file-from-part', kwargs={'partfile_id': pf1.id}))
+            response = self.client.post(reverse('delete-file-from-part', kwargs={'part_id': p1.id, 'partfile_id': pf1.id}))
         self.assertEqual(response.status_code, 302)
 
 

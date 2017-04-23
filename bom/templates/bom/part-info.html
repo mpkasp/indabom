@@ -8,10 +8,10 @@
 
 {% block menu %}
 {% if profile.role == 'A' %}
-<li><a href="/bom/{{part.id}}/edit/">Edit Part</a></li>
-<li><a href="/bom/{{part.id}}/part-match-indented/">Octopart Match</a></li>
+<li><a href="{% url 'edit-part' part_id=part.id %}">Edit Part</a></li>
+<li><a href="{% url 'octopart-part-match-indented' part_id=part.id %}">Octopart Match</a></li>
 {% endif %}
-<li><a href="/bom/{{ part_id }}/export/">Export</a></li>
+<li><a href="{% url 'export-part-indented' part_id=part.id %}">Export</a></li>
 {% endblock%}
 
 {% block content %}
@@ -108,7 +108,7 @@
                         {% else %}
                         <ul>
                         {% for partfile in files %}
-                            <li><a href="{{ partfile.file.url }}">{{ partfile.file.name }}</a>&nbsp;[<a href="/bom/{{ part_id }}/delete-file/{{ partfile.id }}/">delete</a>]</li>
+                            <li><a href="{{ partfile.file.url }}">{{ partfile.file.name }}</a>&nbsp;[<a href="{% url 'delete-file-from-part' part_id=part.id partfile_id=partfile.id %}">delete</a>]</li>
                         {% endfor %}
                         </ul>
                         {% endif %}
@@ -174,7 +174,7 @@
                             {% endwith %}
                             {{ subpart.indent_level }}
                             </td> 
-                            <td><a href="/bom/{{ subpart.part.id }}/">{{ subpart.part.full_part_number }}</a></td>
+                            <td><a href="{% url 'part-info' part_id=subpart.part.id %}">{{ subpart.part.full_part_number }}</a></td>
                             <td>{{ subpart.quantity }}</td> 
                             <td>{{ subpart.part.description }}</td> 
                             <td>{{ subpart.part.revision }}</td>
@@ -187,9 +187,9 @@
                             <td>{{ subpart.extended_cost | default:"-" }}</td>
                             <td>{{ subpart.seller_nre | default:"-" }}</td>
                             {% if profile.role == 'A' %}
-                            <td><a href="/bom/{{ subpart.part.id }}/part-match/">Match</a></td>
+                            <td><a href="{% url 'octopart-part-match' part_id=subpart.part.id %}">Match</a></td>
                                 {% if subpart.indent_level == 1 and subpart.subpart is not None %}
-                                <td><a href="/bom/{{ part.id }}/remove-subpart/{{ subpart.subpart.id }}/" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
+                                <td><a href="{% url 'remove-subpart' part_id=part.id subpart_id=subpart.subpart.id %}" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
                                 {% endif %}
                             {% endif %}
                         </tr>
@@ -200,7 +200,7 @@
             <br>
             {% if profile.role == 'A' %}
             <h5>Add Subparts</h5>
-            <form action="/bom/{{ part_id }}/add-subpart/" method="post">
+            <form action="{% url 'add-subpart' part_id=part.id %}" method="post">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col s7 input-field">
@@ -219,7 +219,7 @@
                 </div>
             </form>
             <p><i>To add batch subparts, upload a csv that contains at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
-            <form action="/bom/{{ part_id }}/upload/" method="post" enctype="multipart/form-data">
+            <form action="{% url 'upload-part-indented' part_id=part.id %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col s9 file-field input-field">
@@ -238,7 +238,7 @@
                 </div>
             </form>
             <div class="center">
-                <a class="waves-effect waves-light red lighten-2 btn" href="/bom/{{ part.id }}/remove-all-subparts/" onclick="return confirm('Are you sure you want to remove ALL subparts from {{ part.full_part_number }}?')">Remove All Subparts</a>
+                <a class="waves-effect waves-light red lighten-2 btn" href="{% url 'remove-all-subparts' part_id=part.id %}" onclick="return confirm('Are you sure you want to remove ALL subparts from {{ part.full_part_number }}?')">Remove All Subparts</a>
             </div>
             {% endif %}
         </div>
@@ -258,7 +258,7 @@
                     <tbody>
                         {% for part in where_used %}
                         <tr>
-                            <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
+                            <td><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
                             <td>{{ part.description }}</td> 
                             <td>{{ part.revision }}</td>
                             <td>{{ part.manufacturer.name }}</td>
@@ -272,7 +272,7 @@
 
         <div id="sourcing" class="col s12">
             <p>
-                <form action="/bom/{{ part_id }}/" method="post">
+                <form action="{% url 'part-info' part_id=part.id %}" method="post">
                 {% csrf_token %}
                     Est. Cost: ${{ unit_cost }} at 
                     <div class="input-field inline">

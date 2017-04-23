@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^part/(?P<part_id>[0-9]+)/delete/$', views.delete_part, name='delete-part'),
     url(r'^part/(?P<part_id>[0-9]+)/add-subpart/$', views.add_subpart, name='add-subpart'),
     url(r'^part/(?P<part_id>[0-9]+)/upload-file/$', views.upload_file_to_part, name='upload-file-to-part'),
+    url(r'^part/(?P<part_id>[0-9]+)/delete-file/(?P<partfile_id>[0-9]+)/$', views.delete_file_from_part, name='delete-file-from-part'),
     url(r'^part/(?P<part_id>[0-9]+)/remove-all-subparts/$', views.remove_all_subparts, name='remove-all-subparts'),
-    url(r'^subpart/(?P<subpart_id>[0-9]+)/remove-subpart/$', views.remove_subpart, name='remove-subpart'),
-    url(r'^partfile/(?P<partfile_id>[0-9]+)/delete-file/$', views.delete_file_from_part, name='delete-file-from-part'),
+    url(r'^part/(?P<part_id>[0-9]+)/remove-subpart/(?P<subpart_id>[0-9]+)/$', views.remove_subpart, name='remove-subpart'),
 ]

@@ -5,10 +5,10 @@
 {% block content %}
 <h5>Create New Part</h5>
 
-<form action="/bom/create-part/" method="post">
+<form action="{% url 'create-part' %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Create" />
-    <a href="/bom/" class="waves-effect waves-light btn green lighten-1">Cancel</a>
+    <a href="{% url 'home' %}" class="waves-effect waves-light btn green lighten-1">Cancel</a>
 </form>
 {% endblock %}

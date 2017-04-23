@@ -10,8 +10,8 @@
 {% endblock %}
 
 {% block menu %}
-<li><a href="/bom/create-part/">New Part</a></li>
-<li><a href="/bom/export/">Export</a></li>
+<li><a href="{% url 'create-part' %}">New Part</a></li>
+<li><a href="{% url 'export-part-list' %}">Export</a></li>
 {% endblock%}
 
 {% block content %}
@@ -29,12 +29,11 @@
     <tbody>
         {% for part in parts %}
         <tr>
-            <td><a href="/bom/{{ part.id }}/">{{ part.full_part_number }}</a></td>
+            <td><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
             <td>{{ part.description }}</td>
             <td>{{ part.revision }}</td>
             <td>{{ part.manufacturer.name }}</td>
             <td>{{ part.manufacturer_part_number }}</td>
-            <!-- <td><a href="/bom/{{ part.id }}/part_match/">Octopart Match</a></td> -->
         </tr>
         {% endfor %}
     </tbody>

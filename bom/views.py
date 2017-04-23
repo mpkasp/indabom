@@ -453,7 +453,7 @@ def add_subpart(request, part_id):
 
 
 @login_required
-def remove_subpart(request, subpart_id):
+def remove_subpart(request, part_id, subpart_id):
     try:
         subpart = Subpart.objects.get(id=subpart_id)
     except ObjectDoesNotExist:
@@ -495,7 +495,7 @@ def upload_file_to_part(request, part_id):
 
 
 @login_required
-def delete_file_from_part(request, partfile_id):
+def delete_file_from_part(request, part_id, partfile_id):
     try:
         partfile = PartFile.objects.get(id=partfile_id)
     except ObjectDoesNotExist:
