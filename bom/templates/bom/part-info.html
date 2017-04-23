@@ -9,6 +9,7 @@
 {% block menu %}
 {% if profile.role == 'A' %}
 <li><a href="/bom/{{part.id}}/edit/">Edit Part</a></li>
+<li><a href="/bom/{{part.id}}/part-match-indented/">Octopart Match</a></li>
 {% endif %}
 <li><a href="/bom/{{ part_id }}/export/">Export</a></li>
 {% endblock%}
@@ -17,6 +18,16 @@
 <div class="part-info">
     <p>Item #{{ part.full_part_number}}</p>
     <h5>{{ part.description }}</h5>
+    
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message.message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     <div class="row">
         <div class="col s12">
@@ -176,7 +187,7 @@
                             <td>{{ subpart.extended_cost | default:"-" }}</td>
                             <td>{{ subpart.seller_nre | default:"-" }}</td>
                             {% if profile.role == 'A' %}
-                            <td><a href="/bom/{{ subpart.part.id }}/part_match/">Match</a></td>
+                            <td><a href="/bom/{{ subpart.part.id }}/part-match/">Match</a></td>
                                 {% if subpart.indent_level == 1 and subpart.subpart is not None %}
                                 <td><a href="/bom/{{ part.id }}/remove-subpart/{{ subpart.subpart.id }}/" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
                                 {% endif %}

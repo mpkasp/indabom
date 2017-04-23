@@ -1,5 +1,5 @@
 from bom.octopart_parts_match import match_part
-from bom.models import Part, PartClass, Seller, SellerPart, Subpart, Manufacturer, Organization
+from bom.models import Part, PartClass, Seller, SellerPart, Subpart, Manufacturer, Organization, PartFile
 
 def create_a_fake_organization(user, free=False):
     org = Organization(name="Atlas", subscription='F' if free else 'P', owner=user)
@@ -24,6 +24,7 @@ def create_a_fake_subpart(assembly_part, assembly_subpart, count=4):
     sp1 = Subpart(assembly_part=assembly_part, assembly_subpart=assembly_subpart, count=count)
     sp1.save()
 
+    return sp1
 
 def create_some_fake_sellers(organization):
     s1 = Seller(name='Mouser', organization=organization)
@@ -82,3 +83,9 @@ def create_some_fake_parts(organization):
     create_a_fake_seller_part(s2, pt2, moq=200, mpq=200, unit_cost=0, lead_time_days=47)
 
     return pt1, pt2, pt3
+
+def create_a_fake_partfile(file, part):
+    pf1 = PartFile(file=None, part=part)
+    pf1.save()
+
+    return pf1

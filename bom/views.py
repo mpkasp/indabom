@@ -137,7 +137,7 @@ def export_part_indented(request, part_id):
     user = request.user
     profile = user.bom_profile()
     organization = profile.organization
-    
+
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts_indented.csv"'
 
@@ -209,14 +209,11 @@ def export_part_indented(request, part_id):
 
 @login_required
 def upload_part_indented(request, part_id):
-    response = {
-        'errors': [],
-        'status': 'ok',
-    }
-
-    parts = []
-    part = get_object_or_404(Part, id=part_id)
-    response['part'] = part.description
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
 
     if request.method == 'POST':
         form = UploadSubpartsCSVForm(request.POST, request.FILES)
@@ -226,8 +223,7 @@ def upload_part_indented(request, part_id):
             csvfile.open()
             reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
             headers = reader.next()
-
-            Subpart.objects.filter(assembly_part=part).delete()
+            # Subpart.objects.filter(assembly_part=part).delete()
 
             for row in reader:
                 partData = {}
@@ -238,24 +234,21 @@ def upload_part_indented(request, part_id):
                     subparts = Part.objects.filter(number_class=civ['class'], number_item=civ['item'], number_variation=civ['variation'])
                     
                     if len(subparts) == 0:
-                        response['status'] = 'failed'
-                        response['errors'].append('subpart: {} doesn''t exist'.format(partData['part_number']))
-                        return HttpResponse(dumps(response), content_type='application/json')
+                        messages.info(request, "Subpart: {} doesn't exist".format(partData['part_number']))
+                        continue
 
                     subpart = subparts[0]
                     count = partData['quantity']
                     if part == subpart:
-                        response['status'] = 'failed'
-                        response['errors'].append('recursive part association: a part can''t be a subpart of itsself')
-                        return HttpResponse(dumps(response), content_type='application/json')
+                        messages.error(request, "Recursive part association: a part cant be a subpart of itsself")
+                        return HttpResponseRedirect(reverse('error'))
+                    
                     sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
                     sp.save()
         else:
-            response['status'] = 'failed'
-            response['errors'].append('File form not valid: {}'.format(form.errors))
-            return HttpResponse(dumps(response), content_type='application/json')
+            messages.error(request, "File form not valid: {}".format(form.errors))
+            return HttpResponseRedirect(reverse('error'))
         
-    response['parts'] = parts
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
 
@@ -263,11 +256,6 @@ def upload_part_indented(request, part_id):
 def upload_parts(request):
     
     # TODO: Finish this endpoint
-    
-    response = {
-        'errors': [],
-        'status': 'ok',
-    }
     parts = []
 
     if request.POST and request.FILES:
@@ -285,9 +273,7 @@ def upload_parts(request):
                     partData[headers[idx]] = item
                 parts.append(partData)
 
-    response['parts'] = parts
-
-    return HttpResponse(dumps(response), content_type='application/json')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
 
 
 @login_required
@@ -298,7 +284,7 @@ def export_part_list(request):
     organization = request.user.bom_profile().organization
     parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
 
-    fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_minimum_order_quantity', 'part_minimum_pack_quantity', 'part_unit_cost']
+    fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', ]
 
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
@@ -307,11 +293,8 @@ def export_part_list(request):
         'part_number': item.full_part_number(), 
         'part_description': item.description, 
         'part_revision': item.revision, 
-        'part_manufacturer': item.manufacturer.name, 
-        'part_manufacturer_part_number': item.manufacturer_part_number, 
-        'part_minimum_order_quantity': item.minimum_order_quantity, 
-        'part_minimum_pack_quantity': item.minimum_pack_quantity,
-        'part_unit_cost': item.unit_cost,
+        'part_manufacturer': item.manufacturer.name if item.manufacturer is not None else '', 
+        'part_manufacturer_part_number': item.manufacturer_part_number if item.manufacturer is not None else '', 
         }
         writer.writerow(row)
 
@@ -320,19 +303,13 @@ def export_part_list(request):
 
 @login_required
 def octopart_part_match(request, part_id):
-    response = {
-        'errors': [],
-        'status': 'ok',
-    }
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
 
-    parts = Part.objects.filter(id=part_id)
-
-    if len(parts) == 0:
-        response['status'] = 'failed'
-        response['errors'].append('no parts found with given part_id')
-        return HttpResponse(dumps(response), content_type='application/json')
-
-    seller_parts = match_part(parts[0])
+    seller_parts = match_part(part)
     
     if len(seller_parts) > 0:
         for dp in seller_parts:
@@ -341,28 +318,20 @@ def octopart_part_match(request, part_id):
             except IntegrityError:
                 continue
     else:
-        response['status'] = 'failed'
-        response['errors'].append('octopart wasn''t able to find ant parts with given manufacturer_part_number')
-        return HttpResponse(dumps(response), content_type='application/json')
+        messages.info(request, "Octopart wasn't able to find any parts with manufacturer part number: {}".format(part.manufacturer_part_number))
         
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
 @login_required
 def octopart_part_match_indented(request, part_id):
-    response = {
-        'errors': [],
-        'status': 'ok',
-    }
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
 
-    parts = Part.objects.filter(id=part_id)
-
-    if len(parts) == 0:
-        response['status'] = 'failed'
-        response['errors'].append('no parts found with given part_id')
-        return HttpResponse(dumps(response), content_type='application/json')
-
-    subparts = parts[0].subparts.all()
+    subparts = part.subparts.all()
 
     for part in subparts:
         seller_parts = match_part(part)
@@ -372,8 +341,11 @@ def octopart_part_match_indented(request, part_id):
                     dp.save()
                 except IntegrityError:
                     continue
+        else:
+            messages.info(request, "Octopart wasn't able to find any parts with manufacturer part number: {}".format(part.manufacturer_part_number))
+            continue
         
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
 @login_required

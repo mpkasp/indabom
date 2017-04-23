@@ -12,3 +12,7 @@ td {
 .text-center {
     text-align: center;
 }
+
+.info {
+    color: red;
+}

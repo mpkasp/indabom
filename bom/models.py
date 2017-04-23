@@ -130,14 +130,15 @@ class Subpart(models.Model):
     assembly_subpart = models.ForeignKey(Part, related_name='assembly_subpart', null=True)
     count = models.IntegerField(default=1)
 
-    def save(self, **kwargs):
-        sps = Subpart.objects.filter(assembly_part=self.assembly_part, assembly_subpart=self.assembly_subpart)
-        if len(sps) > 0:
-            sps[0].count += int(self.count)
-            sps[0].save()
-            return
-        else:
-            super(Subpart, self).save()
+    # This is too magical...need to find a better way or omit this.
+    # def save(self, **kwargs):
+    #     sps = Subpart.objects.filter(assembly_part=self.assembly_part, assembly_subpart=self.assembly_subpart)
+    #     if len(sps) > 0 and sps[0].id != self.id:
+    #         sps[0].count += int(self.count)
+    #         sps[0].save()
+    #         return sps[0]
+    #     else:
+    #         super(Subpart, self).save()
 
 
 class Seller(models.Model):
