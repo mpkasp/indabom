@@ -20,7 +20,6 @@ from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
 
-
 @login_required
 def home(request):
     organization, created = Organization.objects.get_or_create(
@@ -40,7 +39,6 @@ def home(request):
 
 def error(request):
     msgs = messages.get_messages(request)
-
     return TemplateResponse(request, 'bom/error.html', locals())
 
 
@@ -249,12 +247,11 @@ def upload_part_indented(request, part_id):
             messages.error(request, "File form not valid: {}".format(form.errors))
             return HttpResponseRedirect(reverse('error'))
         
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
 @login_required
 def upload_parts(request):
-    
     # TODO: Finish this endpoint
     parts = []
 
@@ -273,15 +270,18 @@ def upload_parts(request):
                     partData[headers[idx]] = item
                 parts.append(partData)
 
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/bom/'))
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
 @login_required
 def export_part_list(request):
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
+
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts.csv"'
     
-    organization = request.user.bom_profile().organization
     parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
 
     fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', ]
@@ -350,7 +350,9 @@ def octopart_part_match_indented(request, part_id):
 
 @login_required
 def create_part(request):
-    org = request.user.bom_profile().organization
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
     
     if request.method == 'POST':
         form = PartForm(request.POST, organization=org)
@@ -361,25 +363,32 @@ def create_part(request):
                 number_variation=form.cleaned_data['number_variation'],
                 manufacturer_part_number=form.cleaned_data['manufacturer_part_number'],
                 manufacturer=form.cleaned_data['manufacturer'],
-                organization=org,
+                organization=organization,
                 defaults={'description': form.cleaned_data['description'],
                             'revision': form.cleaned_data['revision'],
                 }
             )
-            return HttpResponseRedirect('/bom/' + str(new_part.id) + '/')
+            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': str(new_part.id)}))
     else:
-        form = PartForm(organization=org) 
+        form = PartForm(organization=organization) 
 
     return TemplateResponse(request, 'bom/create-part.html', locals())
 
 
 @login_required
 def edit_part(request, part_id):
-    org = request.user.bom_profile().organization
-    part = Part.objects.filter(id=part_id)[0]
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
+
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
 
     if request.method == 'POST':
-        form = PartForm(request.POST, organization=org)
+        form = PartForm(request.POST, organization=organization)
         if form.is_valid():
             old_part = Part.objects.get(id=part_id)
 
@@ -392,7 +401,7 @@ def edit_part(request, part_id):
             old_part.revision = form.cleaned_data['revision']
             old_part.save()
 
-            return HttpResponseRedirect('/bom/' + part_id + '/')
+            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}))
     else:
         form = PartForm(initial={'number_class': part.number_class,
                                 'number_item': part.number_item,
@@ -401,26 +410,38 @@ def edit_part(request, part_id):
                                 'revision': part.revision,
                                 'manufacturer_part_number': part.manufacturer_part_number,
                                 'manufacturer': part.manufacturer,}
-                                , organization=org) 
+                                , organization=organization) 
 
     return TemplateResponse(request, 'bom/edit-part.html', locals())
 
 
 @login_required
 def delete_part(request, part_id):
-    part = Part.objects.filter(id=part_id)[0]
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
+
     part.delete()
     
-    return HttpResponseRedirect('/bom/')
+    return HttpResponseRedirect(reverse('home'))
 
 
 @login_required
 def add_subpart(request, part_id):
-    org = request.user.bom_profile().organization
-    part = Part.objects.filter(id=part_id)[0]
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
+
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
 
     if request.method == 'POST':
-        form = AddSubpartForm(request.POST, organization=org)
+        form = AddSubpartForm(request.POST, organization=organization)
         if form.is_valid():
             new_part = Subpart.objects.create(
                 assembly_part=part,
@@ -428,46 +449,59 @@ def add_subpart(request, part_id):
                 count=form.cleaned_data['count']
             )
     
-    return HttpResponseRedirect('/bom/' + part_id + '/#bom')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
 
 
 @login_required
-def remove_subpart(request, part_id, subpart_id):
-    # part = Part.objects.filter(id=part_id)[0]
-    subpart = Subpart.objects.get(id=subpart_id)
+def remove_subpart(request, subpart_id):
+    try:
+        subpart = Subpart.objects.get(id=subpart_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No subpart found with given part_id.")
+        return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
+    
     subpart.delete()
     
-    return HttpResponseRedirect('/bom/' + part_id + '/#bom')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
 
 
 @login_required
 def remove_all_subparts(request, part_id):
-    # part = Part.objects.filter(id=part_id)[0]
     subparts = Subpart.objects.filter(assembly_part=part_id)
+
     for subpart in subparts:
         subpart.delete()
     
-    return HttpResponseRedirect('/bom/' + part_id + '/#bom')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
 
 
 @login_required
 def upload_file_to_part(request, part_id):
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No part found with given part_id.")
+        return HttpResponseRedirect(reverse('error'))
+
     if request.method == 'POST':
         form = UploadFileToPartForm(request.POST, request.FILES)
         if form.is_valid():
-            part = Part.objects.get(id=part_id)
             partfile = PartFile(file=request.FILES['file'], part=part)
             partfile.save()
-            return HttpResponseRedirect('/bom/' + part_id + '/')
-
-    # TODO: Handle failed hits to this view
-    return HttpResponseRedirect('/bom/' + part_id + '/')
+            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#specs')
+    
+    messages.error(request, "Error uploading file.")
+    return HttpResponseRedirect(reverse('error'))
 
 
 @login_required
-def delete_file_from_part(request, part_id, partfile_id):
-    # part = Part.objects.filter(id=part_id)[0]
-    partfile = PartFile.objects.get(id=partfile_id)
+def delete_file_from_part(request, partfile_id):
+    try:
+        partfile = PartFile.objects.get(id=partfile_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "No file found with given file id.")
+        return HttpResponseRedirect(reverse('error'))
+    
     partfile.delete()
     
-    return HttpResponseRedirect('/bom/' + part_id + '/#specs')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#specs')
