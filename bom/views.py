@@ -3,7 +3,7 @@ import csv, export, codecs, logging
 from indabom.settings import MEDIA_URL
 
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template.response import TemplateResponse
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
@@ -449,7 +449,7 @@ def add_subpart(request, part_id):
                 count=form.cleaned_data['count']
             )
     
-    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
 
 
 @login_required
@@ -458,11 +458,11 @@ def remove_subpart(request, part_id, subpart_id):
         subpart = Subpart.objects.get(id=subpart_id)
     except ObjectDoesNotExist:
         messages.error(request, "No subpart found with given part_id.")
-        return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
+        return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
     
     subpart.delete()
     
-    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
 
 
 @login_required
@@ -472,7 +472,7 @@ def remove_all_subparts(request, part_id):
     for subpart in subparts:
         subpart.delete()
     
-    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#bom')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
 
 
 @login_required
@@ -488,7 +488,7 @@ def upload_file_to_part(request, part_id):
         if form.is_valid():
             partfile = PartFile(file=request.FILES['file'], part=part)
             partfile.save()
-            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#specs')
+            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#specs')
     
     messages.error(request, "Error uploading file.")
     return HttpResponseRedirect(reverse('error'))
@@ -504,4 +504,4 @@ def delete_file_from_part(request, part_id, partfile_id):
     
     partfile.delete()
     
-    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '/#specs')
+    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#specs')

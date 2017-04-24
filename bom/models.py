@@ -2,8 +2,9 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.validators import MaxValueValidator
+from django.db.models.signals import post_delete
+from django.dispatch.dispatcher import receiver
 from django.contrib.auth.models import User, Group
-
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, default=None)
@@ -164,3 +165,8 @@ class PartFile(models.Model):
     file = models.FileField(upload_to='partfiles/')
     upload_date = models.DateField(auto_now=True)
     part = models.ForeignKey(Part)
+
+
+@receiver(post_delete, sender=PartFile)
+def partfile_post_delete_handler(sender, instance, **kwargs):
+    instance.file.delete(False)
