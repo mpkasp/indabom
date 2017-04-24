@@ -131,7 +131,7 @@ def part_info(request, part_id):
 
 
 @login_required
-def export_part_indented(request, part_id):
+def part_export_bom(request, part_id):
     user = request.user
     profile = user.bom_profile()
     organization = profile.organization
@@ -206,7 +206,7 @@ def export_part_indented(request, part_id):
 
 
 @login_required
-def upload_part_indented(request, part_id):
+def part_upload_bom(request, part_id):
     try:
         part = Part.objects.get(id=part_id)
     except ObjectDoesNotExist:
@@ -302,7 +302,7 @@ def export_part_list(request):
 
 
 @login_required
-def octopart_part_match(request, part_id):
+def part_octopart_match(request, part_id):
     try:
         part = Part.objects.get(id=part_id)
     except ObjectDoesNotExist:
@@ -324,7 +324,7 @@ def octopart_part_match(request, part_id):
 
 
 @login_required
-def octopart_part_match_indented(request, part_id):
+def part_octopart_match_bom(request, part_id):
     try:
         part = Part.objects.get(id=part_id)
     except ObjectDoesNotExist:
@@ -376,7 +376,7 @@ def create_part(request):
 
 
 @login_required
-def edit_part(request, part_id):
+def part_edit(request, part_id):
     user = request.user
     profile = user.bom_profile()
     organization = profile.organization
@@ -416,7 +416,7 @@ def edit_part(request, part_id):
 
 
 @login_required
-def delete_part(request, part_id):
+def part_delete(request, part_id):
     try:
         part = Part.objects.get(id=part_id)
     except ObjectDoesNotExist:

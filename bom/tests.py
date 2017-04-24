@@ -40,19 +40,19 @@ class TestBOM(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_export_part_indented(self):
+    def test_part_export_bom(self):
         self.client.login(username='kasper', password='ghostpassword')
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('export-part-indented', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-export-bom', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 200)
 
 
-    def test_upload_part_indented(self):
+    def test_part_upload_bom(self):
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         with open('bom/test_parts.csv') as test_csv:
-            response = self.client.post(reverse('upload-part-indented', kwargs={'part_id': p1.id}), {'file': test_csv})
+            response = self.client.post(reverse('part-upload-bom', kwargs={'part_id': p1.id}), {'file': test_csv})
         self.assertEqual(response.status_code, 302)
 
 
@@ -89,17 +89,17 @@ class TestBOM(TransactionTestCase):
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('octopart-part-match-indented', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-octopart-match-bom', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 302)
 
 
     @skip("only test when we want to hit octopart's api")
-    def test_octopart_part_match(self):
+    def test_part_octopart_match(self):
         self.client.login(username='kasper', password='ghostpassword')
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('octopart-part-match', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-octopart-match', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 302)
 
 
@@ -112,21 +112,21 @@ class TestBOM(TransactionTestCase):
         self.assertEqual(response.status_code, 200)
 
 
-    def test_edit_part(self):
+    def test_part_edit(self):
         self.client.login(username='kasper', password='ghostpassword')
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('edit-part', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-edit', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 200)
 
 
-    def test_delete_part(self):
+    def test_part_delete(self):
         self.client.login(username='kasper', password='ghostpassword')
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('delete-part', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-delete', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 302)
 
 
@@ -135,7 +135,7 @@ class TestBOM(TransactionTestCase):
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('add-subpart', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-add-subpart', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 302)
 
 
@@ -145,7 +145,7 @@ class TestBOM(TransactionTestCase):
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         s1 = create_a_fake_subpart(p1, p3, count=10)
         
-        response = self.client.post(reverse('remove-subpart', kwargs={'part_id': p1.id, 'subpart_id': s1.id}))
+        response = self.client.post(reverse('part-remove-subpart', kwargs={'part_id': p1.id, 'subpart_id': s1.id}))
         self.assertEqual(response.status_code, 302)
 
 
@@ -154,7 +154,7 @@ class TestBOM(TransactionTestCase):
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         
-        response = self.client.post(reverse('remove-all-subparts', kwargs={'part_id': p1.id}))
+        response = self.client.post(reverse('part-remove-all-subparts', kwargs={'part_id': p1.id}))
         self.assertEqual(response.status_code, 302)
 
 
@@ -163,14 +163,14 @@ class TestBOM(TransactionTestCase):
 
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         with open('bom/test_parts.csv') as test_csv:
-            response = self.client.post(reverse('upload-file-to-part', kwargs={'part_id': p1.id}), {'file': test_csv})
+            response = self.client.post(reverse('part-upload-partfile', kwargs={'part_id': p1.id}), {'file': test_csv})
         self.assertEqual(response.status_code, 302)
 
         partfiles = PartFile.objects.filter(part=p1)
         for pf in partfiles:
-            response = self.client.post(reverse('delete-file-from-part', kwargs={'part_id': p1.id, 'partfile_id': pf.id}))
+            response = self.client.post(reverse('part-delete-partfile', kwargs={'part_id': p1.id, 'partfile_id': pf.id}))
             self.assertEqual(response.status_code, 302)
-            #TODO: Make sure the file gets deleted !!
+            
 
     def test_delete_file_from_part(self):
         self.client.login(username='kasper', password='ghostpassword')
@@ -178,7 +178,7 @@ class TestBOM(TransactionTestCase):
         (p1, p2, p3) = create_some_fake_parts(organization=self.organization)
         with open('bom/test_parts.csv') as test_csv:
             pf1 = create_a_fake_partfile(test_csv, p1)
-            response = self.client.post(reverse('delete-file-from-part', kwargs={'part_id': p1.id, 'partfile_id': pf1.id}))
+            response = self.client.post(reverse('part-delete-partfile', kwargs={'part_id': p1.id, 'partfile_id': pf1.id}))
         self.assertEqual(response.status_code, 302)
 
 

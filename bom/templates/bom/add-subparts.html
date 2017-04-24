@@ -5,7 +5,7 @@
 {% block content %}
 <h5>Add SubParts To {{ part.full_part_number }}</h5>
 
-<form action="{% url 'add-subpart' part_id=part.id %}" method="post">
+<form action="{% url 'part-add-subpart' part_id=part.id %}" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Add" />
