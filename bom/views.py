@@ -1,4 +1,4 @@
-import csv, export, codecs, logging
+import csv, export, codecs, logging, uuid
 
 from indabom.settings import MEDIA_URL
 
@@ -14,8 +14,8 @@ from django.contrib import messages
 from json import loads, dumps
 
 from .convert import full_part_number_to_broken_part
-from .models import Part, PartClass, Subpart, SellerPart, Organization, PartFile
-from .forms import PartInfoForm, PartForm, AddSubpartForm, UploadFileToPartForm, UploadSubpartsCSVForm
+from .models import Part, PartClass, Subpart, SellerPart, Organization, PartFile, Manufacturer
+from .forms import PartInfoForm, PartForm, AddSubpartForm, FileForm
 from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
@@ -72,8 +72,8 @@ def part_info(request, part_id):
 
     part_info_form = PartInfoForm(initial={'quantity': 100})
     add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
-    upload_file_to_part_form = UploadFileToPartForm()
-    upload_subparts_csv_form = UploadSubpartsCSVForm()
+    upload_file_to_part_form = FileForm()
+    upload_subparts_csv_form = FileForm()
 
     qty = 100
     if request.method == 'POST':
@@ -214,10 +214,10 @@ def part_upload_bom(request, part_id):
         return HttpResponseRedirect(reverse('error'))
 
     if request.method == 'POST':
-        form = UploadSubpartsCSVForm(request.POST, request.FILES)
+        form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             csvfile = request.FILES['file']
-            dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
+            dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.open()
             reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
             headers = reader.next()
@@ -252,23 +252,56 @@ def part_upload_bom(request, part_id):
 
 @login_required
 def upload_parts(request):
-    # TODO: Finish this endpoint
-    parts = []
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
 
-    if request.POST and request.FILES:
-        form = UploadSubpartsCSVForm(request.POST, request.FILES)
+    if request.method == 'POST' and request.FILES['file'] is not None:
+        form = FileForm(request.POST, request.FILES)
         if form.is_valid():
-            csvfile = request.FILES['csv_file']
-            dialect = csv.Sniffer().sniff(codecs.EncodedFile(csvfile, "utf-8").read(1024))
+            csvfile = request.FILES['file']
+            dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.open()
             reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
             headers = reader.next()
-
             for row in reader:
                 partData = {}
                 for idx, item in enumerate(row):
                     partData[headers[idx]] = item
-                parts.append(partData)
+                if 'part_class' in partData and 'description' in partData and 'revision' in partData:
+                    mpn = None
+                    mfg = ''
+                    if 'manufacturer_part_number' in partData:
+                        mpn = partData['manufacturer_part_number']
+                    if 'manufacturer' in partData:
+                        mfg_name = partData['manufacturer'] if partData['manufacturer'] is not None else ''
+                        mfg, created = Manufacturer.objects.get_or_create(name=mfg_name, organization=organization)
+                    
+                    try:
+                        part_class = PartClass.objects.get(code=partData['part_class'])
+                    except PartClass.DoesNotExist:
+                        messages.error(request, "Partclass {} doesn't exist.".format(partData['part_class']))
+                        return HttpResponseRedirect(reverse('error'))
+                    
+                    part, created = Part.objects.get_or_create(part_class=part_class, 
+                                                                description=partData['description'], 
+                                                                revision=partData['revision'],
+                                                                organization=organization, 
+                                                                manufacturer_part_number=mpn,
+                                                                manufacturer=mfg)
+                    if created:
+                        messages.info(request, "{}: {} created.".format(part.full_part_number(), part.description))
+                    else:
+                        messages.warning(request, "{}: {} already exists!".format(part.full_part_number(), part.description))
+                else:
+                    messages.error(request, "File must contain at least the 3 columns (with headers): 'part_class', 'description', and 'revision'.")
+                    return HttpResponseRedirect(reverse('error'))
+        else:
+            messages.error(request, "Invalid form input.")
+            return HttpResponseRedirect(reverse('error'))
+    else:
+        form = FileForm()
+        return TemplateResponse(request, 'bom/upload-parts.html', locals())
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
@@ -484,7 +517,7 @@ def upload_file_to_part(request, part_id):
         return HttpResponseRedirect(reverse('error'))
 
     if request.method == 'POST':
-        form = UploadFileToPartForm(request.POST, request.FILES)
+        form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             partfile = PartFile(file=request.FILES['file'], part=part)
             partfile.save()

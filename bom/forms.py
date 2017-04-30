@@ -47,9 +47,5 @@ class AddSubpartForm(forms.Form):
         self.fields['assembly_subpart'].label_from_instance = lambda obj: "%s" % obj.full_part_number() + ' ' + obj.description
 
 
-class UploadFileToPartForm(forms.Form):
-    file = forms.FileField()
-
-
-class UploadSubpartsCSVForm(forms.Form):
+class FileForm(forms.Form):
     file = forms.FileField()

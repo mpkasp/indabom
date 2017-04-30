@@ -182,6 +182,14 @@ class TestBOM(TransactionTestCase):
         self.assertEqual(response.status_code, 302)
 
 
+    def test_upload_parts(self):
+        self.client.login(username='kasper', password='ghostpassword')
+
+        with open('bom/test_new_parts.csv') as test_csv:
+            response = self.client.post(reverse('upload-parts'), {'file': test_csv})
+        self.assertEqual(response.status_code, 302)
+
+
 class TestForms(TestCase):
     def setUp(self):
         self.client = Client()
