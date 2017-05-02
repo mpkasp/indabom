@@ -9,7 +9,7 @@
 {% block menu %}
 {% if profile.role == 'A' %}
 <li><a href="{% url 'part-edit' part_id=part.id %}">Edit Part</a></li>
-<li><a href="{% url 'part-octopart-match-bom' part_id=part.id %}">Octopart Match</a></li>
+<li><a href="{% url 'part-manage-bom' part_id=part.id %}">Manage BOM</a></li>
 {% endif %}
 <li><a href="{% url 'part-export-bom' part_id=part.id %}">Export</a></li>
 {% endblock%}
@@ -76,10 +76,18 @@
                 </div>
                 <div class="row">
                     <div class="col s4 text-right">
+                        <br> <!-- Hacked for now... -->
                         Est. Cost:
                     </div>
                     <div class="col s8">
-                        ${{ unit_cost }} at {{ qty }} units
+                        <form action="{% url 'part-info' part_id=part.id %}" method="post">
+                        {% csrf_token %}
+                            ${{ unit_cost }} at 
+                            <div class="input-field inline">
+                                {{ part_info_form }}
+                            </div>
+                             units. {% if not extended_cost_complete %}(!){% endif %}
+                        </form>
                     </div>
                 </div>
                 <div class="row">
@@ -159,10 +167,6 @@
                             <th><i>Price</i></th>
                             <th><i>Ext Cost</i></th>
                             <th><i>NRE</i></th>
-                            {% if profile.role == 'A' %}
-                            <th><i>Octopart Match</i></th>
-                            <th><i></i></th>
-                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
@@ -188,101 +192,46 @@
                             <td>{{ subpart.seller_price | default:"-"}}</td>
                             <td>{{ subpart.extended_cost | default:"-" }}</td>
                             <td>{{ subpart.seller_nre | default:"-" }}</td>
-                            {% if profile.role == 'A' %}
-                            <td><a href="{% url 'part-octopart-match' part_id=subpart.part.id %}">Match</a></td>
-                                {% if subpart.indent_level == 1 and subpart.subpart is not None %}
-                                <td><a href="{% url 'part-remove-subpart' part_id=part.id subpart_id=subpart.subpart.id %}" onclick="return confirm('Are you sure you want to remove {{ subpart.part.full_part_number }}?')">Remove</a></td>
-                                {% endif %}
-                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </ul>
             <br>
-            {% if profile.role == 'A' %}
-            <h5>Add Subparts</h5>
-            <form action="{% url 'part-add-subpart' part_id=part.id %}" method="post">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col s7 input-field">
-                        <!-- {{ add_subpart_form.assembly_subpart.errors }} -->
-                        <!-- {{ add_subpart_form.assembly_subpart.label_tag }} -->
-                        {{ add_subpart_form.assembly_subpart }}
-                    </div>
-                    <div class="col s2 input-field">
-                        {{ add_subpart_form.count.errors }}
-                        {{ add_subpart_form.count.label_tag }}
-                        {{ add_subpart_form.count }}
-                    </div>
-                    <div class="col s1 input-field">
-                        <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Add Subpart"/>
-                    </div>
-                </div>
-            </form>
-            <p><i>To add batch subparts, upload a csv that contains at least two columns with the header: 'part_number' and 'quantity'; the 'part_number' column must contain part numbers that have already been created in this system.</i></p>
-            <form action="{% url 'part-upload-bom' part_id=part.id %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col s9 file-field input-field">
-                        <div class="green lighten-1 btn">
-                            <span>File</span>
-                            {{ upload_subparts_csv_form.file }}
-                        </div>
-                        <div class="file-path-wrapper">
-                            <input class="file-path validate" type="text" placeholder="Upload a file.">
-                            {{ upload_subparts_csv_form.file.errors }}
-                        </div>
-                    </div>
-                    <div class="col s1 input-field">
-                        <input class="green lighten-1 btn" type="submit" value="Upload"/>
-                    </div>
-                </div>
-            </form>
-            <div class="center">
-                <a class="waves-effect waves-light red lighten-2 btn" href="{% url 'part-remove-all-subparts' part_id=part.id %}" onclick="return confirm('Are you sure you want to remove ALL subparts from {{ part.full_part_number }}?')">Remove All Subparts</a>
-            </div>
-            {% endif %}
         </div>
 
         <div id="used" class="col s12">
-            <ul>
-                <table class="highlight">
-                    <thead>
-                        <tr>
-                            <th>Part Number</th>
-                            <th>Description</th> 
-                            <th>Rev</th>
-                            <th>Manufacturer</th>
-                            <th>MPN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for part in where_used %}
-                        <tr>
-                            <td><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
-                            <td>{{ part.description }}</td> 
-                            <td>{{ part.revision }}</td>
-                            <td>{{ part.manufacturer.name }}</td>
-                            <td>{{ part.manufacturer_part_number }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </ul>
+            {% if where_used|length > 0 %}
+            <table class="highlight">
+                <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Description</th> 
+                        <th>Rev</th>
+                        <th>Manufacturer</th>
+                        <th>MPN</th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for part in where_used %}
+                    <tr>
+                        <td><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
+                        <td>{{ part.description }}</td> 
+                        <td>{{ part.revision }}</td>
+                        <td>{{ part.manufacturer.name }}</td>
+                        <td>{{ part.manufacturer_part_number }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-center"><i>This part is not currently used in any of your other parts.</i></p>
+            {% endif %}
         </div>
 
         <div id="sourcing" class="col s12">
-            <p>
-                <form action="{% url 'part-info' part_id=part.id %}" method="post">
-                {% csrf_token %}
-                    Est. Cost: ${{ unit_cost }} at 
-                    <div class="input-field inline">
-                        {{ part_info_form }}
-                    </div>
-                     units. {% if not extended_cost_complete %}(!){% endif %}
-                </form>
-            </p>
+            <p class="text-center"><i>Coming soon...</i></p>
         </div>
     </div>
 </div>

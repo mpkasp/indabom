@@ -104,6 +104,19 @@ class Part(models.Model):
         indented_given_bom(bom, self)
         return bom
 
+
+    def optimal_seller(self, quantity=1000):
+        sellerparts = SellerPart.objects.filter(part=self)
+        seller = None
+        for sellerpart in sellerparts:
+            if sellerpart.minimum_order_quantity <= quantity and (seller is None or sellerpart.unit_cost < seller.unit_cost) and sellerpart.unit_cost is not None:
+                seller = sellerpart
+            elif seller is None:
+                seller = sellerpart
+
+        return seller
+
+
     def save(self, **kwargs):
         if self.number_item is None or self.number_item == '':
             last_number_item = Part.objects.all().filter(number_class=self.number_class).order_by('number_item').last()

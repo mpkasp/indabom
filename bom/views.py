@@ -61,7 +61,6 @@ def part_info(request, part_id):
 
     try:
         part = Part.objects.get(id=part_id)
-        parts = part.indented()
     except ObjectDoesNotExist:
         messages.error(request, "Part object does not exist.")
         return HttpResponseRedirect(reverse('error'))
@@ -69,18 +68,17 @@ def part_info(request, part_id):
     if part.organization != organization:
         messages.error(request, "Cant access a part that is not yours!")
         return HttpResponseRedirect(reverse('error'))
-
+    
     part_info_form = PartInfoForm(initial={'quantity': 100})
-    add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
     upload_file_to_part_form = FileForm()
-    upload_subparts_csv_form = FileForm()
 
     qty = 100
     if request.method == 'POST':
         part_info_form = PartInfoForm(request.POST)
         if part_info_form.is_valid():
             qty = request.POST.get('quantity', 100)
-
+    
+    parts = part.indented()
     extended_cost_complete = True
     unit_cost = 0
     unit_nre = 0
@@ -89,40 +87,27 @@ def part_info(request, part_id):
         extended_quantity = int(qty) * item['quantity']
         item['extended_quantity'] = extended_quantity
 
-        p = item['part']
-        sellerparts = SellerPart.objects.filter(part=p)
-        seller_price = None
-        seller_nre = None
-        seller = None
-        order_qty = extended_quantity
-        for sellerpart in sellerparts:
-            if sellerpart.minimum_order_quantity <= extended_quantity and (seller is None or sellerpart.unit_cost < seller_price) and sellerpart.unit_cost is not None:
-                seller_price = sellerpart.unit_cost
-                seller_nre = sellerpart.nre_cost
-                seller = sellerpart
-            elif seller is None:
-                seller_price = sellerpart.unit_cost
-                seller_nre = sellerpart.nre_cost
-                seller = sellerpart
-                if sellerpart.minimum_order_quantity > extended_quantity:
-                    order_qty = sellerpart.minimum_order_quantity
+        part = item['part']
+        seller = part.optimal_seller(quantity=extended_quantity)
+        order_qty = extended_quantity if seller is None or extended_quantity > seller.minimum_order_quantity else seller.minimum_order_quantity
 
-        item['seller_price'] = seller_price
-        item['seller_nre'] = seller_nre
+        item['seller_price'] = seller.unit_cost if seller is not None else 0
+        item['seller_nre'] = seller.nre_cost if seller is not None else 0
         item['seller_part'] = seller
         item['order_quantity'] = order_qty
         
         # then extend that price
-        item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
-        item['out_of_pocket_cost'] = seller.minimum_order_quantity * seller_price if seller_price is not None and seller is not None and seller.minimum_order_quantity is not None else None
+        item['extended_cost'] = extended_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
+        item['out_of_pocket_cost'] = seller.minimum_order_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and seller is not None and seller.minimum_order_quantity is not None else None
 
-        unit_cost = (unit_cost + seller_price * item['quantity']) if seller_price is not None else unit_cost
+        unit_cost = (unit_cost + seller.unit_cost * item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
         unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['out_of_pocket_cost'] if item['out_of_pocket_cost'] is not None else unit_out_of_pocket_cost
-        unit_nre = (unit_nre + seller_nre) if seller_nre is not None else unit_nre
+        unit_nre = (unit_nre + item['seller_nre']) if item['seller_nre'] is not None else unit_nre
         if seller is None:
             extended_cost_complete = False
 
     extended_cost = unit_cost * int(qty)
+    total_out_of_pocket_cost = unit_out_of_pocket_cost + unit_nre
 
     where_used = part.where_used()
     files = part.files()
@@ -162,8 +147,8 @@ def part_export_bom(request, part_id):
         item['extended_quantity'] = extended_quantity
         
         # then get the lowest price & seller at that quantity, 
-        p = item['part']
-        dps = SellerPart.objects.filter(part=p)
+        part = item['part']
+        dps = SellerPart.objects.filter(part=part)
         seller_price = None
         seller = None
         order_qty = extended_quantity
@@ -446,6 +431,35 @@ def part_edit(request, part_id):
                                 , organization=organization) 
 
     return TemplateResponse(request, 'bom/edit-part.html', locals())
+
+
+@login_required
+def manage_bom(request, part_id):
+    user = request.user
+    profile = user.bom_profile()
+    organization = profile.organization
+
+    try:
+        part = Part.objects.get(id=part_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "Part object does not exist.")
+        return HttpResponseRedirect(reverse('error'))
+    
+    if part.organization != organization:
+        messages.error(request, "Cant access a part that is not yours!")
+        return HttpResponseRedirect(reverse('error'))
+
+    add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
+    upload_subparts_csv_form = FileForm()
+    
+    parts = part.indented()
+    for item in parts:
+        extended_quantity = 1000 * item['quantity']
+        seller = item['part'].optimal_seller(quantity=extended_quantity)
+        item['seller_price'] = seller.unit_cost if seller is not None else None
+        item['seller_part'] = seller
+
+    return TemplateResponse(request, 'bom/manage-bom.html', locals())
 
 
 @login_required

@@ -2,6 +2,10 @@
 
 {% block title %}{% endblock %}
 
+{% block menu %}
+<li><a href="{% url 'part-info' part_id=part.id %}">Cancel</a></li>
+{% endblock%}
+
 {% block content %}
 <h5>Edit Part {{ part.full_part_number }}</h5>
 
