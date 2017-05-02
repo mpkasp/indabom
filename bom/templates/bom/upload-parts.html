@@ -5,7 +5,7 @@
 {% block content %}
 <h5>Upload Parts</h5>
 
-<p><i>To batch add parts, upload a csv that contains at least three columns with the headers: 'part_class', 'description', and 'revision' at a minimum. You may also specify a 'manufacturer_part_number' and a 'manufacturer'. If neither is specified the manufacturer_part_number will default to the generated part number, and the manufacturer will default to your organization.</i></p>
+<p>To batch add parts, upload a csv that contains at least three columns with the headers: <b>'part_class'</b>, <b>'description'</b>, and <b>'revision'</b> at a minimum. You may also specify a 'manufacturer_part_number' and a 'manufacturer'. If neither is specified the manufacturer_part_number will default to the generated part number, and the manufacturer will default to your organization.</i></p>
 <form action="{% url 'upload-parts' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row">
