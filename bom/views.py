@@ -87,8 +87,8 @@ def part_info(request, part_id):
         extended_quantity = int(qty) * item['quantity']
         item['extended_quantity'] = extended_quantity
 
-        part = item['part']
-        seller = part.optimal_seller(quantity=extended_quantity)
+        subpart = item['part']
+        seller = subpart.optimal_seller(quantity=extended_quantity)
         order_qty = extended_quantity if seller is None or extended_quantity > seller.minimum_order_quantity else seller.minimum_order_quantity
 
         item['seller_price'] = seller.unit_cost if seller is not None else 0
