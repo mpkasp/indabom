@@ -35,7 +35,7 @@ def home(request):
         profile.role = 'A'
         profile.save()
 
-    parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
+    parts = Part.objects.filter(organization=profile.organization).order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 
