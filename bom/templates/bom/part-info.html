@@ -18,7 +18,7 @@
 <div class="part-info">
     <p>Item #{{ part.full_part_number}}</p>
     <h5>{{ part.description }}</h5>
-    
+
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -82,7 +82,7 @@
                     <div class="col s8">
                         <form action="{% url 'part-info' part_id=part.id %}" method="post">
                         {% csrf_token %}
-                            ${{ unit_cost }} at 
+                            ${{ unit_cost }} at
                             <div class="input-field inline">
                                 {{ part_info_form }}
                             </div>
@@ -100,13 +100,29 @@
                 </div>
                 <div class="row">
                     <div class="col s4 text-right">
-                        Est. Total Out Of Pocket:
+                        Est. Unit Out Of Pocket:
                     </div>
                     <div class="col s8">
                         ${{ unit_out_of_pocket_cost }}
                     </div>
                 </div>
-                
+                <div class="row">
+                    <div class="col s4 text-right">
+                        Est. Total NRE:
+                    </div>
+                    <div class="col s8">
+                        ${{ unit_nre }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s4 text-right">
+                        Est. Total Out Of Pocket:
+                    </div>
+                    <div class="col s8">
+                        ${{ total_out_of_pocket_cost }}
+                    </div>
+                </div>
+
                 <!-- File upload to come ! Need to pull in remote storage first... -->
                 <!-- <div class="row">
                     <div class="col s4 text-right">
@@ -157,7 +173,7 @@
                             <th>Level</th>
                             <th>Part No.</th>
                             <th>Qty</th>
-                            <th>Description</th> 
+                            <th>Description</th>
                             <th>Rev</th>
                             <th>Manufacturer</th>
                             <th>MPN</th>
@@ -179,10 +195,10 @@
                             {% endfor %}
                             {% endwith %}
                             {{ subpart.indent_level }}
-                            </td> 
+                            </td>
                             <td><a href="{% url 'part-info' part_id=subpart.part.id %}">{{ subpart.part.full_part_number }}</a></td>
-                            <td>{{ subpart.quantity }}</td> 
-                            <td>{{ subpart.part.description }}</td> 
+                            <td>{{ subpart.quantity }}</td>
+                            <td>{{ subpart.part.description }}</td>
                             <td>{{ subpart.part.revision }}</td>
                             <td>{{ subpart.part.manufacturer.name }}</td>
                             <td>{{ subpart.part.manufacturer_part_number }}</td>
@@ -206,18 +222,18 @@
                 <thead>
                     <tr>
                         <th>Part Number</th>
-                        <th>Description</th> 
+                        <th>Description</th>
                         <th>Rev</th>
                         <th>Manufacturer</th>
                         <th>MPN</th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
                     {% for part in where_used %}
                     <tr>
                         <td><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
-                        <td>{{ part.description }}</td> 
+                        <td>{{ part.description }}</td>
                         <td>{{ part.revision }}</td>
                         <td>{{ part.manufacturer.name }}</td>
                         <td>{{ part.manufacturer_part_number }}</td>
