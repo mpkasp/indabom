@@ -22,14 +22,16 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def home(request):
-    organization, created = Organization.objects.get_or_create(
-        owner=request.user,
-        defaults={'name': request.user.first_name + ' ' + request.user.last_name,
-                    'subscription': 'F'},
-    )
+    profile = request.user.bom_profile()
 
-    if created:
-        profile = request.user.bom_profile(organization)
+    if profile.organization is None:
+        organization, created = Organization.objects.get_or_create(
+            owner=request.user,
+            defaults={'name': request.user.first_name + ' ' + request.user.last_name,
+                        'subscription': 'F'},
+        )
+
+        profile.organization = organization
         profile.role = 'A'
         profile.save()
 
@@ -46,7 +48,7 @@ def error(request):
 def bom_signup(request):
     user = request.user
     organization = user.bom_profile().organization
-    
+
     if organization is not None:
         return HttpResponseRedirect(reverse('home'))
 
@@ -64,11 +66,11 @@ def part_info(request, part_id):
     except ObjectDoesNotExist:
         messages.error(request, "Part object does not exist.")
         return HttpResponseRedirect(reverse('error'))
-    
+
     if part.organization != organization:
         messages.error(request, "Cant access a part that is not yours!")
         return HttpResponseRedirect(reverse('error'))
-    
+
     part_info_form = PartInfoForm(initial={'quantity': 100})
     upload_file_to_part_form = FileForm()
 
@@ -77,7 +79,7 @@ def part_info(request, part_id):
         part_info_form = PartInfoForm(request.POST)
         if part_info_form.is_valid():
             qty = request.POST.get('quantity', 100)
-    
+
     parts = part.indented()
     extended_cost_complete = True
     unit_cost = 0
@@ -95,13 +97,13 @@ def part_info(request, part_id):
         item['seller_nre'] = seller.nre_cost if seller is not None else 0
         item['seller_part'] = seller
         item['order_quantity'] = order_qty
-        
+
         # then extend that price
         item['extended_cost'] = extended_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
-        item['out_of_pocket_cost'] = seller.minimum_order_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and seller is not None and seller.minimum_order_quantity is not None else None
+        item['out_of_pocket_cost'] = order_qty * seller.unit_cost if seller is not None and seller.unit_cost is not None else 0
 
         unit_cost = (unit_cost + seller.unit_cost * item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
-        unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['out_of_pocket_cost'] if item['out_of_pocket_cost'] is not None else unit_out_of_pocket_cost
+        unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['out_of_pocket_cost']
         unit_nre = (unit_nre + item['seller_nre']) if item['seller_nre'] is not None else unit_nre
         if seller is None:
             extended_cost_complete = False
@@ -111,7 +113,7 @@ def part_info(request, part_id):
 
     where_used = part.where_used()
     files = part.files()
-    
+
     return TemplateResponse(request, 'bom/part-info.html', locals())
 
 
@@ -137,7 +139,7 @@ def part_export_bom(request, part_id):
     bom = part.indented()
     qty = 100
     unit_cost = 0
-    
+
     fieldnames = ['level', 'part_number', 'quantity', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_ext_qty', 'part_order_qty', 'part_seller', 'part_cost', 'part_ext_cost', 'part_nre']
 
     writer = csv.DictWriter(response, fieldnames=fieldnames)
@@ -145,8 +147,8 @@ def part_export_bom(request, part_id):
     for item in bom:
         extended_quantity = qty * item['quantity']
         item['extended_quantity'] = extended_quantity
-        
-        # then get the lowest price & seller at that quantity, 
+
+        # then get the lowest price & seller at that quantity,
         part = item['part']
         dps = SellerPart.objects.filter(part=part)
         seller_price = None
@@ -172,13 +174,13 @@ def part_export_bom(request, part_id):
         unit_cost = unit_cost + seller_price * item['quantity'] if seller_price is not None else unit_cost
 
         row = {
-        'level': item['indent_level'], 
-        'part_number': item['part'].full_part_number(), 
-        'quantity': item['quantity'], 
-        'part_description': item['part'].description, 
-        'part_revision': item['part'].revision, 
-        'part_manufacturer': item['part'].manufacturer.name if item['part'].manufacturer is not None else '', 
-        'part_manufacturer_part_number': item['part'].manufacturer_part_number, 
+        'level': item['indent_level'],
+        'part_number': item['part'].full_part_number(),
+        'quantity': item['quantity'],
+        'part_description': item['part'].description,
+        'part_revision': item['part'].revision,
+        'part_manufacturer': item['part'].manufacturer.name if item['part'].manufacturer is not None else '',
+        'part_manufacturer_part_number': item['part'].manufacturer_part_number,
         'part_ext_qty': item['extended_quantity'],
         'part_order_qty': item['order_quantity'],
         'part_seller': item['seller_part'].seller.name if item['seller_part'] is not None else '',
@@ -215,7 +217,7 @@ def part_upload_bom(request, part_id):
                 if 'part_number' in partData and 'quantity' in partData:
                     civ = full_part_number_to_broken_part(partData['part_number'])
                     subparts = Part.objects.filter(number_class=civ['class'], number_item=civ['item'], number_variation=civ['variation'])
-                    
+
                     if len(subparts) == 0:
                         messages.info(request, "Subpart: {} doesn't exist".format(partData['part_number']))
                         continue
@@ -225,13 +227,13 @@ def part_upload_bom(request, part_id):
                     if part == subpart:
                         messages.error(request, "Recursive part association: a part cant be a subpart of itsself")
                         return HttpResponseRedirect(reverse('error'))
-                    
+
                     sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
                     sp.save()
         else:
             messages.error(request, "File form not valid: {}".format(form.errors))
             return HttpResponseRedirect(reverse('error'))
-        
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
@@ -261,17 +263,17 @@ def upload_parts(request):
                     if 'manufacturer' in partData:
                         mfg_name = partData['manufacturer'] if partData['manufacturer'] is not None else ''
                         mfg, created = Manufacturer.objects.get_or_create(name=mfg_name, organization=organization)
-                    
+
                     try:
                         part_class = PartClass.objects.get(code=partData['part_class'])
                     except PartClass.DoesNotExist:
                         messages.error(request, "Partclass {} doesn't exist.".format(partData['part_class']))
                         return HttpResponseRedirect(reverse('error'))
-                    
-                    part, created = Part.objects.get_or_create(part_class=part_class, 
-                                                                description=partData['description'], 
+
+                    part, created = Part.objects.get_or_create(part_class=part_class,
+                                                                description=partData['description'],
                                                                 revision=partData['revision'],
-                                                                organization=organization, 
+                                                                organization=organization,
                                                                 manufacturer_part_number=mpn,
                                                                 manufacturer=mfg)
                     if created:
@@ -299,7 +301,7 @@ def export_part_list(request):
 
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts.csv"'
-    
+
     parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
 
     fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', ]
@@ -308,11 +310,11 @@ def export_part_list(request):
     writer.writeheader()
     for item in parts:
         row = {
-        'part_number': item.full_part_number(), 
-        'part_description': item.description, 
-        'part_revision': item.revision, 
-        'part_manufacturer': item.manufacturer.name if item.manufacturer is not None else '', 
-        'part_manufacturer_part_number': item.manufacturer_part_number if item.manufacturer is not None else '', 
+        'part_number': item.full_part_number(),
+        'part_description': item.description,
+        'part_revision': item.revision,
+        'part_manufacturer': item.manufacturer.name if item.manufacturer is not None else '',
+        'part_manufacturer_part_number': item.manufacturer_part_number if item.manufacturer is not None else '',
         }
         writer.writerow(row)
 
@@ -328,7 +330,7 @@ def part_octopart_match(request, part_id):
         return HttpResponseRedirect(reverse('error'))
 
     seller_parts = match_part(part)
-    
+
     if len(seller_parts) > 0:
         for dp in seller_parts:
             try:
@@ -337,7 +339,7 @@ def part_octopart_match(request, part_id):
                 continue
     else:
         messages.info(request, "Octopart wasn't able to find any parts with manufacturer part number: {}".format(part.manufacturer_part_number))
-        
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
@@ -362,7 +364,7 @@ def part_octopart_match_bom(request, part_id):
         else:
             messages.info(request, "Octopart wasn't able to find any parts with manufacturer part number: {}".format(part.manufacturer_part_number))
             continue
-        
+
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
 
@@ -371,7 +373,7 @@ def create_part(request):
     user = request.user
     profile = user.bom_profile()
     organization = profile.organization
-    
+
     if request.method == 'POST':
         form = PartForm(request.POST, organization=organization)
         if form.is_valid():
@@ -388,7 +390,7 @@ def create_part(request):
             )
             return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': str(new_part.id)}))
     else:
-        form = PartForm(organization=organization) 
+        form = PartForm(organization=organization)
 
     return TemplateResponse(request, 'bom/create-part.html', locals())
 
@@ -428,7 +430,7 @@ def part_edit(request, part_id):
                                 'revision': part.revision,
                                 'manufacturer_part_number': part.manufacturer_part_number,
                                 'manufacturer': part.manufacturer,}
-                                , organization=organization) 
+                                , organization=organization)
 
     return TemplateResponse(request, 'bom/edit-part.html', locals())
 
@@ -444,14 +446,14 @@ def manage_bom(request, part_id):
     except ObjectDoesNotExist:
         messages.error(request, "Part object does not exist.")
         return HttpResponseRedirect(reverse('error'))
-    
+
     if part.organization != organization:
         messages.error(request, "Cant access a part that is not yours!")
         return HttpResponseRedirect(reverse('error'))
 
     add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
     upload_subparts_csv_form = FileForm()
-    
+
     parts = part.indented()
     for item in parts:
         extended_quantity = 1000 * item['quantity']
@@ -471,7 +473,7 @@ def part_delete(request, part_id):
         return HttpResponseRedirect(reverse('error'))
 
     part.delete()
-    
+
     return HttpResponseRedirect(reverse('home'))
 
 
@@ -495,7 +497,7 @@ def add_subpart(request, part_id):
                 assembly_subpart=form.cleaned_data['assembly_subpart'],
                 count=form.cleaned_data['count']
             )
-    
+
     return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
 
 
@@ -506,9 +508,9 @@ def remove_subpart(request, part_id, subpart_id):
     except ObjectDoesNotExist:
         messages.error(request, "No subpart found with given part_id.")
         return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
-    
+
     subpart.delete()
-    
+
     return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
 
 
@@ -518,7 +520,7 @@ def remove_all_subparts(request, part_id):
 
     for subpart in subparts:
         subpart.delete()
-    
+
     return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
 
 
@@ -536,7 +538,7 @@ def upload_file_to_part(request, part_id):
             partfile = PartFile(file=request.FILES['file'], part=part)
             partfile.save()
             return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#specs')
-    
+
     messages.error(request, "Error uploading file.")
     return HttpResponseRedirect(reverse('error'))
 
@@ -548,7 +550,7 @@ def delete_file_from_part(request, part_id, partfile_id):
     except ObjectDoesNotExist:
         messages.error(request, "No file found with given file id.")
         return HttpResponseRedirect(reverse('error'))
-    
+
     partfile.delete()
-    
+
     return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#specs')
