@@ -23,7 +23,8 @@ logger = logging.getLogger(__name__)
 @login_required
 def home(request):
     profile = request.user.bom_profile()
-
+    organization = profile.organization
+    
     if profile.organization is None:
         organization, created = Organization.objects.get_or_create(
             owner=request.user,
@@ -35,7 +36,8 @@ def home(request):
         profile.role = 'A'
         profile.save()
 
-    parts = Part.objects.filter(organization=profile.organization).order_by('number_class__code', 'number_item', 'number_variation')
+
+    parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 
