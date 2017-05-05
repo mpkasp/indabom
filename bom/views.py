@@ -139,6 +139,8 @@ def part_export_bom(request, part_id):
     bom = part.indented()
     qty = 1000
     unit_cost = 0
+    unit_out_of_pocket_cost = 0
+    unit_nre = 0
 
     fieldnames = ['level', 'part_number', 'quantity', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_ext_qty', 'part_order_qty', 'part_seller', 'part_cost', 'part_ext_cost', 'part_nre']
 
