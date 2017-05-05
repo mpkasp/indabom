@@ -145,33 +145,27 @@ def part_export_bom(request, part_id):
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
     for item in bom:
-        extended_quantity = qty * item['quantity']
+        extended_quantity = int(qty) * item['quantity']
         item['extended_quantity'] = extended_quantity
 
-        # then get the lowest price & seller at that quantity,
-        part = item['part']
-        dps = SellerPart.objects.filter(part=part)
-        seller_price = None
-        seller = None
-        order_qty = extended_quantity
-        for dp in dps:
-            if dp.minimum_order_quantity < extended_quantity and (seller is None or dp.unit_cost < seller_price):
-                seller_price = dp.unit_cost
-                seller = dp
-            elif seller is None:
-                seller_price = dp.unit_cost
-                seller = dp
-                if dp.minimum_order_quantity > extended_quantity:
-                    order_qty = dp.minimum_order_quantity
+        subpart = item['part']
+        seller = subpart.optimal_seller(quantity=extended_quantity)
+        order_qty = extended_quantity if seller is None or extended_quantity > seller.minimum_order_quantity else seller.minimum_order_quantity
 
-        item['seller_price'] = seller_price
+        item['seller_price'] = seller.unit_cost if seller is not None else 0
+        item['seller_nre'] = seller.nre_cost if seller is not None else 0
         item['seller_part'] = seller
         item['order_quantity'] = order_qty
-        item['nre'] = seller.nre_cost if seller is not None else None
-        # then extend that price
-        item['extended_cost'] = extended_quantity * seller_price if seller_price is not None and extended_quantity is not None else None
 
-        unit_cost = unit_cost + seller_price * item['quantity'] if seller_price is not None else unit_cost
+        # then extend that price
+        item['extended_cost'] = extended_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
+        item['out_of_pocket_cost'] = order_qty * seller.unit_cost if seller is not None and seller.unit_cost is not None else 0
+
+        unit_cost = (unit_cost + seller.unit_cost * item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
+        unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['out_of_pocket_cost']
+        unit_nre = (unit_nre + item['seller_nre']) if item['seller_nre'] is not None else unit_nre
+        if seller is None:
+            extended_cost_complete = False
 
         row = {
         'level': item['indent_level'],
@@ -186,7 +180,7 @@ def part_export_bom(request, part_id):
         'part_seller': item['seller_part'].seller.name if item['seller_part'] is not None else '',
         'part_cost': item['seller_price'] if item['seller_price'] is not None else 0,
         'part_ext_cost': item['extended_cost'] if item['extended_cost'] is not None else 0,
-        'part_nre': item['nre'] if item['nre'] is not None else 0,
+        'part_nre': item['seller_nre'] if item['seller_nre'] is not None else 0,
         }
         writer.writerow(row)
     return response
