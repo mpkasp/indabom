@@ -162,25 +162,25 @@
                 <table class="highlight">
                     <thead>
                         <tr>
-                            <th>Level</th>
-                            <th>Part No.</th>
-                            <th>Qty</th>
-                            <th>Description</th>
-                            <th>Rev</th>
-                            <th>Manufacturer</th>
-                            <th>MPN</th>
-                            <th><i>Ext. Qty</i></th>
-                            <th><i>Order Qty</i></th>
-                            <th><i>Seller</i></th>
-                            <th><i>Price</i></th>
-                            <th><i>Ext Cost</i></th>
-                            <th><i>NRE</i></th>
+                            <th class="tighter text-small">Level</th>
+                            <th class="tighter text-small">Part No.</th>
+                            <th class="tighter text-small">Qty</th>
+                            <th class="tighter text-small">Description</th>
+                            <th class="tighter text-small">Rev</th>
+                            <th class="tighter text-small">Manufacturer</th>
+                            <th class="tighter text-small">MPN</th>
+                            <th class="tighter text-small"><i>Ext. Qty</i></th>
+                            <th class="tighter text-small"><i>Order Qty</i></th>
+                            <th class="tighter text-small"><i>Seller</i></th>
+                            <th class="tighter text-small"><i>Price</i></th>
+                            <th class="tighter text-small"><i>Ext Cost</i></th>
+                            <th class="tighter text-small"><i>NRE</i></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for subpart in parts %}
                         <tr>
-                            <td>
+                            <td class="tighter text-small">
                             {% with ''|center:subpart.indent_level as range %}
                             {% for _ in range %}
                                 &nbsp;
@@ -188,18 +188,18 @@
                             {% endwith %}
                             {{ subpart.indent_level }}
                             </td>
-                            <td><a href="{% url 'part-info' part_id=subpart.part.id %}">{{ subpart.part.full_part_number }}</a></td>
-                            <td>{{ subpart.quantity }}</td>
-                            <td>{{ subpart.part.description }}</td>
-                            <td>{{ subpart.part.revision }}</td>
-                            <td>{{ subpart.part.manufacturer.name }}</td>
-                            <td>{{ subpart.part.manufacturer_part_number }}</td>
-                            <td>{{ subpart.extended_quantity }}</td>
-                            <td>{{ subpart.order_quantity }}</td>
-                            <td>{{ subpart.seller_part.seller.name | default:"-" }}</td>
-                            <td>{{ subpart.seller_price | default:"-"}}</td>
-                            <td>{{ subpart.extended_cost | default:"-" }}</td>
-                            <td>{{ subpart.seller_nre | default:"-" }}</td>
+                            <td class="tighter text-small"><a href="{% url 'part-info' part_id=subpart.part.id %}">{{ subpart.part.full_part_number }}</a></td>
+                            <td class="tighter text-small">{{ subpart.quantity }}</td>
+                            <td class="tighter text-small">{{ subpart.part.description }}</td>
+                            <td class="tighter text-small">{{ subpart.part.revision }}</td>
+                            <td class="tighter text-small">{{ subpart.part.manufacturer.name }}</td>
+                            <td class="tighter text-small">{{ subpart.part.manufacturer_part_number }}</td>
+                            <td class="tighter text-small">{{ subpart.extended_quantity }}</td>
+                            <td class="tighter text-small">{{ subpart.order_quantity }}</td>
+                            <td class="tighter text-small">{{ subpart.seller_part.seller.name | default:"-" }}</td>
+                            <td class="tighter text-small">{{ subpart.seller_price | default:"-"}}</td>
+                            <td class="tighter text-small">{{ subpart.extended_cost | default:"-" }}</td>
+                            <td class="tighter text-small">{{ subpart.seller_nre | default:"-" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

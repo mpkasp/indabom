@@ -18,21 +18,21 @@
 <table class="highlight">
     <thead>
         <tr>
-            <th>Part Number</th>
-            <th>Description</th> 
-            <th>Revision</th>
-            <th>Manufacturer</th>
-            <th>MPN</th>
+            <th class="tight text-small">Part Number</th>
+            <th class="tight text-small">Description</th> 
+            <th class="tight text-small">Revision</th>
+            <th class="tight text-small">Manufacturer</th>
+            <th class="tight text-small">MPN</th>
         </tr>
     </thead>
     <tbody>
         {% for part in parts %}
         <tr>
-            <td><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
-            <td>{{ part.description }}</td>
-            <td>{{ part.revision }}</td>
-            <td>{{ part.manufacturer.name }}</td>
-            <td>{{ part.manufacturer_part_number }}</td>
+            <td class="tight text-small"><a href="{% url 'part-info' part_id=part.id %}">{{ part.full_part_number }}</a></td>
+            <td class="tight text-small">{{ part.description }}</td>
+            <td class="tight text-small">{{ part.revision }}</td>
+            <td class="tight text-small">{{ part.manufacturer.name }}</td>
+            <td class="tight text-small">{{ part.manufacturer_part_number }}</td>
         </tr>
         {% endfor %}
     </tbody>
