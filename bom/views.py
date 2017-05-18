@@ -240,6 +240,7 @@ def upload_parts(request):
     user = request.user
     profile = user.bom_profile()
     organization = profile.organization
+    partclasses = PartClass.objects.all()
 
     if request.method == 'POST' and request.FILES['file'] is not None:
         form = FileForm(request.POST, request.FILES)
@@ -509,7 +510,7 @@ def remove_subpart(request, part_id, subpart_id):
 
     subpart.delete()
 
-    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
+    return HttpResponseRedirect(reverse('part-manage-bom', kwargs={'part_id': part_id}))
 
 
 @login_required
@@ -519,7 +520,7 @@ def remove_all_subparts(request, part_id):
     for subpart in subparts:
         subpart.delete()
 
-    return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}) + '#bom')
+    return HttpResponseRedirect(reverse('part-manage-bom', kwargs={'part_id': part_id}))
 
 
 @login_required

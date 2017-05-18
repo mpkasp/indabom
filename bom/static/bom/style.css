@@ -1,8 +1,23 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 td {
-    font-size: .75em !important;
+
+}
+
+.tight {
     padding: 5px 5px;
+}
+
+.tighter {
+    padding: 1px 1px;
+}
+
+.text-small {
+    font-size: .75em !important;
+}
+
+.text-normal {
+    font-size: 1em !important;
 }
 
 .text-right {

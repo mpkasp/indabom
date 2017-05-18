@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}{% endblock %}
+{% load staticfiles %}
+
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+{% endblock %}
 
 {% block menu %}
 <li><a href="{% url 'home' %}">Cancel</a></li>

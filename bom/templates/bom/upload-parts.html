@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}{% endblock %}
+{% load staticfiles %}
+
+{% block title %}
+<link rel="stylesheet" type="text/css" href="{% static 'bom/style.css' %}" />
+{% endblock %}
 
 {% block menu %}
 <li><a href="{% url 'home' %}">Cancel</a></li>
@@ -29,5 +33,19 @@
         </div>
     </div>
 </form>
-<a class="btn green lighten-1" href="javascript:history.back()">Cancel</a>
+<h5>Part Classes Available</h5>
+<table>
+    <thead>
+        <th class="tighter text-normal">Code</th>
+        <th class="tighter text-normal">Name</th>
+        <th class="tighter text-normal">Description</th>
+    </thead>
+    {% for partclass in partclasses %}
+    <tbody>
+        <td class="tighter text-normal">{{ partclass.code }}</td>
+        <td class="tighter text-normal">{{ partclass.name }}</td>
+        <td class="tighter text-normal">{{ partclass.comment }}</td>
+    </tbody>
+    {% endfor %}
+</table>
 {% endblock %}
