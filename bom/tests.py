@@ -60,7 +60,7 @@ class TestBOM(TransactionTestCase):
         self.client.login(username='kasper', password='ghostpassword')
         
         response = self.client.post(reverse('signup'))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
 
 
     def test_export_part_list(self):
