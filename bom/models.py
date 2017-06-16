@@ -17,7 +17,7 @@ class Organization(models.Model):
 
 class UserMeta(models.Model):
     user = models.OneToOneField(User, db_index=True)
-    organization = models.ForeignKey(Organization)
+    organization = models.ForeignKey(Organization, blank=True, null=True)
     role = models.CharField(max_length=1, choices=(('A', 'Admin'), ('V', 'Viewer'), ))
 
 
