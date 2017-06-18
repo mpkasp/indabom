@@ -15,7 +15,7 @@ class UserAdmin(UserAdmin):
 
 class OrganizationAdmin(admin.ModelAdmin):
     list_display = ('name', )
-    
+
 
 class SubpartInline(admin.TabularInline):
     model = Subpart
@@ -33,7 +33,15 @@ class SellerAdmin(admin.ModelAdmin):
 
 
 class SellerPartAdmin(admin.ModelAdmin):
-    list_display = ('part', 'seller', 'minimum_order_quantity', 'minimum_pack_quantity', 'unit_cost', 'lead_time_days', 'nre_cost', 'ncnr')
+    list_display = (
+        'part',
+        'seller',
+        'minimum_order_quantity',
+        'minimum_pack_quantity',
+        'unit_cost',
+        'lead_time_days',
+        'nre_cost',
+        'ncnr')
 
 
 class SellerPartAdminInline(admin.TabularInline):
@@ -48,7 +56,7 @@ class PartFileAdmin(admin.ModelAdmin):
     def get_full_part_number(self, obj):
         return obj.part.full_part_number()
     get_full_part_number.short_description = 'PartNumber'
-    
+
 
 class PartFileAdminInline(admin.TabularInline):
     model = PartFile
@@ -62,7 +70,13 @@ class PartClassAdmin(admin.ModelAdmin):
 class PartAdmin(admin.ModelAdmin):
     ordering = ('number_class__code', 'number_item', 'number_variation')
     readonly_fields = ('get_full_part_number', )
-    list_display = ('get_full_part_number', 'revision', 'description', 'manufacturer', 'manufacturer_part_number', )
+    list_display = (
+        'get_full_part_number',
+        'revision',
+        'description',
+        'manufacturer',
+        'manufacturer_part_number',
+    )
     raw_id_fields = ('number_class', 'manufacturer', )
     inlines = [
         SubpartInline,
@@ -78,6 +92,7 @@ class PartAdmin(admin.ModelAdmin):
 
 class ManufacturerAdmin(admin.ModelAdmin):
     list_display = ('name', )
+
 
 admin.site.unregister(User)
 

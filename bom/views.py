@@ -1,4 +1,8 @@
-import csv, export, codecs, logging, uuid
+import csv
+import export
+import codecs
+import logging
+import uuid
 
 from indabom.settings import MEDIA_URL
 
@@ -20,24 +24,28 @@ from .octopart_parts_match import match_part
 
 logger = logging.getLogger(__name__)
 
+
 @login_required
 def home(request):
     profile = request.user.bom_profile()
     organization = profile.organization
-    
+
     if profile.organization is None:
         organization, created = Organization.objects.get_or_create(
             owner=request.user,
             defaults={'name': request.user.first_name + ' ' + request.user.last_name,
-                        'subscription': 'F'},
+                      'subscription': 'F'},
         )
 
         profile.organization = organization
         profile.role = 'A'
         profile.save()
 
-
-    parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
+    parts = Part.objects.filter(
+        organization=organization).order_by(
+        'number_class__code',
+        'number_item',
+        'number_variation')
     return TemplateResponse(request, 'bom/dashboard.html', locals())
 
 
@@ -101,12 +109,20 @@ def part_info(request, part_id):
         item['order_quantity'] = order_qty
 
         # then extend that price
-        item['extended_cost'] = extended_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
-        item['out_of_pocket_cost'] = order_qty * seller.unit_cost if seller is not None and seller.unit_cost is not None else 0
+        item['extended_cost'] = extended_quantity * \
+            seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
+        item['out_of_pocket_cost'] = order_qty * \
+            seller.unit_cost if seller is not None and seller.unit_cost is not None else 0
 
-        unit_cost = (unit_cost + seller.unit_cost * item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
-        unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['out_of_pocket_cost']
-        unit_nre = (unit_nre + item['seller_nre']) if item['seller_nre'] is not None else unit_nre
+        unit_cost = (
+            unit_cost +
+            seller.unit_cost *
+            item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
+        unit_out_of_pocket_cost = unit_out_of_pocket_cost + \
+            item['out_of_pocket_cost']
+        unit_nre = (
+            unit_nre +
+            item['seller_nre']) if item['seller_nre'] is not None else unit_nre
         if seller is None:
             extended_cost_complete = False
 
@@ -144,7 +160,20 @@ def part_export_bom(request, part_id):
     unit_out_of_pocket_cost = 0
     unit_nre = 0
 
-    fieldnames = ['level', 'part_number', 'quantity', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', 'part_ext_qty', 'part_order_qty', 'part_seller', 'part_cost', 'part_ext_cost', 'part_nre']
+    fieldnames = [
+        'level',
+        'part_number',
+        'quantity',
+        'part_description',
+        'part_revision',
+        'part_manufacturer',
+        'part_manufacturer_part_number',
+        'part_ext_qty',
+        'part_order_qty',
+        'part_seller',
+        'part_cost',
+        'part_ext_cost',
+        'part_nre']
 
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
@@ -162,29 +191,37 @@ def part_export_bom(request, part_id):
         item['order_quantity'] = order_qty
 
         # then extend that price
-        item['extended_cost'] = extended_quantity * seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
-        item['out_of_pocket_cost'] = order_qty * seller.unit_cost if seller is not None and seller.unit_cost is not None else 0
+        item['extended_cost'] = extended_quantity * \
+            seller.unit_cost if seller is not None and seller.unit_cost is not None and extended_quantity is not None else None
+        item['out_of_pocket_cost'] = order_qty * \
+            seller.unit_cost if seller is not None and seller.unit_cost is not None else 0
 
-        unit_cost = (unit_cost + seller.unit_cost * item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
-        unit_out_of_pocket_cost = unit_out_of_pocket_cost + item['out_of_pocket_cost']
-        unit_nre = (unit_nre + item['seller_nre']) if item['seller_nre'] is not None else unit_nre
+        unit_cost = (
+            unit_cost +
+            seller.unit_cost *
+            item['quantity']) if seller is not None and seller.unit_cost is not None else unit_cost
+        unit_out_of_pocket_cost = unit_out_of_pocket_cost + \
+            item['out_of_pocket_cost']
+        unit_nre = (
+            unit_nre +
+            item['seller_nre']) if item['seller_nre'] is not None else unit_nre
         if seller is None:
             extended_cost_complete = False
 
         row = {
-        'level': item['indent_level'],
-        'part_number': item['part'].full_part_number(),
-        'quantity': item['quantity'],
-        'part_description': item['part'].description,
-        'part_revision': item['part'].revision,
-        'part_manufacturer': item['part'].manufacturer.name if item['part'].manufacturer is not None else '',
-        'part_manufacturer_part_number': item['part'].manufacturer_part_number,
-        'part_ext_qty': item['extended_quantity'],
-        'part_order_qty': item['order_quantity'],
-        'part_seller': item['seller_part'].seller.name if item['seller_part'] is not None else '',
-        'part_cost': item['seller_price'] if item['seller_price'] is not None else 0,
-        'part_ext_cost': item['extended_cost'] if item['extended_cost'] is not None else 0,
-        'part_nre': item['seller_nre'] if item['seller_nre'] is not None else 0,
+            'level': item['indent_level'],
+            'part_number': item['part'].full_part_number(),
+            'quantity': item['quantity'],
+            'part_description': item['part'].description,
+            'part_revision': item['part'].revision,
+            'part_manufacturer': item['part'].manufacturer.name if item['part'].manufacturer is not None else '',
+            'part_manufacturer_part_number': item['part'].manufacturer_part_number,
+            'part_ext_qty': item['extended_quantity'],
+            'part_order_qty': item['order_quantity'],
+            'part_seller': item['seller_part'].seller.name if item['seller_part'] is not None else '',
+            'part_cost': item['seller_price'] if item['seller_price'] is not None else 0,
+            'part_ext_cost': item['extended_cost'] if item['extended_cost'] is not None else 0,
+            'part_nre': item['seller_nre'] if item['seller_nre'] is not None else 0,
         }
         writer.writerow(row)
     return response
@@ -204,7 +241,12 @@ def part_upload_bom(request, part_id):
             csvfile = request.FILES['file']
             dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.open()
-            reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+            reader = csv.reader(
+                codecs.EncodedFile(
+                    csvfile,
+                    "utf-8"),
+                delimiter=',',
+                dialect=dialect)
             headers = reader.next()
             # Subpart.objects.filter(assembly_part=part).delete()
 
@@ -213,23 +255,36 @@ def part_upload_bom(request, part_id):
                 for idx, item in enumerate(row):
                     partData[headers[idx]] = item
                 if 'part_number' in partData and 'quantity' in partData:
-                    civ = full_part_number_to_broken_part(partData['part_number'])
-                    subparts = Part.objects.filter(number_class=civ['class'], number_item=civ['item'], number_variation=civ['variation'])
+                    civ = full_part_number_to_broken_part(
+                        partData['part_number'])
+                    subparts = Part.objects.filter(
+                        number_class=civ['class'],
+                        number_item=civ['item'],
+                        number_variation=civ['variation'])
 
                     if len(subparts) == 0:
-                        messages.info(request, "Subpart: {} doesn't exist".format(partData['part_number']))
+                        messages.info(
+                            request, "Subpart: {} doesn't exist".format(
+                                partData['part_number']))
                         continue
 
                     subpart = subparts[0]
                     count = partData['quantity']
                     if part == subpart:
-                        messages.error(request, "Recursive part association: a part cant be a subpart of itsself")
+                        messages.error(
+                            request, "Recursive part association: a part cant be a subpart of itsself")
                         return HttpResponseRedirect(reverse('error'))
 
-                    sp = Subpart(assembly_part=part,assembly_subpart=subpart,count=count)
+                    sp = Subpart(
+                        assembly_part=part,
+                        assembly_subpart=subpart,
+                        count=count)
                     sp.save()
         else:
-            messages.error(request, "File form not valid: {}".format(form.errors))
+            messages.error(
+                request,
+                "File form not valid: {}".format(
+                    form.errors))
             return HttpResponseRedirect(reverse('error'))
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
@@ -248,7 +303,12 @@ def upload_parts(request):
             csvfile = request.FILES['file']
             dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.open()
-            reader = csv.reader(codecs.EncodedFile(csvfile, "utf-8"), delimiter=',', dialect=dialect)
+            reader = csv.reader(
+                codecs.EncodedFile(
+                    csvfile,
+                    "utf-8"),
+                delimiter=',',
+                dialect=dialect)
             headers = reader.next()
             for row in reader:
                 partData = {}
@@ -261,26 +321,36 @@ def upload_parts(request):
                         mpn = partData['manufacturer_part_number']
                     if 'manufacturer' in partData:
                         mfg_name = partData['manufacturer'] if partData['manufacturer'] is not None else ''
-                        mfg, created = Manufacturer.objects.get_or_create(name=mfg_name, organization=organization)
+                        mfg, created = Manufacturer.objects.get_or_create(
+                            name=mfg_name, organization=organization)
 
                     try:
-                        part_class = PartClass.objects.get(code=partData['part_class'])
+                        part_class = PartClass.objects.get(
+                            code=partData['part_class'])
                     except PartClass.DoesNotExist:
-                        messages.error(request, "Partclass {} doesn't exist.".format(partData['part_class']))
+                        messages.error(
+                            request, "Partclass {} doesn't exist.".format(
+                                partData['part_class']))
                         return HttpResponseRedirect(reverse('error'))
 
                     part, created = Part.objects.get_or_create(part_class=part_class,
-                                                                description=partData['description'],
-                                                                revision=partData['revision'],
-                                                                organization=organization,
-                                                                manufacturer_part_number=mpn,
-                                                                manufacturer=mfg)
+                                                               description=partData['description'],
+                                                               revision=partData['revision'],
+                                                               organization=organization,
+                                                               manufacturer_part_number=mpn,
+                                                               manufacturer=mfg)
                     if created:
-                        messages.info(request, "{}: {} created.".format(part.full_part_number(), part.description))
+                        messages.info(
+                            request, "{}: {} created.".format(
+                                part.full_part_number(), part.description))
                     else:
-                        messages.warning(request, "{}: {} already exists!".format(part.full_part_number(), part.description))
+                        messages.warning(
+                            request, "{}: {} already exists!".format(
+                                part.full_part_number(), part.description))
                 else:
-                    messages.error(request, "File must contain at least the 3 columns (with headers): 'part_class', 'description', and 'revision'.")
+                    messages.error(
+                        request,
+                        "File must contain at least the 3 columns (with headers): 'part_class', 'description', and 'revision'.")
                     return HttpResponseRedirect(reverse('error'))
         else:
             messages.error(request, "Invalid form input.")
@@ -301,19 +371,29 @@ def export_part_list(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="indabom_parts.csv"'
 
-    parts = Part.objects.filter(organization=organization).order_by('number_class__code', 'number_item', 'number_variation')
+    parts = Part.objects.filter(
+        organization=organization).order_by(
+        'number_class__code',
+        'number_item',
+        'number_variation')
 
-    fieldnames = ['part_number', 'part_description', 'part_revision', 'part_manufacturer', 'part_manufacturer_part_number', ]
+    fieldnames = [
+        'part_number',
+        'part_description',
+        'part_revision',
+        'part_manufacturer',
+        'part_manufacturer_part_number',
+    ]
 
     writer = csv.DictWriter(response, fieldnames=fieldnames)
     writer.writeheader()
     for item in parts:
         row = {
-        'part_number': item.full_part_number(),
-        'part_description': item.description,
-        'part_revision': item.revision,
-        'part_manufacturer': item.manufacturer.name if item.manufacturer is not None else '',
-        'part_manufacturer_part_number': item.manufacturer_part_number if item.manufacturer is not None else '',
+            'part_number': item.full_part_number(),
+            'part_description': item.description,
+            'part_revision': item.revision,
+            'part_manufacturer': item.manufacturer.name if item.manufacturer is not None else '',
+            'part_manufacturer_part_number': item.manufacturer_part_number if item.manufacturer is not None else '',
         }
         writer.writerow(row)
 
@@ -337,7 +417,10 @@ def part_octopart_match(request, part_id):
             except IntegrityError:
                 continue
     else:
-        messages.info(request, "Octopart wasn't able to find any parts with manufacturer part number: {}".format(part.manufacturer_part_number))
+        messages.info(
+            request,
+            "Octopart wasn't able to find any parts with manufacturer part number: {}".format(
+                part.manufacturer_part_number))
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
 
@@ -361,7 +444,10 @@ def part_octopart_match_bom(request, part_id):
                 except IntegrityError:
                     continue
         else:
-            messages.info(request, "Octopart wasn't able to find any parts with manufacturer part number: {}".format(part.manufacturer_part_number))
+            messages.info(
+                request,
+                "Octopart wasn't able to find any parts with manufacturer part number: {}".format(
+                    part.manufacturer_part_number))
             continue
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('home')))
@@ -384,10 +470,15 @@ def create_part(request):
                 manufacturer=form.cleaned_data['manufacturer'],
                 organization=organization,
                 defaults={'description': form.cleaned_data['description'],
-                            'revision': form.cleaned_data['revision'],
-                }
+                          'revision': form.cleaned_data['revision'],
+                          }
             )
-            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': str(new_part.id)}))
+            return HttpResponseRedirect(
+                reverse(
+                    'part-info',
+                    kwargs={
+                        'part_id': str(
+                            new_part.id)}))
     else:
         form = PartForm(organization=organization)
 
@@ -420,16 +511,23 @@ def part_edit(request, part_id):
             old_part.revision = form.cleaned_data['revision']
             old_part.save()
 
-            return HttpResponseRedirect(reverse('part-info', kwargs={'part_id': part_id}))
+            return HttpResponseRedirect(
+                reverse(
+                    'part-info',
+                    kwargs={
+                        'part_id': part_id}))
     else:
-        form = PartForm(initial={'number_class': part.number_class,
-                                'number_item': part.number_item,
-                                'number_variation': part.number_variation,
-                                'description': part.description,
-                                'revision': part.revision,
-                                'manufacturer_part_number': part.manufacturer_part_number,
-                                'manufacturer': part.manufacturer,}
-                                , organization=organization)
+        form = PartForm(
+            initial={
+                'number_class': part.number_class,
+                'number_item': part.number_item,
+                'number_variation': part.number_variation,
+                'description': part.description,
+                'revision': part.revision,
+                'manufacturer_part_number': part.manufacturer_part_number,
+                'manufacturer': part.manufacturer,
+            },
+            organization=organization)
 
     return TemplateResponse(request, 'bom/edit-part.html', locals())
 
@@ -450,7 +548,8 @@ def manage_bom(request, part_id):
         messages.error(request, "Cant access a part that is not yours!")
         return HttpResponseRedirect(reverse('error'))
 
-    add_subpart_form = AddSubpartForm(initial={'count': 1, }, organization=organization)
+    add_subpart_form = AddSubpartForm(
+        initial={'count': 1, }, organization=organization)
     upload_subparts_csv_form = FileForm()
 
     parts = part.indented()
