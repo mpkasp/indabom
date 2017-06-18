@@ -7,11 +7,13 @@ from django.db import IntegrityError
 from django.contrib.auth.models import User
 from forms import UserForm
 
+
 def index(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/bom/')
     else:
         return TemplateResponse(request, 'indabom/index.html', locals())
+
 
 def signup(request):
     if request.method == 'POST':
@@ -21,6 +23,6 @@ def signup(request):
             login(request, new_user)
             return HttpResponseRedirect('/bom/')
     else:
-        form = UserForm() 
+        form = UserForm()
 
     return TemplateResponse(request, 'indabom/signup.html', locals())
