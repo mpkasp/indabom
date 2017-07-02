@@ -41,6 +41,8 @@ def deploy():
     with cd('/home/indabom/web/site'):
         run('git checkout {0}'.format(branch))
         run('git pull')
+    pip_install()
+    with cd('/home/indabom/web/site'):
         run('source /home/indabom/web/bin/activate && ./manage.py collectstatic -v0 --noinput')
 
 
@@ -270,5 +272,4 @@ def make_web_server():
 
 def deploy_full():
     deploy()
-    pip_install()
     migrate()
