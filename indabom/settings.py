@@ -134,7 +134,7 @@ LOGGING = {
             'level': 'INFO', # Or maybe INFO or DEBUG
             'propagate': False
         },
-        # Indabom app
+        # django-bom app
         'bom': {
             'handlers': ['logfile'],
             'level': 'INFO', # Or maybe INFO or DEBUG
