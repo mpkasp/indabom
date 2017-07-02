@@ -9,6 +9,12 @@ server {
 }
 
 server {
+    server_name www.indabom.com;
+    listen 80;
+    return 301 https://indabom.com$request_uri;
+}
+
+server {
 
     listen   443;
 
