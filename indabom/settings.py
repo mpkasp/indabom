@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'raven.contrib.django.raven_compat',
 ]
 
 MIDDLEWARE = [
@@ -171,3 +173,11 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
 LOGIN_REDIRECT_URL = '/bom/'
+
+RAVEN_CONFIG = {
+    'dsn': 'https://de2bb8eb6d28466ea960ffeead1e689a:79af277a848143f7bebabadc5c4e84a2@sentry.io/187028',
+    # If you are using git, you can also automatically configure the
+    # release based on the git info.
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
+
