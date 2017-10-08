@@ -38,7 +38,8 @@
 
     <nav class="green lighten-1">
         <div class="nav-wrapper">
-            <a href="/" class="brand-logo"><div><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: fixed;">IndaBOM</span></div></a>
+            <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: fixed;">IndaBOM</span></a>
+            <a href="/" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: fixed;">IndaBOM</span></a>
             <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 {% block menu %}{% endblock %}
