@@ -3,6 +3,15 @@
 {% load staticfiles %}
 
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A simple, free, indented bill of materials tool implemented using an open source project.">
+    <meta name="author" content="Mike Kasparian">
+    <meta name="keywords" content="Bill of Materials, BOM, indented bom, plm, PLM, django-bom, django, django bom, django plm, open source bom, open source plm, open source, indented bill of materials, free bom, free plm, ">
+
+    <title>{% block metatitle %}{% endblock %}</title>
+
     <!-- Materialize, eventually pull this into the project -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="{% static 'indabom/css/materialize.min.css' %}"  media="screen,projection"/>    

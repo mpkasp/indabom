@@ -21,6 +21,7 @@ server {
     ssl    on;
     ssl_certificate         /etc/letsencrypt/live/indabom.com/fullchain.pem;
     ssl_certificate_key     /etc/letsencrypt/live/indabom.com/privkey.pem;
+    ssl_session_cache shared:SSL:10m;
     
     server_name indabom.com;
 

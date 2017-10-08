@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
+{% block metatitle %}Indabom: A simple, open source bill of materials tool{% endblock %}
 {% block title %}{% endblock %}
 
 {% block content %}
 <div style="text-align: center; margin-top: 25vh;">
 <h1>Welcome To IndaBOM</h1>
-<p>A simple <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</p>
+<p>A simple, <a href="">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</p>
 {% if not user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Sign Up</a></p>{% endif %}
 {% if user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
 </div>
