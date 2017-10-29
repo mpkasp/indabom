@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+ body {
+     display: flex;
+     min-height: 100vh;
+     flex-direction: column;
+ }
+ 
+ main {
+     flex: 1 0 auto;
+ }
+
 .brand-logo {
     padding-left: 15px !important;
 }
@@ -20,4 +30,15 @@
 
 .errorlist {
     color: red;
+}
+
+.page-footer {
+    margin-top: 50px;
+}
+
+.promo-caption {
+    font-size: 1.7rem;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 0;
 }

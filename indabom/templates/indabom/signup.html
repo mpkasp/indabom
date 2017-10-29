@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
 
-{% block title %}{% endblock %}
+{% block title %}Sign Up For IndaBOM{% endblock %}
 
 {% block content %}
-<h5>Sign Up For IndaBOM</h5>
 
 <form action="{% url 'signup' %}" method="post">
     {% csrf_token %}

@@ -19,6 +19,9 @@
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+    <!-- Github star link -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
     <!-- Custom -->
     <link rel="stylesheet" href="{% static 'indabom/css/indabom.css' %}">
     <link rel="stylesheet" href="{% static 'bom/style.css' %}">
@@ -38,8 +41,8 @@
 
     <nav class="green lighten-1">
         <div class="nav-wrapper">
-            <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: fixed;">IndaBOM</span></a>
-            <a href="/" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: fixed;">IndaBOM</span></a>
+            <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
+            <a href="/" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
             <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 {% block menu %}{% endblock %}
@@ -56,10 +59,39 @@
         </div>
     </nav>
     
-    <div class="container"><h4>{% block title %}{% endblock %}</h4></div>
+    <main>
+        <h3 class="col s12 light header container" style="padding-top: 20px;">{% block title %}{% endblock %}</h3>
+        <div id="content" class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
 
-    <div id="content" class="container">
-        {% block content %}{% endblock %}
-    </div>
+    <footer class="page-footer green lighten-1">
+        <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">Help Indabom Grow</h5>
+                <p class="grey-text text-lighten-4">We hope you are as excited about Indabom as we are! Please reach out if you'd like to learn more at <a href="mailto:info@indabom.com">info@indabom.com</a></p>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
+                  <!-- <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li> -->
+                </ul>
+              </div>
+            </div>
+            <div class="row center">
+                <!-- Place this tag where you want the button to render. -->
+                <a class="github-button" href="https://github.com/mpkasp/django-bom" data-size="large" data-show-count="true" aria-label="Star mpkasp/django-bom on GitHub">Star</a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+            © 2017 Copyright Indabom
+            <!-- <a class="grey-text text-lighten-4 right" href="#!">More Links</a> -->
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
