@@ -16,11 +16,18 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from django.contrib.sitemaps.views import sitemap
 from django.contrib import admin
 from django.conf import settings
 from django.views.generic import TemplateView
 
+from .sitemaps import StaticViewSitemap
 from . import views
+
+# Dictionary containing your sitemap classes
+sitemaps = {
+   'static': StaticViewSitemap(),
+}
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -30,6 +37,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'indabom/login.html', 'redirect_authenticated_user': True}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 if settings.DEBUG:
