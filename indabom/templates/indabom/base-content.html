@@ -39,6 +39,7 @@
         });
     </script>
 
+    <div class="navbar-fixed">
     <nav class="green lighten-1">
         <div class="nav-wrapper">
             <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
@@ -58,9 +59,10 @@
             </ul>
         </div>
     </nav>
+    </div>
     
     <main>
-        <h3 class="col s12 light header container" style="padding-top: 20px;">{% block title %}{% endblock %}</h3>
+        <h4 class="col s12 light header container" style="padding-top: 20px;">{% block title %}{% endblock %}</h4>
         <div id="content" class="container">
             {% block content %}{% endblock %}
         </div>
@@ -70,8 +72,8 @@
         <div class="container">
             <div class="row">
               <div class="col l6 s12">
-                <h5 class="white-text">Help Indabom Grow</h5>
-                <p class="grey-text text-lighten-4">We hope you are as excited about Indabom as we are! Please reach out if you'd like to learn more at <a href="mailto:info@indabom.com">info@indabom.com</a></p>
+                <h5 class="white-text">Help IndaBOM Grow</h5>
+                <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more at <a href="mailto:info@indabom.com">info@indabom.com</a></p>
               </div>
               <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">Links</h5>
@@ -88,7 +90,7 @@
         </div>
         <div class="footer-copyright">
             <div class="container">
-            © 2017 Copyright Indabom
+            © 2017 Copyright IndaBOM
             <!-- <a class="grey-text text-lighten-4 right" href="#!">More Links</a> -->
             </div>
         </div>
