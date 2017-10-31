@@ -42,3 +42,7 @@
     margin-top: 5px;
     margin-bottom: 0;
 }
+
+input[type=text]:focus:not([readonly]) {
+    box-shadow: 0 0px 0 0;
+}
