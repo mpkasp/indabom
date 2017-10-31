@@ -8,7 +8,7 @@ chardet==3.0.4
 contextlib2==0.5.5
 cryptography==1.9
 Django==1.10.5
-django-bom==0.33
+django-bom==0.34
 enum34==1.1.6
 export==0.1.2
 Fabric==1.13.2

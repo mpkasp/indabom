@@ -40,26 +40,28 @@
     </script>
 
     <div class="navbar-fixed">
-    <nav class="green lighten-1">
-        <div class="nav-wrapper">
-            <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
-            <a href="/" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
-            <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                {% block menu %}{% endblock %}
-                {% if user.is_superuser and user.is_authenticated %}<li><a href="/admin/">Admin</a></li>{% endif %}
-                {% if user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
-                {% if not user.is_authenticated %}<li><a href="{% url 'login' %}">Login</a></li>{% endif %}
-            </ul>
-            <ul class="side-nav" id="mobile-menu">
-                {% block mobilemenu %}{% endblock %}
-                {% if user.is_superuser and user.is_authenticated %}<li><a href="/admin/">Admin</a></li>{% endif %}
-                {% if user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
-                {% if not user.is_authenticated %}<li><a href="{% url 'login' %}">Login</a></li>{% endif %}
-            </ul>
-        </div>
-    </nav>
+        <nav class="green lighten-1">
+            <div class="nav-wrapper">
+                <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
+                <a href="/" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
+                <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    {% block menu %}{% endblock %}
+                    {% if user.is_superuser and user.is_authenticated %}<li><a href="/admin/">Admin</a></li>{% endif %}
+                    {% if user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
+                    {% if not user.is_authenticated %}<li><a href="{% url 'login' %}">Login</a></li>{% endif %}
+                </ul>
+            </div>
+        </nav>
     </div>
+    
+    <!-- Make sure this is not in navbar-fixed or it will be disabled -->
+    <ul class="side-nav" id="mobile-menu">
+        {% block mobilemenu %}{% endblock %}
+        {% if user.is_superuser and user.is_authenticated %}<li><a href="/admin/">Admin</a></li>{% endif %}
+        {% if user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
+        {% if not user.is_authenticated %}<li><a href="{% url 'login' %}">Login</a></li>{% endif %}
+    </ul>
     
     <main>
         <h4 class="col s12 light header container" style="padding-top: 20px;">{% block title %}{% endblock %}</h4>
