@@ -8,13 +8,14 @@ chardet==3.0.4
 contextlib2==0.5.5
 cryptography==1.9
 Django==1.10.5
-django-bom==0.41
+django-bom==0.42
 enum34==1.1.6
 export==0.1.2
 Fabric==1.13.2
 gunicorn==19.7.0
 idna==2.5
 ipaddress==1.0.18
+MySQL-python==1.2.5
 packaging==16.8
 paramiko==2.2.1
 pep8==1.7.0
