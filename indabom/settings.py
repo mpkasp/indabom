@@ -163,11 +163,3 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
 LOGIN_REDIRECT_URL = '/bom/'
-
-RAVEN_CONFIG = {
-    'dsn': 'https://de2bb8eb6d28466ea960ffeead1e689a:79af277a848143f7bebabadc5c4e84a2@sentry.io/187028',
-    # If you are using git, you can also automatically configure the
-    # release based on the git info.
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
-}
-
