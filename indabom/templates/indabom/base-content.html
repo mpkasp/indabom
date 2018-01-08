@@ -76,6 +76,16 @@
     <main>
         <h4 class="col s12 light header container" style="padding-top: 20px;">{% block title %}{% endblock %}</h4>
         <div id="content" class="container">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="card alert alert-{{ message.tags }} alert-dismissible"{% endif %} role="alert">
+                    {{ message.message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
             {% block content %}{% endblock %}
             {% block action-btn %}{% endblock %}
         </div>

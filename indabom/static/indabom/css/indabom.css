@@ -46,3 +46,21 @@
 input[type=text]:focus:not([readonly]) {
     box-shadow: 0 0px 0 0;
 }
+
+.alert {
+    padding: 5px;
+    background-color: #dcedc8; /* light green lighten-4 */
+    margin: 5px;
+    border: solid #aed581 1px; /* light green lighten-2 */
+}
+
+.alert-error {
+    color: white;
+    background-color: #f44336; /* red */
+    border: solid #e57373 1px; /* red lighten-2 */
+}
+
+.alert-warning {
+    background-color: #f0f4c3; /* lime lighten-4 */
+    border: solid #dce775 1px; /* lime lighten-2 */
+}
