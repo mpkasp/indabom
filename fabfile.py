@@ -12,7 +12,7 @@ Everything else uses the unprivileged indabom user
 """
 
 indabom_servers = {
-    '35.184.50.52': {'type': ['prod', 'all', ]},
+    '104.154.83.186': {'type': ['prod', 'all', ]},
 }
 
 
