@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
+                'bom.context_processors.bom_config',
             ],
         },
     },
@@ -162,3 +163,8 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
 LOGIN_REDIRECT_URL = '/bom/'
+
+# django-bom configuration
+BOM_CONFIG = {
+    'base_template': 'base.html',
+}

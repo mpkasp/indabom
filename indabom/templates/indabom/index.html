@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block head-title %}A simple, open source bill of materials tool{% endblock %}
+
 {% block title %}{% endblock %}
 
 {% block content %}
@@ -41,6 +43,15 @@
                 <p class="promo-caption">Open Source</p>
                 <p class="light center">Indabom was started because excel wasn't enough, and PLM tools were too complex. It's open source utilizing the Django web framework written in Python so you can participate in the development and contribute to the features and concepts.</p>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <h3 class="col s12 light center header">Indabom auto-generates internal part numbers with a simple defined numbering scheme.</h3>
+    </div>
+    <div class="row">
+        <div class="col s12 m6 push-m3">
+            <p class="light center">Don't worry about coming up with a complicated numbering scheme. We have a pre-defined component numbering scheme including a part category prefix, the item number, and a two-digit number variation. Once a part is created, use the BOM uploading tool to batch upload an assembly via csv.</p>
+            <p class="light center">Not what you want? This bill of materials management tool is open source so you can customize to your pleasing.</p>
         </div>
     </div>
 </div>
