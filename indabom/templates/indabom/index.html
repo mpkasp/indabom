@@ -4,6 +4,8 @@
 
 {% block title %}{% endblock %}
 
+{% block menu %}<li><a href="{% url 'install' %}">Install</a></li>{% endblock %}
+
 {% block content %}
 {% load staticfiles %}
 <div class="section">
@@ -11,7 +13,7 @@
     <h1 class="light center header">IndaBOM</h1>
     <img width="300" src="{% static 'indabom/img/indabom.png' %}"></img>
     <h5 class="header light center" style="margin: 5% 0%;">A simple, <a href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h5>
-    {% if not user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Sign Up</a></p>{% endif %}
+    {% if not user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
     {% if user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
     </div>
 </div>

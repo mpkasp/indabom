@@ -3,6 +3,8 @@
 {% block title %}Install{% endblock %}
 {% block head-title %}Install{% endblock %}
 
+{% block menu %}<li class="active"><a href="{% url 'install' %}">Install</a></li>{% endblock %}
+
 {% block content %}
 {% load staticfiles %}
 <div class="section">
@@ -20,5 +22,9 @@
     <p class="center">
         Can't get enough? Click <a href="https://www.youtube.com/playlist?list=PL1CMqHkHBbofYPKcsrFPYn5ZB0CCWmypY">here</a> for an introduction, local usage, and more!
     </p>
+    <p class="center">
+        P.S. If you start tweaking things, we'd love to know! It's possible the whole IndaBOM community could benefit from your ideas! Shoot us an <a href="mailto:info@indabom.com">e-mail</a> or just submit a pull request!
+    </p>
+
 </div>
 {% endblock %}
