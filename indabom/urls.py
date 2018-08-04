@@ -37,6 +37,7 @@ urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'indabom/login.html', 'redirect_authenticated_user': True}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^about/$', TemplateView.as_view(template_name='about.html'), name='about'),
+    url(r'^install/$', TemplateView.as_view(template_name='install.html'), name='install'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
 
