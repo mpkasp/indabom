@@ -156,6 +156,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "indabom/static/"), ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
@@ -164,6 +165,7 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 
 LOGIN_REDIRECT_URL = '/bom/'
+LOGOUT_REDIRECT_URL = '/'
 
 # django-bom configuration
 bom_config_default = {
