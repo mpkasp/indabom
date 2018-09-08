@@ -1,10 +1,13 @@
 from fabric.api import *
 from fabric.operations import local
 from fabric.contrib.console import confirm
+from fabric.network import ssh
 from time import localtime
 import calendar
 import fabric
 import os
+
+ssh.util.log_to_file("indabom_ssh.log", 10)
 
 """
 Restarting is annoying because supervisord requires root to run start/stop :/
@@ -17,7 +20,7 @@ indabom_servers = {
 
 
 def help():
-    print "usage: fab [dev|prod][:user] [deploy|restart|test|test_failfast|reqs_install|pip_install|migrate]"
+    print("usage: fab [dev|prod][:user] [deploy|restart|test|test_failfast|reqs_install|pip_install|migrate]")
 
 
 def prod(user='indabom'):
