@@ -18,7 +18,7 @@ sitemaps = {
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('bom/', include('bom.urls'), name='bom'),
+    path('bom/', include('bom.urls')),
     path('signup/', views.signup, name='signup'),
 
     path('admin/', admin.site.urls, name='admin'),
