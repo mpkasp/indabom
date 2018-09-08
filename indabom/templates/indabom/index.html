@@ -11,7 +11,7 @@
 <div class="section">
     <div style="text-align: center;">
     <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
-    <h5 class="header light center" style="margin: 5% 0%;">A simple, <a title="IndaBOM Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h5>
+    <h2 class="header light center" style="margin: 5% 0%; font-size: 1.64rem; line-height: 110%;">A simple, <a title="IndaBOM Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h2>
     {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
     {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
     </div>
