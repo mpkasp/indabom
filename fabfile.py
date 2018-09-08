@@ -63,7 +63,7 @@ def migrate():
     """
     Runs all migrations across all indabom apps
     """
-    run('source /home/indabom/web/bin/activate && /home/indabom/web/site/manage.py migrate')
+    run('cd /home/indabom/web && source ./bin/activate && cd ./site && python manage.py migrate')
 
 
 def migrate_fake():
