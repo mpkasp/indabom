@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
 
-{% block head-title %}A simple, open source bill of materials tool{% endblock %}
+{% block no-head-title %}{% endblock %}
 
 {% block title %}IndaBOM{% endblock %}
 
-{% block menu %}<li><a href="{% url 'install' %}">Install</a></li>{% endblock %}
+{% block menu %}<li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>{% endblock %}
 
 {% block content %}
 {% load staticfiles %}
 <div class="section">
     <div style="text-align: center;">
-    <!-- <h1 class="light center header">IndaBOM</h1> -->
-    <img width="300" src="{% static 'indabom/img/indabom.png' %}"></img>
-    <h5 class="header light center" style="margin: 5% 0%;">A simple, <a href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h5>
-    {% if not user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
-    {% if user.is_authenticated %}<p><a class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
+    <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
+    <h5 class="header light center" style="margin: 5% 0%;">A simple, <a title="IndaBOM Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h5>
+    {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
+    {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
     </div>
 </div>
 
@@ -29,31 +28,31 @@
             <div class="center promo">
                 <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">thumb_up</i>
                 <p class="promo-caption">Simple</p>
-                <p class="light center">Many Product Lifecycle Management (PLM) and Bill of Materials (BOM) tools have way more features than most people actually use, making the tool complicated especially for hobbiests, startups, and freelancers. We keep Indabom simple, focusing on your bill of materials, component sourcing, and revision control.</p>
+                <p class="light center flow-text">Many Product Lifecycle Management (PLM) and Bill of Materials (BOM) tools have way more features than most people actually use, making the tool complicated especially for hobbiests, startups, and freelancers. We keep Indabom simple, focusing on your bill of materials, component sourcing, and revision control.</p>
             </div>
         </div>
         <div class="col s12 m4">
             <div class="center promo">
                 <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">cloud_done</i>
                 <p class="promo-caption">Integrated</p>
-                <p class="light center">Integreated with modern tools like Octopart to pull in the latest sourcing information and optimizing your BOM for cost, and Google Drive for quick access to your files (coming soon).</p>
+                <p class="light center flow-text">Integreated with modern tools like Octopart to pull in the latest sourcing information and optimizing your BOM for cost, and Google Drive for quick access to your files (coming soon).</p>
             </div>
         </div>
         <div class="col s12 m4">
             <div class="center promo">
                 <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">settings</i>
                 <p class="promo-caption">Open Source</p>
-                <p class="light center">Indabom was started because excel wasn't enough, and PLM tools were too complex. It's open source utilizing the Django web framework written in Python so you can participate in the development and contribute to the features and concepts.</p>
+                <p class="light center flow-text">Indabom was started because excel wasn't enough, and PLM tools were too complex. It's open source utilizing the Django web framework written in Python so you can participate in the development and contribute to the features and concepts.</p>
             </div>
         </div>
     </div>
     <div class="row">
-        <h3 class="col s12 light center header">Indabom auto-generates internal part numbers with a simple defined numbering scheme.</h3>
+        <h2 class="col s12 light center header">Indabom auto-generates internal part numbers with a simple defined numbering scheme.</h2>
     </div>
     <div class="row">
-        <div class="col s12 m6 push-m3">
-            <p class="light center">Don't worry about coming up with a complicated numbering scheme. We have a pre-defined component numbering scheme including a part category prefix, the item number, and a two-digit number variation. Once a part is created, use the BOM uploading tool to batch upload an assembly via csv.</p>
-            <p class="light center">Not what you want? This bill of materials management tool is open source so you can customize to your pleasing.</p>
+        <div class="col s12">
+            <p class="light center flow-text">Don't worry about coming up with a complicated numbering scheme. We have a pre-defined component numbering scheme including a part category prefix, the item number, and a two-digit number variation. Once a part is created, use the BOM uploading tool to batch upload an assembly via csv.</p>
+            <p class="light center flow-text">Not what you want? This bill of materials management tool is open source so you can customize to your pleasing.</p>
         </div>
     </div>
 </div>

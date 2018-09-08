@@ -21,7 +21,15 @@
     <meta name="keywords" content="Bill of Materials, BOM, indented bom, plm, PLM, django-bom, django, django bom, django plm, open source bom, open source plm, open source, indented bill of materials, free bom, free plm, indabom, indabom.com, hardware tool, hardware, parts, part, component, mechanical, engineering, part management, pdm, product lifetime management">
     <meta name="robots" content="index, follow">
 
-    <title>IndaBOM | {% block head-title %}{% endblock %}</title>
+    <!-- OpenGraph SEO -->
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{% static 'indabom/img/indabom.png' %}">
+    <meta property="og:title" content="IndaBOM">
+    <meta property="og:description" content="A simple, free, indented bill of materials tool using an open source project. Integrated with modern tools like Octopart to pull in the latest sourcing information to optimize your BOM for cost, and Google Drive for quick access to your files (coming soon). Get rid of your PLM tool and try IndaBOM!">
+    <meta property="og:site_name" content="IndaBOM">
+    <meta property="og:url" content="{{ request.get_full_path }}">
+    
+    <title>IndaBOM{% block no-head-title %} | {% block head-title %}{% endblock head-title %}{% endblock no-head-title %}</title>
 
     <!-- Materialize, eventually pull this into the project -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -59,14 +67,14 @@
     <div class="navbar-fixed">
         <nav class="green lighten-1">
             <div class="nav-wrapper">
-                <a href="/" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
-                <a href="/" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
-                <a href="#" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
+                <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
+                <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo" src="{% static 'indabom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
+                <a href="#" title="IndaBOM | Menu" data-activates="mobile-menu" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     {% block menu %}{% endblock %}
-                    {% if user.is_superuser and user.is_authenticated %}<li><a href="/admin/">Admin</a></li>{% endif %}
-                    {% if user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
-                    {% if not user.is_authenticated %}<li><a href="{% url 'login' %}">Login</a></li>{% endif %}
+                    {% if user.is_superuser and user.is_authenticated %}<li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
+                    {% if user.is_authenticated %}<li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
+                    {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
                 </ul>
             </div>
         </nav>
@@ -75,9 +83,9 @@
     <!-- Make sure this is not in navbar-fixed or it will be disabled -->
     <ul class="side-nav" id="mobile-menu">
         {% block mobilemenu %}{% endblock %}
-        {% if user.is_superuser and user.is_authenticated %}<li><a href="/admin/">Admin</a></li>{% endif %}
-        {% if user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
-        {% if not user.is_authenticated %}<li><a href="{% url 'login' %}">Login</a></li>{% endif %}
+        {% if user.is_superuser and user.is_authenticated %}<li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
+        {% if user.is_authenticated %}<li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
+        {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
     </ul>
     
     <main>
@@ -103,25 +111,23 @@
             <div class="row">
               <div class="col l6 s12">
                 <h5 class="white-text">Help IndaBOM Grow</h5>
-                <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more, or help take down paid PLM at <a href="mailto:info@indabom.com">info@indabom.com</a></p>
+                <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more, or help take down paid PLM at <a title="IndaBOM | Email Us" href="mailto:info@indabom.com">info@indabom.com</a></p>
               </div>
               <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">Links</h5>
                 <ul>
-                  <li><a class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
-                  <!-- <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li> -->
+                  <li><a title="IndaBOM | About" class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
                 </ul>
               </div>
             </div>
             <div class="row center">
                 <!-- Place this tag where you want the button to render. -->
-                <a class="github-button" href="https://github.com/mpkasp/django-bom" data-size="large" data-show-count="true" aria-label="Star mpkasp/django-bom on GitHub">Star</a>
+                <a title="IndaBOM GitHub" class="github-button" href="https://github.com/mpkasp/django-bom" data-size="large" data-show-count="true" aria-label="Star mpkasp/django-bom on GitHub">Star</a>
             </div>
         </div>
         <div class="footer-copyright">
             <div class="container">
             © 2017-2018 Copyright IndaBOM
-            <!-- <a class="grey-text text-lighten-4 right" href="#!">More Links</a> -->
             </div>
         </div>
     </footer>

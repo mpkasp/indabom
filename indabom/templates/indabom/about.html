@@ -1,24 +1,29 @@
 {% extends 'base.html' %}
 
+{% block head-title %}About{% endblock %}
+
 {% block title %}About{% endblock %}
 
-{% block menu %}<li><a href="{% url 'install' %}">Install</a></li>{% endblock %}
+{% block menu %}<li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>{% endblock %}
 
 {% block content %}
 {% load staticfiles %}
 <div class="section">
     <!-- <h3 class="light center header">The Story</h3> -->
+    <h2>About us</h2>
     <p>
-        Hi! I'm <a href="https://www.linkedin.com/in/michaelkasparian/">Mike</a>. I built Indabom as a side project to support the hardware development going on at my current startup, <a href="www.atlaswearables.com" target="_blank">Atlas Wearables</a>.
+        Hi! I'm <a title="Mike's Linkedin" href="https://www.linkedin.com/in/michaelkasparian/">Mike</a>. I built Indabom as a side project to support the hardware development going on at my current startup, <a title="Atlas Wearables Home" href="www.atlaswearables.com" target="_blank">Atlas Wearables</a>.
     </p>
     <p>
         When we first started Atlas, like many, we were just using spreadsheets to manage our bill of materials, sourcing, and revisions. We quickly outgrew this and moved on to using a bulky Product Lifecycle Management (PLM) tool. Paying large amounts of dollars per seat, per month for a tool that we only utilized a fraction of the features got old FAST. Not to mention that the added complexity required an additional part time consultant to assist with! After our first project, we cancelled that subscription and we were back to square one.
     </p>
+    <h2>Why IndaBOM?</h2>
     <p>
         I started developing Indabom.com, and django-bom as a project that would fill the void above - more powerful than a spreadsheet, and much simpler than today's PLM tools. Hitting the biggest pain points first and continuing to improve functionality, the tool continues to grow, while lots of thought is put into keeping the tool simple!
     </p>
+    <h2>How you can help</h2>
     <p>
-        After using it internally to track our parts, estimate BOM costs, and manage quotes, I decided to share it with the world. If you share similar frustations, I'd love for you to help! <a href="https://pypi.python.org/pypi/django-bom/" target="_blank">Install the latest build</a> on Pypi using pip, check out the <a href="https://github.com/mpkasp/django-bom" target="_blank">open source project</a> on Github, or reach out to me via e-mail at mike at indabom dot com.
+        After using it internally to track our parts, estimate BOM costs, and manage quotes, I decided to share it with the world. If you share similar frustations, I'd love for you to help! <a title="Django Bom Pypi" href="https://pypi.python.org/pypi/django-bom/" target="_blank">Install the latest build</a> on Pypi using pip, check out the <a title="Django Bom Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source project</a> on Github, or reach out to me via e-mail at mike at indabom dot com.
     </p>
 </div>
 
