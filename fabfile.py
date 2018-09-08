@@ -50,27 +50,27 @@ def deploy():
 
 
 def test():
-    with cd('/home/indabom/web/site/src'):
-        run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/src/manage.py test --noinput')
+    with cd('/home/indabom/web/site'):
+        run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/manage.py test --noinput')
 
 
 def test_failfast():
-    with cd('/home/indabom/web/site/src'):
-        run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/src/manage.py test --failfast --noinput')
+    with cd('/home/indabom/web/site'):
+        run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/manage.py test --failfast --noinput')
 
 
 def migrate():
     """
     Runs all migrations across all indabom apps
     """
-    run('source /home/indabom/web/bin/activate && /home/indabom/web/site/src/manage.py migrate')
+    run('source /home/indabom/web/bin/activate && /home/indabom/web/site/manage.py migrate')
 
 
 def migrate_fake():
     """
     Runs all migrations across all indabom apps
     """
-    run('source /home/indabom/web/bin/activate && /home/indabom/web/site/src/manage.py migrate --fake')
+    run('source /home/indabom/web/bin/activate && /home/indabom/web/site/manage.py migrate --fake')
 
 
 def restart_web():
