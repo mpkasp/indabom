@@ -5,11 +5,11 @@ from django.template.response import TemplateResponse
 from django.db import IntegrityError
 
 from django.contrib.auth.models import User
-from forms import UserForm
+from indabom.forms import UserForm
 
 
 def index(request):
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect('/bom/')
     else:
         return TemplateResponse(request, 'indabom/index.html', locals())
