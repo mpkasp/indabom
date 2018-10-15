@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'raven.contrib.django.raven_compat',
+    'materializecssform',
 ]
 
 MIDDLEWARE = [
