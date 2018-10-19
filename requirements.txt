@@ -5,7 +5,7 @@ cffi==1.11.5
 chardet==3.0.4
 cryptography==2.3.1
 Django==2.1.1
-django-bom==1.28
+django-bom==1.29
 django-materializecss-form==1.1.10
 Fabric3==1.14.post1
 gunicorn==19.9.0
