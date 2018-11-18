@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
 
+{% load materializecss %}
+
 {% block title %}Sign Up For IndaBOM{% endblock %}
 {% block head-title %}Sign Up{% endblock %}
 {% block content %}
 
-<form action="{% url 'signup' %}" method="post">
+<form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input class="waves-effect waves-light btn green lighten-1" type="submit" value="Submit" />
+    <div class="row">
+    	<div class="col m6 push-m3">
+		    {{ form|materializecss }}
+		    <div class="center">
+		    	<button class="waves-effect waves-light btn green lighten-1" style="min-width:150px" type="submit">Sign Up</button>
+			</div>
+		</div>
+    <div class="row">
 </form>
 {% endblock %}

@@ -26,6 +26,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
+    path('learn-more/', TemplateView.as_view(template_name='learn-more.html'), name='learn-more'),
+    path('privacy-policy/', TemplateView.as_view(template_name='privacy-policy.html'), name='privacy-policy'),
     path('install/', TemplateView.as_view(template_name='install.html'), name='install'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),

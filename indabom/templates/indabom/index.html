@@ -10,10 +10,10 @@
 {% load staticfiles %}
 <div class="section">
     <div style="text-align: center;">
-    <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
-    <h2 class="header light center" style="margin: 5% 0%; font-size: 1.64rem; line-height: 110%;">A simple, <a title="IndaBOM Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h2>
-    {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
-    {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
+        <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
+        <h2 class="header light center" style="margin: 5% 0%; font-size: 1.64rem; line-height: 110%;">A simple, <a title="IndaBOM Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f <b>m</b>aterials tool.</h2>
+        {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
+        {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
     </div>
 </div>
 
@@ -47,13 +47,18 @@
         </div>
     </div>
     <div class="row">
-        <h2 class="col s12 light center header">Indabom auto-generates internal part numbers with a simple defined numbering scheme.</h2>
+        <div class="col s12">
+            <h2 class="light center header">IndaBOM auto-generates internal part numbers with a simple defined numbering scheme.</h2>
+        </div>
     </div>
     <div class="row">
-        <div class="col s12">
-            <p class="light center flow-text">Don't worry about coming up with a complicated numbering scheme. We have a pre-defined component numbering scheme including a part category prefix, the item number, and a two-digit number variation. Once a part is created, use the BOM uploading tool to batch upload an assembly via csv.</p>
-            <p class="light center flow-text">Keep track of all of your engineering parts in the indented bom, electrical, mechanical, hardware and more with all of our part management tools.</p>
-            <p class="light center flow-text">Not what you want? This free bom management tool is open source so you can customize to your pleasing.</p>
+        <div class="col s8 push-s2">
+            <img src="{% static 'indabom/img/part-list.png' %}" width="100%" class="center" alt="IndaBOM Part List" style="padding: 16px;"></img>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12" style="text-align: center;">
+            <a title="Learn More" class="waves-effect waves-light btn green lighten-1" href="{% url 'learn-more' %}">Learn More</a>
         </div>
     </div>
 </div>
