@@ -83,8 +83,8 @@
         {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
     </ul>
     
-    <main>
-        <h1 class="col s12 light header container center" style="padding-top: 40px;">{% block title %}{% endblock %}</h1>
+    <main class="container">
+        <h1 class="col s12 light header center">{% block title %}{% endblock %}</h1>
         <div id="content" class="container">
             {% if messages %}
             <ul class="messages">
@@ -105,11 +105,11 @@
         <div class="container">
             <div class="row">
               <div class="col l6 s12">
-                <h3 class="white-text" style="font-size: 1.64rem;">Help IndaBOM Grow</h3>
+                <h3 class="white-text">Help IndaBOM Grow</h3>
                 <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more, or help take down expensive PLM at <a title="IndaBOM | Email Us" href="mailto:info@indabom.com">info@indabom.com</a></p>
               </div>
               <div class="col l4 offset-l2 s12">
-                <h3 class="white-text" style="font-size: 1.64rem;">Links</h3>
+                <h3 class="white-text">Links</h3>
                 <ul>
                   <li><a title="IndaBOM | About" class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
                   <li><a title="IndaBOM | Privacy Policy" class="grey-text text-lighten-3" href="{% url 'privacy-policy' %}">Privacy Policy</a></li>
