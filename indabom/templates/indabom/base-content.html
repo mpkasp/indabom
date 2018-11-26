@@ -83,8 +83,10 @@
         {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
     </ul>
     
-    <main class="container">
-        <h1 class="col s12 light header center">{% block title %}{% endblock %}</h1>
+    <main>
+        <div class="container">
+            <h1 class="col s12 light header center">{% block title %}{% endblock %}</h1>
+        </div>
         <div id="content" class="container">
             {% if messages %}
             <ul class="messages">
@@ -95,7 +97,6 @@
                 {% endfor %}
             </ul>
             {% endif %}
-
             {% block content %}{% endblock %}
             {% block action-btn %}{% endblock %}
         </div>
@@ -123,7 +124,7 @@
         </div>
         <div class="footer-copyright">
             <div class="container">
-            © 2017-2018 Copyright IndaBOM
+            © 2017-2019 Copyright IndaBOM
             </div>
         </div>
     </footer>
