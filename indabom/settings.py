@@ -186,6 +186,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
     'approval_prompt': 'auto'
 }
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = not DEBUG
 
 
 if BOM_CONFIG:
