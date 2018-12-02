@@ -33,6 +33,10 @@ BOM_CONFIG = {
     'octopart_api_key': 'supersecretkey'   
 }
 
+# google GoogleOAuth
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'secretkey'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'secretsecret'
+
 # Sentry.io / raven config
 try:
     release = raven.fetch_git_sha(os.path.dirname(os.path.join(os.pardir, os.pardir)))
