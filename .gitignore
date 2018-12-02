@@ -78,3 +78,6 @@ ENV/
 local_setting.py
 .DS_Store
 db.sqlite3
+
+# IntelliJ
+.idea
