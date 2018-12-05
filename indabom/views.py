@@ -21,7 +21,7 @@ def signup(request):
         form = UserForm(request.POST)
         if form.is_valid():
             new_user = User.objects.create_user(**form.cleaned_data)
-            login(request, new_user)
+            login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
             return HttpResponseRedirect(reverse('bom:home'))
     else:
         form = UserForm()
