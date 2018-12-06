@@ -4,7 +4,10 @@
 
 {% block title %}IndaBOM{% endblock %}
 
-{% block menu %}<li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>{% endblock %}
+{% block menu %}
+    <li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>
+    {% if not user.is_authenticated %}<li><a title="Sign Up" href="{% url 'signup' %}">Sign Up</a></li>{% endif %}
+{% endblock %}
 
 {% block content %}
 {% load staticfiles %}
@@ -33,9 +36,11 @@
         </div>
         <div class="col s12 m4">
             <div class="center promo">
-                <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">cloud_done</i>
+{#                <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">cloud_done</i>#}
+                <img title="Integrated with Octopart" style="width:25%; vertical-align: middle; margin: 40px 5%;" src="{% static 'bom/img/octopart_blue.svg' %}"></img>
+                <img title="Integrated with Google Drive" style="width:25%; vertical-align: middle; margin: 40px 5%;" src="{% static 'bom/img/google_drive_logo.svg' %}"></img>
                 <p class="promo-caption">Integrated</p>
-                <p class="light center flow-text">Integreated with modern tools like Octopart to pull in the latest sourcing information and optimizing your BOM for cost, and Google Drive for quick access to your files (coming soon).</p>
+                <p class="light center flow-text">Integrated with modern tools like <a href="https://octopart.com/">Octopart</a> to pull in the latest sourcing information and optimizing your BOM for cost, and <a href="https://drive.google.com">Google Drive</a> for free, quick, accessible and shareable access to your files.</p>
             </div>
         </div>
         <div class="col s12 m4">
