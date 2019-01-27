@@ -185,7 +185,7 @@ bom_config_default = {
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/plus.login']
 SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
-    'approval_prompt': 'auto'
+    'approval_prompt': 'force'  # forces storage of refresh token
 }
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = not DEBUG
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/bom/settings?tab_anchor=file'
