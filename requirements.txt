@@ -30,7 +30,7 @@ python-social-auth==0.3.6
 python3-openid==3.1.0
 pytz==2018.5
 raven==6.9.0
-requests==2.21.0
+requests==2.22.0
 requests-oauthlib==1.0.0
 requests-toolbelt==0.8.0
 rsa==4.0
@@ -41,4 +41,4 @@ sqlparse==0.3.0
 tqdm==4.25.0
 twine==1.11.0
 uritemplate==3.0.0
-urllib3==1.23
+urllib3==1.25.3
