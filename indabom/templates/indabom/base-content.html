@@ -32,7 +32,7 @@
     <meta property="og:site_name" content="IndaBOM">
     <meta property="og:url" content="{{ request.get_full_path }}">
     
-    <title>IndaBOM{% block no-head-title %} | {% block head-title %}{% endblock head-title %}{% endblock no-head-title %}</title>
+    <title>{% block no-head-title %}{% block head-title %}{% endblock head-title %} - {% endblock no-head-title %}IndaBOM</title>
 
     <!-- Materialize, eventually pull this into the project -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -93,15 +93,17 @@
     </ul>
     
     <main>
+        {% if title %}
         <div class="container">
-            <h1 class="col s12 light header center">{% block title %}{% endblock %}</h1>
+            <h1 class="col s12 light header center">{{ title|safe }}</h1>
         </div>
+        {% endif %}
         <div id="content" class="container">
             {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
                 <li{% if message.tags %} class="card alert alert-{{ message.tags }} alert-dismissible"{% endif %} role="alert">
-                    {{ message.message }}
+                    {{ message.message|safe }}
                 </li>
                 {% endfor %}
             </ul>
