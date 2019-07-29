@@ -53,6 +53,8 @@
     <!-- Custom -->
     <link rel="stylesheet" href="{% static 'indabom/css/indabom.css' %}">
     <link rel="stylesheet" href="{% static 'bom/style.css' %}">
+    {% block head %}
+    {% endblock head %}
     <link rel="shortcut icon" type="image/png" alt="Indabom Favicon" href="{% static 'indabom/img/favicon.ico' %}"/>
 </head>
 
@@ -93,6 +95,8 @@
     </ul>
     
     <main>
+        {% block main %}
+        {% endblock main %}
         {% if title %}
         <div class="container">
             <h1 class="col s12 light header center">{{ title|safe }}</h1>
