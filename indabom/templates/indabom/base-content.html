@@ -77,7 +77,7 @@
                     {% if user.is_superuser and user.is_authenticated %}<li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
                     {% if user.is_authenticated %}
                     <li {% if pagename == "settings" %}class="active"{% endif %}><a title="IndaBOM | Settings" href="{% url 'bom:settings' %}">Settings</a></li>
-                    <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8">Feedback</a></li>
+                    <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
                     <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>
                     {% endif %}
                     {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
@@ -92,7 +92,7 @@
         {% block mobilemenu %}{% endblock %}
         {% if user.is_superuser and user.is_authenticated %}<li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
         {% if user.is_authenticated %}
-            <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8">Feedback</a></li>
+            <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
             <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>
         {% endif %}
         {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
