@@ -9,7 +9,9 @@ defusedxml==0.5.0
 Django==2.2
 django-bom==1.92
 django-materializecss-form==1.1.10
+django-sendgrid-v5==0.8.0
 Fabric3==1.14.post1
+future==0.17.1
 google-api-python-client==1.7.5
 google-auth==1.6.1
 google-auth-httplib2==0.0.3
@@ -25,6 +27,7 @@ pyasn1-modules==0.2.2
 pycparser==2.18
 PyJWT==1.6.4
 PyNaCl==1.2.1
+python-http-client==3.1.0
 python-memcached==1.59
 python-social-auth==0.3.6
 python3-openid==3.1.0
@@ -34,6 +37,7 @@ requests==2.22.0
 requests-oauthlib==1.0.0
 requests-toolbelt==0.8.0
 rsa==4.0
+sendgrid==6.0.5
 six==1.11.0
 social-auth-app-django==3.1.0
 social-auth-core==2.0.0
