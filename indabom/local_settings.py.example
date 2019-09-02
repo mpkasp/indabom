@@ -53,3 +53,6 @@ if not DEBUG:
         # release based on the git info.
         'release': release,
     }
+
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_API_KEY = 'secretkey'

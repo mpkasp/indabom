@@ -22,8 +22,23 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
 
     path('admin/', admin.site.urls, name='admin'),
-    path('login/', auth_views.LoginView.as_view(template_name='indabom/login.html'), {'redirect_authenticated_user': True}, name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='indabom/login.html'),
+         {'redirect_authenticated_user': True}, name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='indabom/password-reset.html',
+                                                                 from_email='no-reply@indabom.com',
+                                                                 subject_template_name='indabom/password-reset-subject.txt',
+                                                                 email_template_name='indabom/password-reset-email.html'),
+         name='password_reset'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='indabom/password-reset-done.html'),
+         name='password_reset_done'),
+    path('password-reset/confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+        template_name='indabom/password-reset-confirm.html'),
+         name='password_reset_confirm'),
+    path('password-reset/complete/', auth_views.PasswordResetCompleteView.as_view(
+        template_name='indabom/password-reset-complete.html'), name='password_reset_complete'),
 
     path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
     path('learn-more/', TemplateView.as_view(template_name='learn-more.html'), name='learn-more'),
