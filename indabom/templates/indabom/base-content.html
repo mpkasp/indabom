@@ -53,6 +53,7 @@
     <!-- Custom -->
     <link rel="stylesheet" href="{% static 'indabom/css/indabom.css' %}">
     <link rel="stylesheet" href="{% static 'bom/style.css' %}">
+    <link rel="canonical" href="{% block canonical_url %}{% endblock %}">
     {% block head %}
     {% endblock head %}
     <link rel="shortcut icon" type="image/png" alt="Indabom Favicon" href="{% static 'indabom/img/favicon.ico' %}"/>

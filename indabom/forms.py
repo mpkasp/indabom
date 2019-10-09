@@ -1,8 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
-
+from captcha.fields import ReCaptchaField
 
 class UserForm(forms.ModelForm):
+    captcha = ReCaptchaField(label='')
+
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].required = True
