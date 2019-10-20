@@ -56,3 +56,6 @@ if not DEBUG:
 
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = 'secretkey'
+
+RECAPTCHA_PRIVATE_KEY = 'secret'
+RECAPTCHA_PUBLIC_KEY = 'secret'

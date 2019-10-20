@@ -24,15 +24,11 @@ def help():
 
 
 def prod(user='indabom'):
-    env.hosts = [
-        '{0}@{1}'.format(
-            user,
-            h) for h in indabom_servers if 'prod' in indabom_servers[h]['type']]
+    env.hosts = ['{0}@{1}'.format(user, h) for h in indabom_servers if 'prod' in indabom_servers[h]['type']]
 
 
 def all():
-    env.hosts = ['root@{0}'.format(
-        h) for h in indabom_servers if 'all' in indabom_servers[h]['type']]
+    env.hosts = ['root@{0}'.format(h) for h in indabom_servers if 'all' in indabom_servers[h]['type']]
 
 
 def update_time():
