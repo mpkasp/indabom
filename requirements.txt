@@ -6,7 +6,7 @@ cffi==1.11.5
 chardet==3.0.4
 cryptography==2.3.1
 defusedxml==0.5.0
-Django==2.2.5
+Django==2.2.8
 django-bom==1.99
 django-materializecss-form==1.1.10
 django-recaptcha==2.0.5
