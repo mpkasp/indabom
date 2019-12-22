@@ -81,3 +81,5 @@ db.sqlite3
 
 # IntelliJ
 .idea
+
+!.idea
