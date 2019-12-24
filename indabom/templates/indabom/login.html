@@ -6,28 +6,30 @@
 
 {% block content %}
     {% load staticfiles %}
-    <div class="section center">
-        <img class="responsive-img" width="250" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
-        <h5 class="">Login into your IndaBOM account</h5>
-    </div>
+    <div class="container">
+        <div class="section center">
+            <img class="responsive-img" width="250" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
+            <h5 class="">Login into your IndaBOM account</h5>
+        </div>
 
-    <div class="section center">
-        <div class="container ">
-            <div class="row" style="display: inline-block; ">
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col s12">
-                            {{ form|materializecss }}
-                            <div class="center">
-                                <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px" type="submit">Login</button>
+        <div class="section center">
+            <div class="container ">
+                <div class="row" style="display: inline-block; ">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col s12">
+                                {{ form|materializecss }}
+                                <div class="center">
+                                    <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px" type="submit">Login</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-         </div>
-        <a href="{% url 'password_reset' %}">Forgot password</a> |
-        <a href="{% url 'signup' %}">Create account</a>
+            <a href="{% url 'password_reset' %}">Forgot password</a> |
+            <a href="{% url 'signup' %}">Create account</a>
+        </div>
     </div>
 {% endblock %}

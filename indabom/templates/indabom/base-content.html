@@ -6,38 +6,45 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-87982106-2"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
 
-      gtag('config', 'UA-87982106-2');
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'UA-87982106-2');
     </script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="A simple, free, indented bill of materials tool using an open source project. Integrated with modern tools like Octopart to pull in the latest sourcing information to optimize your BOM for cost, and Google Drive for quick access to your files (coming soon). Get rid of your PLM tool and try IndaBOM!">
+    <meta name="description"
+          content="A simple, free, indented bill of materials tool using an open source project. Integrated with modern tools like Octopart to pull in the latest sourcing information to optimize your BOM for cost, and Google Drive for quick access to your files (coming soon). Get rid of your PLM tool and try IndaBOM!">
     <meta name="author" content="Mike Kasparian">
-    <meta name="keywords" content="Bill of Materials, BOM, indented bom, plm, PLM, django-bom, django, django bom, django plm, open source bom, open source plm, open source, indented bill of materials, free bom, free plm, indabom, indabom.com, hardware tool, hardware, parts, part, component, mechanical, engineering, part management, pdm, product lifetime management">
+    <meta name="keywords"
+          content="Bill of Materials, BOM, indented bom, plm, PLM, django-bom, django, django bom, django plm, open source bom, open source plm, open source, indented bill of materials, free bom, free plm, indabom, indabom.com, hardware tool, hardware, parts, part, component, mechanical, engineering, part management, pdm, product lifetime management">
     <meta name="robots" content="index, follow">
 
     <!-- Bing validation -->
-    <meta name="msvalidate.01" content="FDA8119C1DFE1A784E77EAB3053F570C" />
+    <meta name="msvalidate.01" content="FDA8119C1DFE1A784E77EAB3053F570C"/>
 
     <!-- OpenGraph SEO -->
     <meta property="og:type" content="website">
     <meta property="og:image" content="{% static 'indabom/img/indabom.png' %}">
     <meta property="og:title" content="IndaBOM">
-    <meta property="og:description" content="A simple, free, open source indented bill of materials tool. Integrated with Google Drive for part file storage, and Octopart for cost estimates and sourcing.">
+    <meta property="og:description"
+          content="A simple, free, open source indented bill of materials tool. Integrated with Google Drive for part file storage, and Octopart for cost estimates and sourcing.">
     <meta property="og:site_name" content="IndaBOM">
     <meta property="og:url" content="{{ request.get_full_path }}">
-    
+
     <title>{% block no-head-title %}{% block head-title %}{% endblock head-title %} - {% endblock no-head-title %}IndaBOM</title>
 
     <!-- Materialize, eventually pull this into the project -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="{% static 'indabom/css/materialize.min.css' %}"  media="screen,projection"/>    
-    
+    <link type="text/css" rel="stylesheet" href="{% static 'indabom/css/materialize.min.css' %}" media="screen,projection"/>
+
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
@@ -46,8 +53,19 @@
 
     <!-- Heap Analytics -->
     <script type="text/javascript">
-        window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(r?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n);for(var o=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=o(p[c])};
-          heap.load("3214288212");
+        window.heap = window.heap || [], heap.load = function (e, t) {
+            window.heap.appid = e, window.heap.config = t = t || {};
+            var r = t.forceSSL || "https:" === document.location.protocol, a = document.createElement("script");
+            a.type = "text/javascript", a.async = !0, a.src = (r ? "https:" : "http:") + "//cdn.heapanalytics.com/js/heap-" + e + ".js";
+            var n = document.getElementsByTagName("script")[0];
+            n.parentNode.insertBefore(a, n);
+            for (var o = function (e) {
+                return function () {
+                    heap.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+                }
+            }, p = ["addEventProperties", "addUserProperties", "clearEventProperties", "identify", "resetIdentity", "removeEventProperty", "setEventProperties", "track", "unsetEventProperty"], c = 0; c < p.length; c++) heap[p[c]] = o(p[c])
+        };
+        heap.load("3214288212");
     </script>
 
     <!-- Custom -->
@@ -60,100 +78,110 @@
 </head>
 
 <body>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <div class="navbar-fixed">
-        <nav class="green lighten-1">
-            <div class="nav-wrapper">
-                <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo" src="{% static 'bom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
-                <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo" src="{% static 'bom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
-                <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-                <ul class="right hide-on-med-and-down">
-                    {% block menu %}{% endblock %}
-                    {% if user.is_superuser and user.is_authenticated %}<li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
-                    {% if user.is_authenticated %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<div class="navbar-fixed">
+    <nav class="green lighten-1">
+        <div class="nav-wrapper">
+            <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo"
+                                                                                                 src="{% static 'bom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
+            <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-large-only" style="left: 2.5rem;"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo"
+                                                                                                                     src="{% static 'bom/img/indabom.png' %}"/><span
+                    style="position: absolute;">IndaBOM</span></a>
+            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                {% block menu %}{% endblock %}
+                {% if user.is_superuser and user.is_authenticated %}
+                    <li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
+                {% if user.is_authenticated %}
                     <li {% if pagename == "settings" %}class="active"{% endif %}><a title="IndaBOM | Settings" href="{% url 'bom:settings' %}">Settings</a></li>
                     <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
-                    {% endif %}
-                    <li><a title="IndaBOM | Help" href="{% url 'bom:help' %}">Help</a></li>
-                    {% if user.is_authenticated %}<li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
-                    {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
-                </ul>
+                {% endif %}
+                <li><a title="IndaBOM | Help" href="{% url 'bom:help' %}">Help</a></li>
+                {% if user.is_authenticated %}
+                    <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
+                {% if not user.is_authenticated %}
+                    <li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
+            </ul>
 
-            </div>
-        </nav>
-    </div>
-    
-    <!-- Make sure this is not in navbar-fixed or it will be disabled -->
-    <ul class="sidenav" id="mobile-menu">
-        {% block mobilemenu %}{% endblock %}
-        {% if user.is_superuser and user.is_authenticated %}<li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
-        {% if user.is_authenticated %}
-            <li {% if pagename == "settings" %}class="active"{% endif %}><a title="IndaBOM | Settings" href="{% url 'bom:settings' %}">Settings</a></li>
-            <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
-        {% endif %}
-        <li><a title="IndaBOM | Help" href="{% url 'bom:help' %}">Help</a></li>
-        {% if user.is_authenticated %}<li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
-        {% if not user.is_authenticated %}<li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
-    </ul>
-    
-    <main>
-        {% block main %}
-        {% endblock main %}
-        {% if title %}
+        </div>
+    </nav>
+</div>
+
+<!-- Make sure this is not in navbar-fixed or it will be disabled -->
+<ul class="sidenav" id="mobile-menu">
+    {% block mobilemenu %}{% endblock %}
+    {% if user.is_superuser and user.is_authenticated %}
+        <li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
+    {% if user.is_authenticated %}
+        <li {% if pagename == "settings" %}class="active"{% endif %}><a title="IndaBOM | Settings" href="{% url 'bom:settings' %}">Settings</a></li>
+        <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
+    {% endif %}
+    <li><a title="IndaBOM | Help" href="{% url 'bom:help' %}">Help</a></li>
+    {% if user.is_authenticated %}
+        <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
+    {% if not user.is_authenticated %}
+        <li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
+</ul>
+
+<main>
+    {% block main %}
+    {% endblock main %}
+    {% if title %}
         <div class="container">
             <h1 class="col s12 light header center">{{ title|safe }}</h1>
         </div>
-        {% endif %}
-        <div id="content" class="container">
-            {% if messages %}
+    {% endif %}
+    <div id="content" class="container">
+        {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
-                <li{% if message.tags %} class="card alert alert-{{ message.tags }} alert-dismissible"{% endif %} role="alert">
-                    {{ message.message|safe }}
-                </li>
+                    <li{% if message.tags %} class="card alert alert-{{ message.tags }} alert-dismissible"{% endif %} role="alert">
+                        {{ message.message|safe }}
+                    </li>
                 {% endfor %}
             </ul>
-            {% endif %}
-            {% block content %}{% endblock %}
-            {% block action-btn %}{% endblock %}
-        </div>
-    </main>
+        {% endif %}
+    </div>
+    {% block content %}{% endblock %}
+    {% block action-btn %}{% endblock %}
+</main>
 
-    <footer class="page-footer green lighten-1">
-        <div class="container">
-            <div class="row">
-              <div class="col l6 s12">
+<footer class="page-footer green lighten-1">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
                 <h3 class="white-text">Help IndaBOM Grow</h3>
-                <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more, or help take down expensive PLM at <a title="IndaBOM | Email Us" href="mailto:info@indabom.com">info@indabom.com</a></p>
-              </div>
-              <div class="col l4 offset-l2 s12">
+                <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more, or help take down expensive PLM at <a
+                        title="IndaBOM | Email Us" href="mailto:info@indabom.com">info@indabom.com</a></p>
+            </div>
+            <div class="col l4 offset-l2 s12">
                 <h3 class="white-text">Links</h3>
                 <ul>
                     <li><a title="IndaBOM | Learn More" class="grey-text text-lighten-3" href="{% url 'learn-more' %}">Learn More</a></li>
                     <li><a title="IndaBOM | About" class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
                     <li><a title="IndaBOM | Privacy Policy" class="grey-text text-lighten-3" href="{% url 'privacy-policy' %}">Privacy Policy</a></li>
                 </ul>
-              </div>
-            </div>
-            <div class="row center">
-                <!-- Place this tag where you want the button to render. -->
-                <a title="IndaBOM GitHub" class="github-button" href="https://github.com/mpkasp/django-bom" data-size="large" data-show-count="true" aria-label="Star mpkasp/django-bom on GitHub">Star</a>
             </div>
         </div>
-        <div class="footer-copyright">
-            <div class="container">
+        <div class="row center">
+            <!-- Place this tag where you want the button to render. -->
+            <a title="IndaBOM GitHub" class="github-button" href="https://github.com/mpkasp/django-bom" data-size="large" data-show-count="true" aria-label="Star mpkasp/django-bom on GitHub">Star</a>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
             © 2017-2019 Copyright IndaBOM
-            </div>
         </div>
-    </footer>
-    <script type="text/javascript" src="{% static 'indabom/js/materialize.min.js' %}"></script>
-    <script>
-        $(document).ready(function() {
-            $('select').formSelect();
-            $('.sidenav').sidenav();
-        });
-    </script>
+    </div>
+</footer>
+<script type="text/javascript" src="{% static 'indabom/js/materialize.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('select').formSelect();
+        $('.sidenav').sidenav();
+    });
+</script>
 
-    {% block script%}{% endblock script %}
+{% block script %}{% endblock script %}
 </body>
 </html>

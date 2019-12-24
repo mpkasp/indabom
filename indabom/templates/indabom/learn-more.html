@@ -4,55 +4,63 @@
 
 {% block title %}Why IndaBOM?{% endblock %}
 
-{% block menu %}<li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>{% endblock %}
+{% block menu %}
+    <li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>{% endblock %}
 
 {% block content %}
-{% load staticfiles %}
-<div class="section">
-    <div style="text-align: center;">
-        <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
-        <h2 class="header light center" style="margin: 5% 0%; font-size: 1.64rem; line-height: 110%;">Brand new bill of materials management software, already used by hundreds of engineers like you.</h2>
-        {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Sign Up for IndaBOM</a></p>{% endif %}
-        {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom:home' %}">Enter</a></p>{% endif %}
-    </div>
-</div>
-
-<div class="divider"></div>
-
-<div class="section">
-    <div class="row">
-        <div class="col s12">
-            <h2 class="text-center">Jump right in</h2>
-            <p class="light center flow-text">Don't worry about coming up with a complicated numbering scheme. We have a pre-defined component numbering scheme including a part category prefix, the item number, and a two-digit number variation. Once a part is created, use the BOM uploading tool to batch upload an assembly via csv.</p>
-            <p class="light center flow-text">Grab your old excel or csv part list, assign a part class to each item, and upload your parts to get started. It's that simple!</p>
-            <p class="light center flow-text">Keep track of all of your engineering parts in the indented bom, electrical, mechanical, hardware and more with all of our part management tools.</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s12">
-            <h2 class="text-center">Level Up Your BOM</h2>
-        </div>
-        <div class="row">
-            <div class="col m6 s12">
-                <img src="{% static 'indabom/img/part-info-short.png' %}" width="100%" class="center" alt="IndaBOM Part Info" style="padding: 16px;"></img>
-            </div>
-            <div class="col m6 s12">
-                <p class="light center flow-text">IndaBOM is integrated with Mouser (coming soon) - we automagically get pricing info and datasheets integrated right in to your indented bill of materials and part information.</p>
-                <p class="light center flow-text">Get better BOM estimates at scale. With pricing pulled in at different volumes, and suppliers, we also allow you to estimate the cost of your BOM at different volumes for better planning, and also handle alternate sources in case a part goes out of stock.</p>
+    {% load staticfiles %}
+    <div class="container">
+        <div class="section">
+            <div style="text-align: center;">
+                <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
+                <h2 class="header light center" style="margin: 5% 0%; font-size: 1.64rem; line-height: 110%;">Brand new bill of materials management software, already used by hundreds of engineers
+                    like you.</h2>
+                {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Sign Up for IndaBOM</a></p>{% endif %}
+                {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom:home' %}">Enter</a></p>{% endif %}
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col s12">
-            <p class="light center flow-text">Want more? Unlike those expensive PLM and PDM systems, this bom management tool is free and open source so you can customize to your pleasing. We're always open to ideas - message us at <a href="mailto:info@indabom.com">info@indabom.com</a>, or submit a pull request!</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col s12 text-center">
-            {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
-            {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom:home' %}">Enter</a></p>{% endif %}
-        </div>
-    </div>
-</div>
 
+        <div class="divider"></div>
+
+        <div class="section">
+            <div class="row">
+                <div class="col s12">
+                    <h2 class="text-center">Jump right in</h2>
+                    <p class="light center flow-text">Don't worry about coming up with a complicated numbering scheme. We have a pre-defined component numbering scheme including a part category
+                        prefix, the item number, and a two-digit number variation. Once a part is created, use the BOM uploading tool to batch upload an assembly via csv.</p>
+                    <p class="light center flow-text">Grab your old excel or csv part list, assign a part class to each item, and upload your parts to get started. It's that simple!</p>
+                    <p class="light center flow-text">Keep track of all of your engineering parts in the indented bom, electrical, mechanical, hardware and more with all of our part management
+                        tools.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <h2 class="text-center">Level Up Your BOM</h2>
+                </div>
+                <div class="row">
+                    <div class="col m6 s12">
+                        <img src="{% static 'indabom/img/part-info-short.png' %}" width="100%" class="center" alt="IndaBOM Part Info" style="padding: 16px;"></img>
+                    </div>
+                    <div class="col m6 s12">
+                        <p class="light center flow-text">IndaBOM is integrated with Mouser (coming soon) - we automagically get pricing info and datasheets integrated right in to your indented bill
+                            of materials and part information.</p>
+                        <p class="light center flow-text">Get better BOM estimates at scale. With pricing pulled in at different volumes, and suppliers, we also allow you to estimate the cost of your
+                            BOM at different volumes for better planning, and also handle alternate sources in case a part goes out of stock.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <p class="light center flow-text">Want more? Unlike those expensive PLM and PDM systems, this bom management tool is free and open source so you can customize to your pleasing.
+                        We're always open to ideas - message us at <a href="mailto:info@indabom.com">info@indabom.com</a>, or submit a pull request!</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 text-center">
+                    {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
+                    {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom:home' %}">Enter</a></p>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
