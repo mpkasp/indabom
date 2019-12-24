@@ -2,19 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3cdda41d-b714-4201-bc66-5ea265c6f3de" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/indabom/templates/indabom/menu.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/about.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/base-content.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/base-content.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/install.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/install.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/learn-more.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/learn-more.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/password-reset-complete.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/password-reset-complete.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/password-reset-confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/password-reset-confirm.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/password-reset-done.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/password-reset-done.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/password-reset.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/password-reset.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/privacy-policy.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/privacy-policy.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/signup.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/indabom/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/indabom/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +57,7 @@
       <workItem from="1577030184514" duration="4068000" />
       <workItem from="1577055257104" duration="5751000" />
       <workItem from="1577080208748" duration="1000000" />
-      <workItem from="1577159126058" duration="2747000" />
+      <workItem from="1577159126058" duration="5353000" />
     </task>
     <servers />
   </component>

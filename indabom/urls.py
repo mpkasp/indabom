@@ -40,10 +40,10 @@ urlpatterns = [
     path('password-reset/complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='indabom/password-reset-complete.html'), name='password_reset_complete'),
 
-    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
-    path('learn-more/', TemplateView.as_view(template_name='learn-more.html'), name='learn-more'),
-    path('privacy-policy/', TemplateView.as_view(template_name='privacy-policy.html'), name='privacy-policy'),
-    path('install/', TemplateView.as_view(template_name='install.html'), name='install'),
+    path('about/', views.About.as_view(), name=views.About.name),
+    path('learn-more/', views.LearnMore.as_view(), name=views.LearnMore.name),
+    path('privacy-policy/', views.PrivacyPolicy.as_view(), name=views.PrivacyPolicy.name),
+    path('install/', views.Install.as_view(), name=views.Install.name),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 ]

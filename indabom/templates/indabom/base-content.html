@@ -90,17 +90,7 @@
             <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
                 {% block menu %}{% endblock %}
-                {% if user.is_superuser and user.is_authenticated %}
-                    <li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
-                {% if user.is_authenticated %}
-                    <li {% if pagename == "settings" %}class="active"{% endif %}><a title="IndaBOM | Settings" href="{% url 'bom:settings' %}">Settings</a></li>
-                    <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
-                {% endif %}
-                <li><a title="IndaBOM | Help" href="{% url 'bom:help' %}">Help</a></li>
-                {% if user.is_authenticated %}
-                    <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
-                {% if not user.is_authenticated %}
-                    <li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
+                {% include 'indabom/menu.html' with user=user pagename=pagename title=title %}
             </ul>
 
         </div>
@@ -110,17 +100,7 @@
 <!-- Make sure this is not in navbar-fixed or it will be disabled -->
 <ul class="sidenav" id="mobile-menu">
     {% block mobilemenu %}{% endblock %}
-    {% if user.is_superuser and user.is_authenticated %}
-        <li><a title="IndaBOM | Admin" href="/admin/">Admin</a></li>{% endif %}
-    {% if user.is_authenticated %}
-        <li {% if pagename == "settings" %}class="active"{% endif %}><a title="IndaBOM | Settings" href="{% url 'bom:settings' %}">Settings</a></li>
-        <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
-    {% endif %}
-    <li><a title="IndaBOM | Help" href="{% url 'bom:help' %}">Help</a></li>
-    {% if user.is_authenticated %}
-        <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>{% endif %}
-    {% if not user.is_authenticated %}
-        <li><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>{% endif %}
+    {% include 'indabom/menu.html' with user=user pagename=pagename title=title %}
 </ul>
 
 <main>

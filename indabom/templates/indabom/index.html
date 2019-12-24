@@ -5,9 +5,6 @@
 {% block title %}IndaBOM{% endblock %}
 
 {% block menu %}
-    <li><a title="IndaBOM | Install" href="{% url 'install' %}">Install</a></li>
-    {% if not user.is_authenticated %}
-        <li><a title="Sign Up" href="{% url 'signup' %}">Sign Up</a></li>{% endif %}
 {% endblock %}
 
 {% block content %}
