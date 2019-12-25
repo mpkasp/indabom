@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Runserver" type="Python.DjangoServer" factoryName="Django server">
+  <configuration default="false" name="Run IndaBOM" type="Python.DjangoServer" factoryName="Django server">
     <module name="indabom" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
