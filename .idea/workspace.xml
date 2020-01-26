@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3cdda41d-b714-4201-bc66-5ea265c6f3de" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/indabom/templates/indabom/learn-more.html" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/templates/indabom/learn-more.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,6 +60,8 @@
       <workItem from="1578323149501" duration="9000" />
       <workItem from="1578370581392" duration="863000" />
       <workItem from="1578592800495" duration="577000" />
+      <workItem from="1579488584657" duration="226000" />
+      <workItem from="1579997036062" duration="2098000" />
     </task>
     <servers />
   </component>
