@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3cdda41d-b714-4201-bc66-5ea265c6f3de" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/indabom/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/indabom/settings.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +59,8 @@
       <workItem from="1578370581392" duration="863000" />
       <workItem from="1578592800495" duration="577000" />
       <workItem from="1579488584657" duration="226000" />
-      <workItem from="1579997036062" duration="4409000" />
+      <workItem from="1579997036062" duration="4688000" />
+      <workItem from="1580083279948" duration="74000" />
     </task>
     <servers />
   </component>
