@@ -17,7 +17,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../django-bom" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.django.DjangoModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -61,6 +61,8 @@
       <workItem from="1579488584657" duration="226000" />
       <workItem from="1579997036062" duration="4688000" />
       <workItem from="1580083279948" duration="74000" />
+      <workItem from="1580447462832" duration="244000" />
+      <workItem from="1580673157937" duration="406000" />
     </task>
     <servers />
   </component>
