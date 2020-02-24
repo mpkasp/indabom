@@ -1,13 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.template.response import TemplateResponse
-from django.db import IntegrityError
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
-from django.contrib.auth.models import User
+from indabom.settings import DEBUG
 from indabom.forms import UserForm
+
+from urllib.request import URLError
 
 
 def index(request):
@@ -22,11 +23,16 @@ def signup(request):
     
     if request.method == 'POST':
         form = UserForm(request.POST)
-        if form.is_valid():
-            new_user = form.save()
-            # new_user = User.objects.create_user(**form.cleaned_data)
-            login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
-            return HttpResponseRedirect(reverse('bom:home'))
+        try:
+            if form.is_valid():
+                new_user = form.save()
+                login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
+                return HttpResponseRedirect(reverse('bom:home'))
+        except URLError:
+            if DEBUG:
+                new_user = get_user_model().objects.create_user(**form.cleaned_data)
+                login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
+                return HttpResponseRedirect(reverse('bom:home'))
     else:
         form = UserForm()
 
