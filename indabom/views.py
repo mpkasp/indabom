@@ -28,6 +28,10 @@ def signup(request):
                 new_user = form.save()
                 login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
                 return HttpResponseRedirect(reverse('bom:home'))
+            elif DEBUG:
+                new_user = get_user_model().objects.create_user(**form.cleaned_data)
+                login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
+                return HttpResponseRedirect(reverse('bom:home'))
         except URLError:
             if DEBUG:
                 new_user = get_user_model().objects.create_user(**form.cleaned_data)
