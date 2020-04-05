@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'social_django',
     'materializecssform',
     'djmoney',
+    'djmoney.contrib.exchange',
     'captcha',
 ]
 
