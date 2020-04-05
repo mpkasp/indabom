@@ -43,6 +43,7 @@ def deploy():
     pip_install()
     with cd('/home/indabom/web/site'):
         run('source /home/indabom/web/bin/activate && ./manage.py collectstatic -v0 --noinput')
+        run('source /home/indabom/web/bin/activate && ./manage.py update_rates')
 
 
 def test():
