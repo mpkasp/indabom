@@ -195,7 +195,6 @@ SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/bom/settings?tab_anchor=file'
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/bom/settings?tab_anchor=file'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 
-USE_THOUSAND_SEPARATOR = True
 CURRENCY_DECIMAL_PLACES = 4
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 
