@@ -1,26 +1,22 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
 from indabom.settings import DEBUG
 
 
-class UserForm(forms.ModelForm):
+class UserForm(UserCreationForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
     captcha = ReCaptchaField(label='')
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].required = True
-        self.fields['last_name'].required = True
-        self.fields['username'].required = True
         self.fields['captcha'].required = not DEBUG
-
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password', )
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
+        if DEBUG:
+            del self.fields['captcha']
 
     def clean_email(self):
         email = self.cleaned_data['email']
@@ -28,3 +24,11 @@ class UserForm(forms.ModelForm):
         if exists:
             raise ValidationError('An account with this email address already exists.')
         return email
+
+    def save(self, commit=True):
+        user = super(UserForm, self).save(commit=commit)
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+        return user

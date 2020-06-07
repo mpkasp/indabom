@@ -28,13 +28,9 @@ def signup(request):
                 new_user = form.save()
                 login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
                 return HttpResponseRedirect(reverse('bom:home'))
-            elif DEBUG and len(form.errors.keys()) == 1 and 'captcha' in form.errors.keys():
-                new_user = get_user_model().objects.create_user(**form.cleaned_data)
-                login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
-                return HttpResponseRedirect(reverse('bom:home'))
         except URLError:
             if DEBUG and len(form.errors.keys()) == 1 and 'captcha' in form.errors.keys():
-                new_user = get_user_model().objects.create_user(**form.cleaned_data)
+                new_user = form.save()
                 login(request, new_user, backend='django.contrib.auth.backends.ModelBackend')
                 return HttpResponseRedirect(reverse('bom:home'))
     else:
