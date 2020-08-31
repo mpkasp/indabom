@@ -48,5 +48,8 @@ urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 ]
 
+handler404 = 'indabom.views.handler404'
+handler500 = 'indabom.views.handler500'
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

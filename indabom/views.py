@@ -8,7 +8,7 @@ from django.views.generic.base import TemplateView
 from indabom.settings import DEBUG
 from indabom.forms import UserForm
 
-from urllib.request import URLError
+from urllib.error import URLError
 
 
 def index(request):
@@ -16,6 +16,14 @@ def index(request):
         return HttpResponseRedirect(reverse('bom:home'))
     else:
         return TemplateResponse(request, 'indabom/index.html', locals())
+
+
+def handler404(request, exception=None):
+    return render(request, 'indabom/404.html', status=404)
+
+
+def handler500(request):
+    return render(request, 'indabom/500.html', status=500)
 
 
 def signup(request):

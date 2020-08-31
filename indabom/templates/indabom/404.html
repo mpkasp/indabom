@@ -1,0 +1,9 @@
+{% extends 'indabom/base.html' %}
+
+{% block content %}
+    <div class="section container">
+        <h1>Bummer! We couldn't find that page!</h1>
+        <p>The requested URL {{ request_path }} was not found on this server.</p>
+        <p><a href="{% url 'home' %}">Return to homepage</a></p>
+    </div>
+{% endblock %}
