@@ -47,41 +47,34 @@ def signup(request):
     return TemplateResponse(request, 'indabom/signup.html', locals())
 
 
-class About(TemplateView):
+class IndabomTemplateView(TemplateView):
+    name = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(**kwargs)
+        self.template_name = f'indabom/{self.name}.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(IndabomTemplateView, self).get_context_data(**kwargs)
+        context['name'] = self.name
+        return context
+
+
+class About(IndabomTemplateView):
     name = 'about'
-    template_name = f'indabom/{name}.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(About, self).get_context_data(**kwargs)
-        context['name'] = self.name
-        return context
 
 
-class LearnMore(TemplateView):
+class LearnMore(IndabomTemplateView):
     name = 'learn-more'
-    template_name = f'indabom/{name}.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(LearnMore, self).get_context_data(**kwargs)
-        context['name'] = self.name
-        return context
 
 
-class PrivacyPolicy(TemplateView):
+class PrivacyPolicy(IndabomTemplateView):
     name = 'privacy-policy'
-    template_name = f'indabom/{name}.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(PrivacyPolicy, self).get_context_data(**kwargs)
-        context['name'] = self.name
-        return context
 
 
-class Install(TemplateView):
+class TermsAndConditions(IndabomTemplateView):
+    name = 'terms-and-conditions'
+
+
+class Install(IndabomTemplateView):
     name = 'install'
-    template_name = f'indabom/{name}.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(Install, self).get_context_data(**kwargs)
-        context['name'] = self.name
-        return context
