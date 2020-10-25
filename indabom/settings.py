@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
-    'raven.contrib.django.raven_compat',
     'social_django',
     'materializecssform',
     'djmoney',

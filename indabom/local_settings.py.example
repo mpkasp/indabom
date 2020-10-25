@@ -1,5 +1,7 @@
 import os
-import raven
+import subprocess
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,6 +11,28 @@ SECRET_KEY = 'supersecretkey'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+# Sentry.io config
+try:
+    release = subprocess.check_output(["git", "describe"]).strip()
+except:
+    release = 'UNKNOWN'
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="yourdsn",
+        integrations=[DjangoIntegration()],
+        release=release,
+
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production,
+        traces_sample_rate=1.0,
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 ALLOWED_HOSTS = ['*']
 
@@ -30,29 +54,12 @@ CACHES = {
 }
 
 BOM_CONFIG = {
-    'octopart_api_key': 'supersecretkey'   
+    'octopart_api_key': 'supersecretkey'
 }
 
 # google GoogleOAuth
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'secretkey'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'secretsecret'
-
-# Sentry.io / raven config
-try:
-    release = raven.fetch_git_sha(os.path.dirname(os.path.join(os.pardir, os.pardir)))
-except raven.exceptions.InvalidGitRepository:
-    release = 'TEST'
-except:
-    release = 'UNKNOWN'
-
-RAVEN_CONFIG = {}
-if not DEBUG:
-    RAVEN_CONFIG = {
-        'dsn': 'yourdsn',
-        # If you are using git, you can also automatically configure the
-        # release based on the git info.
-        'release': release,
-    }
 
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = 'secretkey'

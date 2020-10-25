@@ -18,8 +18,8 @@ def index(request):
         return TemplateResponse(request, 'indabom/index.html', locals())
 
 
-def handler404(request, exception=None):
-    return render(request, 'indabom/404.html', status=404)
+def handler404(request, exception=None, *args, **kwargs):
+    return render(request, 'indabom/404.html', status=404, context=locals())
 
 
 def handler500(request):
