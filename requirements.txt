@@ -7,9 +7,8 @@ certifi==2018.8.24
 cffi==1.14.0
 chardet==3.0.4
 cryptography==2.3.1
-defusedxml==0.5.0
-Django==3.1
-django-bom==1.192
+defusedxml==0.6.0
+Django==3.1.1
 django-materializecss-form==1.1.17
 django-money==1.1
 django-recaptcha==2.0.6
@@ -25,7 +24,7 @@ gunicorn==19.9.0
 httplib2==0.18.1
 idna==2.7
 keyring==15.0.0
-mysqlclient==2.0.1
+mysqlclient==1.3.13
 oauthlib==2.1.0
 paramiko==2.4.2
 pip-autoremove==0.9.1
@@ -42,13 +41,13 @@ python-memcached==1.59
 python-social-auth==0.3.6
 python3-openid==3.1.0
 pytz==2018.5
+raven==6.10.0
 readme-renderer==24.0
 requests==2.22.0
 requests-oauthlib==1.0.0
 requests-toolbelt==0.8.0
 rsa==4.0
 sendgrid==6.0.5
-sentry-sdk==0.19.1
 six==1.11.0
 social-auth-app-django==3.1.0
 social-auth-core==3.0.0
