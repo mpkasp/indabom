@@ -105,6 +105,12 @@ AUTH_PASSWORD_VALIDATORS = [
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'timestamp': {
+            'format': '{asctime} {levelname} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         # Include the default Django email handler for errors
         # This is what you'd get without configuring logging at all.
@@ -113,11 +119,13 @@ LOGGING = {
             'level': 'ERROR',
              # But the emails are plain text by default - HTML is nicer
             'include_html': True,
+            'formatter': 'timestamp',
         },
         # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '/var/log/indabom/django.log'
+            'filename': '/var/log/indabom/django.log',
+            'formatter': 'timestamp',
         },
     },
     'loggers': {
