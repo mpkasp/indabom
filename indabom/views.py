@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, HttpResponseNotFound
 from django.contrib.auth import authenticate, login, get_user_model
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -19,11 +19,11 @@ def index(request):
 
 
 def handler404(request, exception=None, *args, **kwargs):
-    return render(request, 'indabom/404.html', status=404, context=locals())
+    return HttpResponseNotFound(render(request, 'indabom/404.html', status=404, context=locals()))
 
 
 def handler500(request):
-    return render(request, 'indabom/500.html', status=500)
+    return HttpResponseServerError(render(request, 'indabom/500.html', status=500))
 
 
 def signup(request):
