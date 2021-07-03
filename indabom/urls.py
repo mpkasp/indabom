@@ -47,6 +47,9 @@ urlpatterns = [
     path('install/', views.Install.as_view(), name=views.Install.name),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
+
+    path('stripe/', include('djstripe.urls', namespace='djstripe')),
+    path('checkout/', views.Checkout.as_view(), name=views.Checkout.name),
 ]
 
 handler404 = 'indabom.views.handler404'

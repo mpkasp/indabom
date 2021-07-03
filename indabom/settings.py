@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'djmoney',
     'djmoney.contrib.exchange',
     'captcha',
+    'djstripe',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +157,7 @@ LOGGING = {
     },
 }
 
+# AUTH_USER_MODEL = 'indabom.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -204,6 +206,9 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 
 CURRENCY_DECIMAL_PLACES = 4
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
+
+# Stripe
+DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
 if BOM_CONFIG:
     BOM_CONFIG.update(bom_config_default)

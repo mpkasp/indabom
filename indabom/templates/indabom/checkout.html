@@ -1,0 +1,44 @@
+{% extends 'indabom/base.html' %}
+
+{% load materializecss %}
+{% block head-title %}Select a plan{% endblock %}
+{% block title %}Select a plan{% endblock %}
+
+{% block content %}
+    {% load static %}
+    <div class="container">
+        <div class="section center">
+            <h1 class="">Choose the plan that's right for you.</h1>
+        </div>
+
+        <div class="section center">
+            <div class="container ">
+                <div class="row inline-flex-medium">
+                    {% for p in products %}
+                        <div class="col s12 m6">
+                            <form style="height: 100%" action="{% url 'checkout' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" id="{{ p.prices.first.id }}-id" name="id" value="{{ p.prices.first.id }}">
+                                <div class="card mx-5 shadow" style="border-radius: 10px; border:none; height: 100%">
+                                    <div class="card-content" style="display: flex; flex-direction: column; height: 100%;">
+                                        <span class="card-title">{{ p.name }}</span>
+                                        <p>{{ p.description }}</p>
+                                        <div style="margin-top:auto">
+                                            <h5>{{ p.plan_set.first.human_readable_price }}</h5>
+                                            <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px;" type="submit">Continue with {{ p.name }}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="https://js.stripe.com/v3/"></script>
+{% endblock script %}

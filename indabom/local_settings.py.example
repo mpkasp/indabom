@@ -66,3 +66,10 @@ SENDGRID_API_KEY = 'secretkey'
 
 RECAPTCHA_PRIVATE_KEY = 'secret'
 RECAPTCHA_PUBLIC_KEY = 'secret'
+
+# Stripe
+STRIPE_TEST_PUBLIC_KEY ='your_pk_test'
+STRIPE_TEST_SECRET_KEY = 'your_secret_key'
+STRIPE_LIVE_MODE = False  # Change to True in production
+DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
