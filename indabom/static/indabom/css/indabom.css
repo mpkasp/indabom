@@ -91,3 +91,19 @@ input.invalid:not([type]), input.invalid:not([type]):focus, input.invalid[type=t
     -webkit-box-shadow: none;
     box-shadow: none;
 }
+
+#toast-container .toast {
+    cursor: pointer;
+}
+
+#toast-container .toast::after {
+    font-family: 'Material Icons';
+    content: "close";
+    -webkit-font-feature-settings: 'liga';
+    /*color: #dd2c00;*/
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 300;
+    float: right;
+    padding-left: 3rem;
+}
