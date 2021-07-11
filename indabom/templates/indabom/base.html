@@ -151,6 +151,10 @@
         $('.sidenav').sidenav();
     });
 
+    $(document).ready(function () {
+        $('select').formSelect();
+    });
+
     $(document).on('click', '#toast-container .toast', function() {
         $(this).fadeOut(function(){
             $(this).remove();

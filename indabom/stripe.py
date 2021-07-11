@@ -1,19 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.shortcuts import redirect
 
 import stripe
-from djstripe.models import Customer, Price, Product, Subscription
+from djstripe.models import Customer
 
 from bom.models import Organization
-from indabom.settings import STRIPE_SECRET_KEY
+from indabom.settings import ROOT_DOMAIN, STRIPE_SECRET_KEY
 
 
 User = get_user_model()
 
-
-def subscribe(request: HttpRequest, price_id: str, organization: Organization) -> HttpResponse:
+def subscribe(request: HttpRequest, price_id: str, organization: Organization, quantity: int) -> HttpResponse:
     stripe.api_key = STRIPE_SECRET_KEY
     customer, _ = Customer.get_or_create(subscriber=organization)
 
@@ -22,20 +21,16 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization) -
         checkout_session = stripe.checkout.Session.create(
             customer=customer.id,
             # {CHECKOUT_SESSION_ID} is a string literal; do not change it!
-            success_url='https://indabom.com/success.html?session_id={CHECKOUT_SESSION_ID}',
-            cancel_url='https://indabom.com/canceled.html',
+            success_url=ROOT_DOMAIN + '/checkout-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=ROOT_DOMAIN + '/checkout-cancelled',
             payment_method_types=['card'],
             mode='subscription',
             line_items=[{
                 'price': price_id,
-                # For metered billing, do not pass quantity
-                'quantity': 1
+                'quantity': quantity
             }],
         )
 
-        # Sync the Stripe API return data to the database,
-        # this way we don't need to wait for a webhook-triggered sync
-        subscription = Subscription.sync_from_stripe_data(checkout_session)
         return redirect(checkout_session.url, code=303)
     except Exception as e:
         messages.error(request, str(e))
@@ -43,8 +38,10 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization) -
 
 
 def add_user():
+    # TODO: Update existing subscription to increase qty
     pass
 
 
 def unsubscribe():
+    # TODO
     pass

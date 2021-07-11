@@ -10,7 +10,7 @@ chardet==4.0.0
 colorama==0.4.4
 cryptography==3.4.7
 defusedxml==0.7.1
-dj-stripe==2.5.1
+dj-stripe==2.4.1
 Django==3.2.5
 django-bom==1.200
 django-materializecss-form==1.1.17
@@ -39,7 +39,7 @@ paramiko==2.7.2
 pip-autoremove==0.9.1
 pkginfo==1.7.0
 protobuf==3.17.3
-py-moneyed==2.0
+py-moneyed==1.2
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycparser==2.20

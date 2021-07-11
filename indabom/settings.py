@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -163,14 +164,12 @@ LOGGING = {
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+
+ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -209,6 +208,7 @@ EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 
 # Stripe
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
+DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
 
 if BOM_CONFIG:
     BOM_CONFIG.update(bom_config_default)

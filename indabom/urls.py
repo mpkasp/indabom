@@ -1,15 +1,15 @@
-from django.conf.urls import include, url
-from django.urls import path
+from django.conf import settings
+from django.conf.urls import include
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
-from django.contrib import admin
-from django.conf import settings
+from django.urls import path
 from django.views.generic import TemplateView
-from django.views.generic.base import RedirectView
 
-from .sitemaps import StaticViewSitemap
 from . import views
+from .sitemaps import StaticViewSitemap
+
 
 # Dictionary containing your sitemap classes
 sitemaps = {
@@ -49,7 +49,10 @@ urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 
     path('stripe/', include('djstripe.urls', namespace='djstripe')),
+    path('stripe-webhook/', views.stripe_webhook_received, name='stripe-webhook-received'),
     path('checkout/', views.Checkout.as_view(), name=views.Checkout.name),
+    path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
+    path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
 ]
 
 handler404 = 'indabom.views.handler404'
