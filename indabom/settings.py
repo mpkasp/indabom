@@ -210,6 +210,16 @@ EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
 
+def organization_request_callback(request):
+    """ Gets an organization instance from request"""
+
+    from bom.models import Organization  # Import models here to avoid an ``AppRegistryNotReady`` exception
+    return Organization.objects.get(id=request.user.bom_profile().organization)
+
+
+DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = organization_request_callback
+
+# Bom
 if BOM_CONFIG:
     BOM_CONFIG.update(bom_config_default)
 else:

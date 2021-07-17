@@ -49,10 +49,10 @@ urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 
     path('stripe/', include('djstripe.urls', namespace='djstripe')),
-    path('stripe-webhook/', views.stripe_webhook_received, name='stripe-webhook-received'),
     path('checkout/', views.Checkout.as_view(), name=views.Checkout.name),
     path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
     path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
+    path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
 ]
 
 handler404 = 'indabom.views.handler404'

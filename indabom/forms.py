@@ -46,3 +46,12 @@ class SubscriptionForm(forms.Form):
         self.owner = kwargs.pop('owner')
         super(SubscriptionForm, self).__init__(*args, **kwargs)
         self.fields['organization'].queryset = Organization.objects.filter(owner=self.owner)
+
+
+class OrganizationForm(forms.Form):
+    organization = forms.ModelChoiceField(queryset=Organization.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        self.owner = kwargs.pop('owner')
+        super(OrganizationForm, self).__init__(*args, **kwargs)
+        self.fields['organization'].queryset = Organization.objects.filter(owner=self.owner)

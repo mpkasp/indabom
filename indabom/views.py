@@ -14,7 +14,7 @@ from djstripe.models import Price
 
 from bom.models import Organization
 from indabom import stripe
-from indabom.forms import SubscriptionForm, UserForm
+from indabom.forms import OrganizationForm, SubscriptionForm, UserForm
 from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
 
 
@@ -52,11 +52,6 @@ def signup(request):
         form = UserForm()
 
     return TemplateResponse(request, 'indabom/signup.html', locals())
-
-
-@csrf_exempt
-def stripe_webhook_received(request):
-    return stripe.webhook_received(request)
 
 
 class IndabomTemplateView(TemplateView):
@@ -146,3 +141,18 @@ class CheckoutSuccess(IndabomTemplateView):
 
 class CheckoutCancelled(IndabomTemplateView):
     name = 'checkout-cancelled'
+
+
+def stripe_manage(request):
+    # if request.POST:
+    #     form = OrganizationForm(request.POST, owner=request.user)
+    #     if form.is_valid():
+    #         organization = form.cleaned_data['organization']
+    #         return stripe.manage_subscription(request, organization)
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
+    user_profile = request.user.bom_profile()
+    organization = user_profile.organization
+    if user_profile.is_organization_owner():
+        return stripe.manage_subscription(request, organization)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))

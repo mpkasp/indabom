@@ -3,9 +3,11 @@ from typing import Optional
 
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
+from django.urls import reverse
 
 import stripe
 from djstripe import webhooks
@@ -18,6 +20,7 @@ from indabom.settings import ROOT_DOMAIN, STRIPE_SECRET_KEY
 
 
 logger = logging.getLogger(__name__)
+stripe.api_key = STRIPE_SECRET_KEY
 User = get_user_model()
 
 def active_subscription(customer: Customer) -> Optional[Subscription]:
@@ -52,8 +55,20 @@ def subscription_changed(event, **kwargs):
 def subscription_changed_handler(event, **kwargs):
     transaction.on_commit(lambda: subscription_changed(event, **kwargs))
 
+@webhooks.handler("invoice.payment_failed")
+def subscription_issue_handler(event, **kwargs):
+    customer = event.customer
+    organization = customer.subscriber
+    email = organization.email
+    send_mail(
+        'IndaBOM Payment Failed',
+        'Just writing to give you a heads up that your payment has failed and your subscription has been marked to be suspended. Please visit IndaBOM and update your payment settings.',
+        'no-reply@indabom.com',
+        [email, ],
+        fail_silently=False,
+    )
+
 def subscribe(request: HttpRequest, price_id: str, organization: Organization, quantity: int) -> HttpResponse:
-    stripe.api_key = STRIPE_SECRET_KEY
     customer, _ = Customer.get_or_create(subscriber=organization)
 
     if active_subscription(customer) is not None:
@@ -78,14 +93,24 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization, q
         return redirect(checkout_session.url, code=303)
     except Exception as e:
         messages.error(request, str(e))
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', 'redirect_if_referer_not_found'))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings')))
 
 
-def update_subscription():
-    # TODO add or remove users
-    pass
+def manage_subscription(request: HttpRequest, organization: Organization) -> HttpResponse:
+    customer, _ = Customer.get_or_create(subscriber=organization)
 
+    if active_subscription(customer) is None:
+        messages.error(request, f"The organization ({organization.name}) is not yet subscribed.")
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings')))
 
-def unsubscribe():
-    # TODO
-    pass
+    try:
+        # https://stripe.com/docs/billing/subscriptions/integrating-customer-portal
+        session = stripe.billing_portal.Session.create(
+            customer=customer.id,
+            return_url=ROOT_DOMAIN + reverse('bom:settings'),
+        )
+
+        return redirect(session.url, code=303)
+    except Exception as e:
+        messages.error(request, str(e))
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings')))
