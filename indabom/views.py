@@ -117,11 +117,9 @@ class Checkout(IndabomTemplateView):
         })
         return context
 
-    @login_required
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context_data())
 
-    @login_required
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, owner=request.user)
 

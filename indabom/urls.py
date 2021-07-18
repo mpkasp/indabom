@@ -3,6 +3,7 @@ from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 from django.views.generic import TemplateView
@@ -49,7 +50,7 @@ urlpatterns = [
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 
     path('stripe/', include('djstripe.urls', namespace='djstripe')),
-    path('checkout/', views.Checkout.as_view(), name=views.Checkout.name),
+    path('checkout/', login_required(views.Checkout.as_view()), name=views.Checkout.name),
     path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
     path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
     path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
