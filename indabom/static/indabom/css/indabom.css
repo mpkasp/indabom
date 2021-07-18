@@ -114,12 +114,16 @@ input.invalid:not([type]), input.invalid:not([type]):focus, input.invalid[type=t
 }
 
 input:focus {
-  border-bottom: 1px solid #a5d6a7 !important;
-  box-shadow: 0 1px 0 0 #a5d6a7 !important;
+  border-bottom: 1px solid #66BB6A !important;
+  box-shadow: 0 1px 0 0 #66BB6A !important;
 }
 
 label.active {
-  color: #a5d6a7 !important;
+  color: #66BB6A !important;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #66BB6A;
 }
 
 #toast-container .toast {
