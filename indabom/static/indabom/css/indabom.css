@@ -5,27 +5,22 @@ html {
 }
 
 @media (prefers-color-scheme: dark) {
-    body {
+    body, .tabs, .dropdown-content {
         background: #121212;
         color: #fff;
     }
 
-    .tabs {
-        background: #121212;
+    input, .btn-flat {
         color: #fff;
     }
 
-    input {
-        color: #fff;
+    .modal, .modal .modal-footer {
+        background-color: #212121;
     }
 
     .input-field input[type=search]:focus:not(.browser-default) {
         background: transparent;
         color: #fff;
-    }
-
-    .dropdown-content {
-        background: #121212;
     }
 
     .select-dropdown li.disabled, .select-dropdown li.disabled > span, .select-dropdown li.optgroup {
@@ -34,6 +29,23 @@ html {
 
     table.striped > tbody > tr:nth-child(odd) {
         background-color: rgba(13, 13, 13, 0.5);
+    }
+
+    .collection.with-header .collection-header, .collection .collection-item {
+        background-color: #121212;
+        border-bottom: 1px solid #0e0e0e;
+    }
+
+    .grey.lighten-4 {
+        background-color: #5f5f5f !important;
+    }
+
+    .collapsible-header {
+        background-color: #121212;
+    }
+
+    .tablesorter-header {
+        background-color: #212121 !important;
     }
 }
 
