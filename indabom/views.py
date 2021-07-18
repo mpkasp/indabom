@@ -1,5 +1,6 @@
 from urllib.error import URLError
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
@@ -95,6 +96,16 @@ class Checkout(IndabomTemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Checkout, self).get_context_data(**kwargs)
         price = Price.objects.filter(id=INDABOM_STRIPE_PRICE_ID).first()
+
+        context.update({
+            'price': price,
+            'product': None,
+            'form': self.form_class(owner=self.request.user),
+            'human_readable_prices': [],
+        })
+
+        if price is None:
+            return context
 
         human_readable_prices = []
         for tier in price.tiers:
