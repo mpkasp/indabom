@@ -1,14 +1,21 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerError, HttpResponseNotFound
-from django.contrib.auth import authenticate, login, get_user_model
+from urllib.error import URLError
+
+from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
+from django.shortcuts import get_object_or_404, render
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 
-from indabom.settings import DEBUG
-from indabom.forms import UserForm
+import stripe
+from djstripe.models import Price
 
-from urllib.error import URLError
+from bom.models import Organization
+from indabom import stripe
+from indabom.forms import OrganizationForm, SubscriptionForm, UserForm
+from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
 
 
 def index(request):
@@ -78,3 +85,71 @@ class TermsAndConditions(IndabomTemplateView):
 
 class Install(IndabomTemplateView):
     name = 'install'
+
+
+class Checkout(IndabomTemplateView):
+    name = 'checkout'
+    initial = {}
+    form_class = SubscriptionForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(Checkout, self).get_context_data(**kwargs)
+        price = Price.objects.filter(id=INDABOM_STRIPE_PRICE_ID).first()
+
+        human_readable_prices = []
+        for tier in price.tiers:
+            up_to = tier['up_to']
+            flat_amount = tier['flat_amount']
+            unit_amount = tier['unit_amount']
+            if flat_amount and up_to:
+                human_readable_prices.append(f'${flat_amount / 100:.2f} for up to {up_to} users')
+            elif unit_amount:
+                human_readable_prices.append(f'${unit_amount / 100:.2f} per user')
+
+        form = self.form_class(initial={'price_id': price.id}, owner=self.request.user)
+        del form.fields["additional_users"]
+
+        context.update({
+            'price': price,
+            'product': price.product,
+            'form': form,
+            'human_readable_prices': human_readable_prices,
+        })
+        return context
+
+    @login_required
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+
+    @login_required
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, owner=request.user)
+
+        if form.is_valid():
+            organization = form.cleaned_data['organization']
+            price_id = form.cleaned_data['price_id']
+            quantity = form.cleaned_data['additional_users'] + 5
+            return stripe.subscribe(request, price_id, organization, quantity)
+
+        del form.fields["additional_users"]
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
+
+
+class CheckoutSuccess(IndabomTemplateView):
+    name = 'checkout-success'
+
+
+class CheckoutCancelled(IndabomTemplateView):
+    name = 'checkout-cancelled'
+
+
+@login_required
+def stripe_manage(request):
+    user_profile = request.user.bom_profile()
+    organization = user_profile.organization
+    if user_profile.is_organization_owner():
+        return stripe.manage_subscription(request, organization)
+
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))

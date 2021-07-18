@@ -2,7 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+
 from captcha.fields import ReCaptchaField
+
+from bom.models import Organization
 from indabom.settings import DEBUG
 
 
@@ -32,3 +35,23 @@ class UserForm(UserCreationForm):
         user.last_name = self.cleaned_data['last_name']
         user.save()
         return user
+
+
+class SubscriptionForm(forms.Form):
+    price_id = forms.CharField(widget=forms.HiddenInput(), max_length=255)
+    organization = forms.ModelChoiceField(queryset=Organization.objects.none())
+    additional_users = forms.IntegerField(min_value=0)
+
+    def __init__(self, *args, **kwargs):
+        self.owner = kwargs.pop('owner')
+        super(SubscriptionForm, self).__init__(*args, **kwargs)
+        self.fields['organization'].queryset = Organization.objects.filter(owner=self.owner)
+
+
+class OrganizationForm(forms.Form):
+    organization = forms.ModelChoiceField(queryset=Organization.objects.none())
+
+    def __init__(self, *args, **kwargs):
+        self.owner = kwargs.pop('owner')
+        super(OrganizationForm, self).__init__(*args, **kwargs)
+        self.fields['organization'].queryset = Organization.objects.filter(owner=self.owner)

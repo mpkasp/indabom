@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'djmoney',
     'djmoney.contrib.exchange',
     'captcha',
+    'djstripe',
 ]
 
 MIDDLEWARE = [
@@ -156,19 +158,18 @@ LOGGING = {
     },
 }
 
+# AUTH_USER_MODEL = 'indabom.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+
+ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -205,6 +206,20 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 CURRENCY_DECIMAL_PLACES = 4
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 
+# Stripe
+DJSTRIPE_USE_NATIVE_JSONFIELD = True
+DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
+
+def organization_request_callback(request):
+    """ Gets an organization instance from request"""
+
+    from bom.models import Organization  # Import models here to avoid an ``AppRegistryNotReady`` exception
+    return Organization.objects.get(id=request.user.bom_profile().organization)
+
+
+DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = organization_request_callback
+
+# Bom
 if BOM_CONFIG:
     BOM_CONFIG.update(bom_config_default)
 else:

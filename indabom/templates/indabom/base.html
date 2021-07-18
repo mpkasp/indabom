@@ -74,7 +74,7 @@
     <link rel="canonical" href="{% block canonical_url %}{% endblock %}">
     {% block head %}
     {% endblock head %}
-    <link rel="shortcut icon" type="image/png" alt="Indabom Favicon" href="{% static 'indabom/img/favicon.ico' %}"/>
+    <link rel="shortcut icon" type="image/png" alt="Indabom Favicon" href="{% static 'indabom/img/indabom.png' %}"/>
 </head>
 
 <body>
@@ -111,17 +111,6 @@
             <h1 class="col s12 light header center">{{ title|safe }}</h1>
         </div>
     {% endif %}
-    <div id="content" class="container">
-        {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="card alert alert-{{ message.tags }} alert-dismissible"{% endif %} role="alert">
-                        {{ message.message|safe }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
     {% block content %}{% endblock %}
     {% block action-btn %}{% endblock %}
 </main>
@@ -161,6 +150,22 @@
     $(document).ready(function () {
         $('.sidenav').sidenav();
     });
+
+    $(document).ready(function () {
+        $('select').formSelect();
+    });
+
+    $(document).on('click', '#toast-container .toast', function() {
+        $(this).fadeOut(function(){
+            $(this).remove();
+        });
+    });
+</script>
+
+<script>
+{% for message in messages %}
+    M.toast({html: "{{ message.message|safe }}", classes: "rounded alert-{{ message.tags }}", displayLength: undefined});
+{% endfor %}
 </script>
 
 {% block script %}{% endblock script %}
