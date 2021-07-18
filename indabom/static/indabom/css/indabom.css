@@ -16,6 +16,10 @@ html {
     input {
         color: #fff;
     }
+    .input-field input[type=search]:focus:not(.browser-default) {
+        background: transparent;
+        color: #fff;
+    }
 }
 
 main {
