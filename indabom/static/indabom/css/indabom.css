@@ -9,22 +9,31 @@ html {
         background: #121212;
         color: #fff;
     }
+
     .tabs {
         background: #121212;
         color: #fff;
     }
+
     input {
         color: #fff;
     }
+
     .input-field input[type=search]:focus:not(.browser-default) {
         background: transparent;
         color: #fff;
     }
+
     .dropdown-content {
         background: #121212;
     }
-    .select-dropdown li.disabled, .select-dropdown li.disabled>span, .select-dropdown li.optgroup {
-        color: rgba(255,255,255,0.3);
+
+    .select-dropdown li.disabled, .select-dropdown li.disabled > span, .select-dropdown li.optgroup {
+        color: rgba(255, 255, 255, 0.3);
+    }
+
+    table.striped > tbody > tr:nth-child(odd) {
+        background-color: rgba(13, 13, 13, 0.5);
     }
 }
 
@@ -120,15 +129,15 @@ input.invalid:not([type]), input.invalid:not([type]):focus, input.invalid[type=t
 }
 
 input:focus {
-  border-bottom: 1px solid #66BB6A !important;
-  box-shadow: 0 1px 0 0 #66BB6A !important;
+    border-bottom: 1px solid #66BB6A !important;
+    box-shadow: 0 1px 0 0 #66BB6A !important;
 }
 
 label.active {
-  color: #66BB6A !important;
+    color: #66BB6A !important;
 }
 
-.dropdown-content li>a, .dropdown-content li>span {
+.dropdown-content li > a, .dropdown-content li > span {
     color: #66BB6A;
 }
 
