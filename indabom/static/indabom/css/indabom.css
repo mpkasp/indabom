@@ -113,6 +113,15 @@ input.invalid:not([type]), input.invalid:not([type]):focus, input.invalid[type=t
     box-shadow: none;
 }
 
+input:focus {
+  border-bottom: 1px solid #a5d6a7 !important;
+  box-shadow: 0 1px 0 0 #a5d6a7 !important;
+}
+
+label.active {
+  color: #a5d6a7 !important;
+}
+
 #toast-container .toast {
     cursor: pointer;
 }
