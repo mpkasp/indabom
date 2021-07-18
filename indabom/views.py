@@ -105,6 +105,7 @@ class Checkout(IndabomTemplateView):
         })
 
         if price is None:
+            messages.error(self.request, "No stripe prices found, contact an administrator at info@indabom.com")
             return context
 
         human_readable_prices = []
