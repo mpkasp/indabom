@@ -1,11 +1,13 @@
+import calendar
+import os
+from time import localtime
+
+import fabric
 from fabric.api import *
-from fabric.operations import local
 from fabric.contrib.console import confirm
 from fabric.network import ssh
-from time import localtime
-import calendar
-import fabric
-import os
+from fabric.operations import local
+
 
 ssh.util.log_to_file("indabom_ssh.log", 10)
 
@@ -44,9 +46,8 @@ def deploy():
     with cd('/home/indabom/web/site'):
         run('source /home/indabom/web/bin/activate && ./manage.py collectstatic -v0 --noinput')
         run('source /home/indabom/web/bin/activate && ./manage.py update_rates')
+        run('source /home/indabom/web/bin/activate && ./manage.py djstripe_sync_models')
 
-
-def test():
     with cd('/home/indabom/web/site'):
         run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/manage.py test --noinput')
 
