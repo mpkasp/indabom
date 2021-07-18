@@ -20,6 +20,9 @@ html {
         background: transparent;
         color: #fff;
     }
+    .dropdown-content {
+        background: #121212;
+    }
 }
 
 main {
