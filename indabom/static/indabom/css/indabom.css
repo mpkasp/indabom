@@ -129,6 +129,10 @@ label.active {
     color: #66BB6A;
 }
 
+.input-field .prefix.active {
+    color: #66BB6A;
+}
+
 #toast-container .toast {
     cursor: pointer;
 }
