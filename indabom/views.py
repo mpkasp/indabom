@@ -117,9 +117,11 @@ class Checkout(IndabomTemplateView):
         })
         return context
 
+    @login_required
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context_data())
 
+    @login_required
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, owner=request.user)
 
@@ -143,13 +145,8 @@ class CheckoutCancelled(IndabomTemplateView):
     name = 'checkout-cancelled'
 
 
+@login_required
 def stripe_manage(request):
-    # if request.POST:
-    #     form = OrganizationForm(request.POST, owner=request.user)
-    #     if form.is_valid():
-    #         organization = form.cleaned_data['organization']
-    #         return stripe.manage_subscription(request, organization)
-    # return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
     user_profile = request.user.bom_profile()
     organization = user_profile.organization
     if user_profile.is_organization_owner():

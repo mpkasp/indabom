@@ -6,9 +6,9 @@
     <li><a title="IndaBOM | Feedback" href="https://forms.gle/4CUQuBcfBJ4eGXDW8" target="_blank">Feedback</a></li>
     {% if user.bom_profile.is_organization_owner %}
         {% if user.bom_profile.organization.subscription != 'F' %}
-            <li><a title="IndaBOM | Billing" href="{% url 'stripe-manage' %}" target="_blank">Billing</a></li>
+{#            <li><a title="IndaBOM | Billing" href="{% url 'stripe-manage' %}" target="_blank">Billing</a></li>#}
         {% else %}
-            <li><a title="IndaBOM | Billing" href="{% url 'views.Checkout.name' %}" target="_blank">Billing</a></li>
+{#            <li><a title="IndaBOM | Billing" href="{% url 'views.Checkout.name' %}" target="_blank">Billing</a></li>#}
         {% endif %}
     {% endif %}
 {% endif %}
