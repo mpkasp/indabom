@@ -23,6 +23,9 @@ html {
     .dropdown-content {
         background: #121212;
     }
+    .select-dropdown li.disabled, .select-dropdown li.disabled>span, .select-dropdown li.optgroup {
+        color: rgba(255,255,255,0.3);
+    }
 }
 
 main {
