@@ -31,6 +31,10 @@ def active_subscription(customer: Customer) -> Optional[Subscription]:
         return active_subscriptions[0]
     return None
 
+def active_organization_subscription(organization: Organization) -> Optional[Subscription]:
+    customer, _ = Customer.get_or_create(subscriber=organization)
+    return active_subscription(customer)
+
 def subscription_changed(event, **kwargs):
     try:
         customer = event.customer

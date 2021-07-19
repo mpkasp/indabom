@@ -130,6 +130,23 @@ class Checkout(IndabomTemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
+        user_profile = request.user.bom_profile()
+        organization = user_profile.organization
+
+        if not user_profile.is_organization_owner():
+            if organization is not None and organization.owner is not None:
+                messages.error(request, f'Only your organization owner {organization.owner.email} can upgrade the organization.')
+            else:
+                messages.error(request, f'You must be an organization owner to upgrade your organization.')
+            return HttpResponseRedirect(reverse('bom:settings'))
+
+        try:
+            if stripe.active_organization_subscription(organization) is not None:
+                return HttpResponseRedirect(reverse('stripe-manage'))
+        except ValueError:
+            messages.error(request, f'There was an error getting your organization. Please contact info@indabom.com with this error message.')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
+
         return render(request, self.template_name, self.get_context_data())
 
     def post(self, request, *args, **kwargs):
