@@ -164,7 +164,7 @@
 
 <script>
 {% for message in messages %}
-    M.toast({html: "{{ message.message|safe }}", classes: "rounded alert-{{ message.tags }}", displayLength: undefined});
+    M.toast({html: '{{ message.message|safe }}', classes: "rounded alert-{{ message.tags }}", displayLength: undefined});
 {% endfor %}
 </script>
 
