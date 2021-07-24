@@ -9,6 +9,7 @@
     <div class="container">
         <div class="section center">
             <h1 class="">Upgrade to IndaBOM {{ product.name }}</h1>
+            <p>Gain access to multi-user organizations, prioritized support, and fully managed BOM management software.</p>
         </div>
 
         <div class="section center">
@@ -32,6 +33,9 @@
                                 <input id="additional_users" name="additional_users" type="number" class="validate" value="0" min="0" style="font-size: 1.64rem;">
                                 <label for="additional_users">Additional Users</label>
                             </div>
+                            <div class="input-field" style="display: inline-block">
+                                <h5><span>&nbsp;=&nbsp;</span><span id="finalValue">$100</span><span>&nbsp;/ month</span></h5>
+                            </div>
                             <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px;" type="submit">Continue with {{ product.name }}</button>
                         </div>
                     </div>
@@ -44,4 +48,13 @@
 
 {% block script %}
     <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        $('#additional_users').on('change input', function () {
+            const users = $('#additional_users');
+            const val = users.val() * 25 + 100;
+            const text = `$${val}`;
+            console.log(users.val(), text);
+            $('#finalValue').text(text);
+        });
+    </script>
 {% endblock script %}

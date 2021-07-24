@@ -45,7 +45,10 @@ class SubscriptionForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.owner = kwargs.pop('owner')
         super(SubscriptionForm, self).__init__(*args, **kwargs)
-        self.fields['organization'].queryset = Organization.objects.filter(owner=self.owner)
+        queryset = Organization.objects.filter(owner=self.owner)
+        self.fields['organization'].queryset = queryset
+        if queryset.count() > 0:
+            self.fields['organization'].initial = queryset[0]
 
 
 class OrganizationForm(forms.Form):

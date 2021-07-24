@@ -142,6 +142,7 @@ class Checkout(IndabomTemplateView):
 
         try:
             if stripe.active_organization_subscription(organization) is not None:
+                messages.info(request, "You already have an active subscription. Forwarding to manage your subscription.")
                 return HttpResponseRedirect(reverse('stripe-manage'))
         except ValueError:
             messages.error(request, f'There was an error getting your organization. Please contact info@indabom.com with this error message.')
@@ -179,4 +180,5 @@ def stripe_manage(request):
     if user_profile.is_organization_owner():
         return stripe.manage_subscription(request, organization)
 
+    messages.warning(request, "Can't manage a subscription for an organization you don't own.")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))

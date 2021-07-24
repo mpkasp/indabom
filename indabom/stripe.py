@@ -97,7 +97,7 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization, q
         return redirect(checkout_session.url, code=303)
     except Exception as e:
         messages.error(request, str(e))
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings')))
+        return HttpResponseRedirect(reverse('bom:settings'))
 
 
 def manage_subscription(request: HttpRequest, organization: Organization) -> HttpResponse:
@@ -113,8 +113,8 @@ def manage_subscription(request: HttpRequest, organization: Organization) -> Htt
             customer=customer.id,
             return_url=ROOT_DOMAIN + reverse('bom:settings'),
         )
-
         return redirect(session.url, code=303)
     except Exception as e:
-        messages.error(request, str(e))
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings')))
+        logger.error(e)
+        messages.error(request, f"Error creating stripe session, contact info@indabom.com for help.")
+        return HttpResponseRedirect(reverse('bom:settings'))
