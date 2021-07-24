@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'djmoney.contrib.exchange',
     'captcha',
     'djstripe',
+    'explorer',
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'indabom.wsgi.application'
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -119,7 +120,7 @@ LOGGING = {
         'mail_admins': {
             'class': 'django.utils.log.AdminEmailHandler',
             'level': 'ERROR',
-             # But the emails are plain text by default - HTML is nicer
+            # But the emails are plain text by default - HTML is nicer
             'include_html': True,
             'formatter': 'timestamp',
         },
@@ -146,13 +147,13 @@ LOGGING = {
         # Indabom app
         'indabom': {
             'handlers': ['logfile'],
-            'level': 'INFO', # Or maybe INFO or DEBUG
+            'level': 'INFO',  # Or maybe INFO or DEBUG
             'propagate': False
         },
         # django-bom app
         'bom': {
             'handlers': ['logfile'],
-            'level': 'INFO', # Or maybe INFO or DEBUG
+            'level': 'INFO',  # Or maybe INFO or DEBUG
             'propagate': False
         },
     },
@@ -170,7 +171,6 @@ USE_L10N = True
 USE_TZ = True
 
 ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -209,6 +209,7 @@ EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 # Stripe
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
+
 
 def organization_request_callback(request):
     """ Gets an organization instance from request"""

@@ -1,0 +1,10 @@
+{% extends "explorer/query.html" %}
+
+{% load explorer_tags i18n %}
+
+{% block sql_explorer_navlinks %}
+    {{ block.super }}
+    {% if can_change %}
+      <li><a href="{% url 'admin:index' %}">{% trans "IndaBOM Admin" %}</a></li>
+    {% endif %}
+{% endblock %}

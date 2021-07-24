@@ -1,0 +1,6 @@
+{% extends "admin/index.html" %}
+
+{% block userlinks %}
+    {{ block.super }} /
+    <a href="{% url 'explorer_index' %}">SQL Explorer</a>
+{% endblock %}

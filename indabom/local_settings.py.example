@@ -76,5 +76,13 @@ STRIPE_LIVE_MODE = False  # Change to True in production
 DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 
+# SQL Explorer - TODO: In prod make sure to create a new readonly role
+# https://docs.cluvio.com/hc/en-us/articles/115000968069-Creating-a-read-only-user-in-the-database
+# name the user 'readonly', then comment out below, and comment the other EXPLORER_CONNECTIONS line
+# EXPLORER_CONNECTIONS = {'Default': 'readonly'}
+# EXPLORER_DEFAULT_CONNECTION = 'readonly'
+EXPLORER_CONNECTIONS = {'Default': 'default'}
+EXPLORER_DEFAULT_CONNECTION = 'default'
+
 # IndaBOM Specific
 INDABOM_STRIPE_PRICE_ID = '123'

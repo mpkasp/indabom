@@ -54,6 +54,8 @@ urlpatterns = [
     path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
     path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
     path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
+
+    path('explorer/', include('explorer.urls')),
 ]
 
 handler404 = 'indabom.views.handler404'
