@@ -184,3 +184,14 @@ label.active {
     float: right;
     padding-left: 3rem;
 }
+
+/* Printer friendly */
+.printer-show {
+    display: none;
+}
+
+@media print {
+    .printer-show {
+        display: block;
+    }
+}
