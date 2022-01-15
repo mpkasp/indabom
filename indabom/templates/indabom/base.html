@@ -103,6 +103,8 @@
     {% include 'indabom/base-menu.html' with user=user pagename=pagename title=title %}
 </ul>
 
+<div class="printer-show"><p>IndaBOM | www.indabom.com{% if organization %} | {{ organization }}{% endif %}{% if title %} | {{ title|safe }}{% endif %}</p></div>
+
 <main>
     {% block main %}
     {% endblock main %}
