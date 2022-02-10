@@ -11,7 +11,7 @@ colorama==0.4.4
 cryptography==3.4.7
 defusedxml==0.7.1
 dj-stripe==2.4.1
-Django==3.2.5
+Django==3.2.12
 django-bom==1.218
 django-materializecss-form==1.1.17
 django-money==2.0
