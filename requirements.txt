@@ -12,7 +12,7 @@ cryptography==3.4.7
 defusedxml==0.7.1
 dj-stripe==2.4.1
 Django==3.2.15
-django-bom==1.220
+django-bom==1.221
 django-materializecss-form==1.1.17
 django-money==2.0
 django-recaptcha==2.0.6
@@ -31,12 +31,14 @@ gunicorn==20.1.0
 httplib2==0.19.1
 idna==2.10
 importlib-metadata==4.5.0
+invoke==1.7.1
 jsonfield==3.1.0
 keyring==23.0.1
 mysqlclient==2.0.3
 oauthlib==3.1.1
 packaging==20.9
-paramiko==2.10.1
+paramiko==2.8.0
+pathlib2==2.3.7.post1
 pip-autoremove==0.9.1
 pkginfo==1.7.0
 protobuf==3.17.3
