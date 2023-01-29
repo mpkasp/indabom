@@ -17,6 +17,9 @@ sitemaps = {
     'static': StaticViewSitemap(),
 }
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('bom/', include('bom.urls')),
@@ -56,6 +59,7 @@ urlpatterns = [
     path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
 
     path('explorer/', include('explorer.urls')),
+    path('sentry-debug/', trigger_error)
 ]
 
 handler404 = 'indabom.views.handler404'
