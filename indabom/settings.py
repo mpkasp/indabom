@@ -104,6 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+log_file_path = '/var/log/indabom/django.log' if not DEBUG else './django.log'
 
 LOGGING = {
     'version': 1,
@@ -127,7 +128,7 @@ LOGGING = {
         # Log to a text file that can be rotated by logrotate
         'logfile': {
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': '/var/log/indabom/django.log',
+            'filename': log_file_path,
             'formatter': 'timestamp',
         },
     },
