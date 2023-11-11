@@ -44,31 +44,31 @@ def deploy():
         run('git pull')
     pip_install()
     with cd('/home/indabom/web/site'):
-        run('source /home/indabom/web/bin/activate && ./manage.py collectstatic -v0 --noinput')
-        run('source /home/indabom/web/bin/activate && ./manage.py update_rates')
-        run('source /home/indabom/web/bin/activate && ./manage.py djstripe_sync_models')
+        run('pipenv shell && ./manage.py collectstatic -v0 --noinput')
+        run('pipenv shell && ./manage.py update_rates')
+        run('pipenv shell && ./manage.py djstripe_sync_models')
 
     with cd('/home/indabom/web/site'):
-        run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/manage.py test --noinput')
+        run('pipenv shell && python -Wi /home/indabom/web/site/manage.py test --noinput')
 
 
 def test_failfast():
     with cd('/home/indabom/web/site'):
-        run('source /home/indabom/web/bin/activate && python -Wi /home/indabom/web/site/manage.py test --failfast --noinput')
+        run('pipenv shell && python -Wi /home/indabom/web/site/manage.py test --failfast --noinput')
 
 
 def migrate():
     """
     Runs all migrations across all indabom apps
     """
-    run('cd /home/indabom/web && source ./bin/activate && cd ./site && python manage.py migrate')
+    run('cd /home/indabom/web/site && pipenv shell && python manage.py migrate')
 
 
 def migrate_fake():
     """
     Runs all migrations across all indabom apps
     """
-    run('source /home/indabom/web/bin/activate && /home/indabom/web/site/manage.py migrate --fake')
+    run('cd /home/indabom/web/site && pipenv shell && /home/indabom/web/site/manage.py migrate --fake')
 
 
 def restart_web():
@@ -110,13 +110,13 @@ def mkdirs():
         run('chown -R indabom:indabom {}'.format(d))
 
 
+def install_pipenv():
+    run('pip3 install pipenv --user')
+
+
 def make_virtualenv():
-    if fabric.contrib.files.exists('/home/indabom/web/bin'):
-        return
-
-    run('virtualenv /home/indabom/web/')
-
-    run('chown -R indabom:indabom /home/indabom/web/')
+    with cd('/home/indabom/web/site'):
+        run('pipenv install')
 
 
 def clone_web_repo():
@@ -129,7 +129,8 @@ def clone_web_repo():
 
 
 def pip_install():
-    run('source /home/indabom/web/bin/activate && pip install -r /home/indabom/web/site/requirements.txt')
+    with cd('/home/indabom/web/site'):
+        run('pipenv install')
 
 
 def install_reqs():

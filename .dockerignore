@@ -1,0 +1,9 @@
+# Ignore everything
+**
+
+# ... except for dependencies and source
+!Pipfile
+!Pipfile.lock
+!indabom/
+!scripts/
+!manage.py

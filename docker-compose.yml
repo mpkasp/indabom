@@ -1,0 +1,59 @@
+version: '2.19.1'
+
+services:
+  application:
+    build: .
+    restart: unless-stopped
+    container_name: application
+    volumes:
+      - /code/docker_data/django/static/:/static/
+    ports:
+      - "8000:8000"
+    env_file: .env
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    env_file: .env
+    volumes:
+      - /code/docker_data/nginx/data/certbot/conf:/etc/letsencrypt
+      - /code/docker_data/nginx/data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  localhost-certificates:
+     image: nginx:alpine
+     container_name: localhost-certificates
+     env_file: .env
+     volumes:
+       - /code/docker_data/nginx/data/certbot/conf:/etc/letsencrypt
+       - /code/docker_data/nginx/data/nginx:/localconf
+       - ./scripts/nginx:/localconf/conf
+     command: > 
+             sh -c "if [[ ! -z '${LOCALHOST}' ]]; then 
+                      cp /localconf/conf/* /localconf/ 
+                      apk update && apk add --no-cache openssl && 
+                      mkdir -p /etc/letsencrypt/live/localhost/ && 
+                      if [ ! -f /etc/letsencrypt/live/localhost/fullchain.pem ]; then 
+                          openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout /etc/letsencrypt/live/localhost/privkey.pem -out /etc/letsencrypt/live/localhost/fullchain.pem -subj '/C=XX/ST=StateName/L=CityName/O=CompanyName/OU=CompanySectionName/CN=CommonNameOrHostname' 
+                      fi && 
+                      # replace domain as localhost 
+                      sed -i 's/##DOMAIN##/localhost/g' /localconf/indabom.conf 
+                      sed -i 's/ssl_dhparam/#ssl_dhparam/g' /localconf/indabom.conf 
+                    fi" 
+
+  nginx:
+     image: nginx:alpine
+     container_name: nginx
+     depends_on:
+       - application
+     hostname: nginx
+     restart: unless-stopped
+     volumes:
+       - /code/docker_data/nginx/data/nginx:/etc/nginx/conf.d
+       - /code/docker_data/nginx/data/certbot/conf:/etc/letsencrypt
+       - /code/docker_data/nginx/data/certbot/www:/var/www/certbot
+       - /code/docker_data/django/static/:/var/www/static:ro
+     ports:
+       - "80:80"
+       - "443:443"
+     command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
