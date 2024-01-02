@@ -17,6 +17,7 @@ import sentry_sdk
 import environ
 import google.auth
 
+from urllib.parse import urlparse
 from google.cloud import secretmanager
 from pathlib import Path
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -54,10 +55,9 @@ else:
 LOCALHOST = env.bool("LOCALHOST", False)
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", False)
-ALLOWED_HOSTS = env.str("ALLOWED_HOSTS").split(" ")
 SENTRY_DSN = env.str("SENTRY_DSN")
 GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) # for django-storages, dont change
-GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", None)
+GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
 DB_HOST = env.str("DB_HOST")
 DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
@@ -78,7 +78,15 @@ STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
 STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
 DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
-GAE_APPLICATION = os.getenv('GAE_APPLICATION', None)
+
+CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
+if CLOUDRUN_SERVICE_URL:
+    ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
+    CSRF_TRUSTED_ORIGINS = [CLOUDRUN_SERVICE_URL]
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+else:
+    ALLOWED_HOSTS = ["*"]
 
 # Sentry.io config
 if not LOCALHOST:
@@ -186,8 +194,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'timestamp': {
-            'format': '{asctime} {levelname} {message}',
-            'style': '{',
+            'format': "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
         },
     },
     'handlers': {
@@ -206,6 +213,10 @@ LOGGING = {
         #     'filename': log_file_path,
         #     'formatter': 'timestamp',
         # },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'timestamp',
+        },
     },
     'loggers': {
         # Again, default Django configuration to email unhandled exceptions
@@ -214,30 +225,30 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        # TODO: Figure out logging on cloud run - doesnt like "logfile" due to directory
+        'django.db.backends': {
+            'level': 'DEBUG',
+        },
         # Might as well log any errors anywhere else in Django
-        # 'django': {
-        #     'handlers': ['logfile'],
-        #     'level': 'ERROR',
-        #     'propagate': False,
-        # },
-        # Indabom app
-        # 'indabom': {
-        #     'handlers': ['logfile'],
-        #     'level': 'INFO',  # Or maybe INFO or DEBUG
-        #     'propagate': False
-        # },
-        # django-bom app
-        # 'bom': {
-        #     'handlers': ['logfile'],
-        #     'level': 'INFO',  # Or maybe INFO or DEBUG
-        #     'propagate': False
-        # },
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'indabom': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Or maybe INFO or DEBUG
+            'propagate': False
+        },
+        'bom': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Or maybe INFO or DEBUG
+            'propagate': False
+        },
     },
 }
 
-if GAE_APPLICATION:
-    print("GAE APP")
+if CLOUDRUN_SERVICE_URL:
+    print("[CLOUDRUN_SERVICE_URL] Cloud Run App")
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
     DATABASES = {
