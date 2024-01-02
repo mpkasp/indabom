@@ -11,19 +11,101 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import io
+import subprocess
+import sentry_sdk
+import environ
+import google.auth
 
+from urllib.parse import urlparse
+from google.cloud import secretmanager
+from pathlib import Path
+from sentry_sdk.integrations.django import DjangoIntegration
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+env_file = os.path.join(BASE_DIR, '.env')
+
+# Attempt to load the Project ID into the environment, safely failing on error.
 try:
-    from indabom.local_settings import *
-except ImportError as e:
-    print(e)
+    _, os.environ['GOOGLE_CLOUD_PROJECT'] = google.auth.default()
+except google.auth.exceptions.DefaultCredentialsError:
     pass
+except TypeError as e:
+    print('No google cloud project found.', e)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
+if os.path.isfile(env_file):
+    # Use a local secret file, if provided
+    env.read_env(env_file)
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+    # Pull secrets from Secret Manager
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+
+    client = secretmanager.SecretManagerServiceClient()
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+
+    env.read_env(io.StringIO(payload))
+else:
+    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+
+# Set up secrets and environment variables
+LOCALHOST = env.bool("LOCALHOST", False)
+SECRET_KEY = env.str("SECRET_KEY")
+DEBUG = env.bool("DEBUG", False)
+SENTRY_DSN = env.str("SENTRY_DSN")
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) # for django-storages, dont change
+GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
+DB_HOST = env.str("DB_HOST")
+DB_USER = env.str("DB_USER")
+DB_PASSWORD = env.str("DB_PASSWORD")
+DB_NAME = env.str("DB_NAME")
+DB_READONLY_USER = env.str("DB_READONLY_USER")
+DB_READONLY_PASSWORD = env.str("DB_READONLY_PASSWORD")
+OCTOPART_API_KEY = env.str("OCTOPART_API_KEY")
+MOUSER_API_KEY = env.str("MOUSER_API_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+SENDGRID_API_KEY = env.str("SENDGRID_API_KEY")
+RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
+RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
+INDABOM_STRIPE_PRICE_ID = env.str("INDABOM_STRIPE_PRICE_ID")
+STRIPE_TEST_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
+STRIPE_TEST_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
+STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
+DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
+
+CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
+if CLOUDRUN_SERVICE_URL:
+    ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
+    CSRF_TRUSTED_ORIGINS = [CLOUDRUN_SERVICE_URL]
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+else:
+    ALLOWED_HOSTS = ["*"]
+
+# Sentry.io config
+if not LOCALHOST:
+    try:
+        release = subprocess.check_output(["git", "describe", "--always"]).strip()
+    except:
+        release = 'UNKNOWN'
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        release=release,
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production,
+        traces_sample_rate=1.0,
+        debug=DEBUG,
+    )
+
 
 # Application definition
 
@@ -37,6 +119,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'storages',
     'social_django',
     'materializecssform',
     'djmoney',
@@ -104,15 +187,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-log_file_path = '/var/log/indabom/django.log' if not DEBUG else './django.log'
+# log_file_path = '/var/log/indabom/django.log' if not DEBUG else './django.log'
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'timestamp': {
-            'format': '{asctime} {levelname} {message}',
-            'style': '{',
+            'format': "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
         },
     },
     'handlers': {
@@ -126,9 +208,13 @@ LOGGING = {
             'formatter': 'timestamp',
         },
         # Log to a text file that can be rotated by logrotate
-        'logfile': {
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': log_file_path,
+        # 'logfile': {
+        #     'class': 'logging.handlers.WatchedFileHandler',
+        #     'filename': log_file_path,
+        #     'formatter': 'timestamp',
+        # },
+        'console': {
+            'class': 'logging.StreamHandler',
             'formatter': 'timestamp',
         },
     },
@@ -139,28 +225,70 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        'django.db.backends': {
+            'level': 'DEBUG',
+        },
         # Might as well log any errors anywhere else in Django
         'django': {
-            'handlers': ['logfile'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False,
         },
-        # Indabom app
         'indabom': {
-            'handlers': ['logfile'],
+            'handlers': ['console'],
             'level': 'INFO',  # Or maybe INFO or DEBUG
             'propagate': False
         },
-        # django-bom app
         'bom': {
-            'handlers': ['logfile'],
+            'handlers': ['console'],
             'level': 'INFO',  # Or maybe INFO or DEBUG
             'propagate': False
         },
     },
 }
 
+if CLOUDRUN_SERVICE_URL:
+    print("[CLOUDRUN_SERVICE_URL] Cloud Run App")
+    # Running on production App Engine, so connect to Google Cloud SQL using
+    # the unix socket at /cloudsql/<your-cloudsql-connection string>
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': DB_HOST,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'NAME': DB_NAME,
+        },
+        'readonly': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': DB_HOST,
+            'USER': DB_READONLY_USER,
+            'PASSWORD': DB_READONLY_PASSWORD,
+            'NAME': DB_NAME,
+        }
+    }
+else:
+    # Running locally so connect to either a local MySQL instance or connect
+    # to Cloud SQL via the proxy.  To start the proxy via command line:
+    #    $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
+    # See https://cloud.google.com/sql/docs/mysql-connect-proxy
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 # AUTH_USER_MODEL = 'indabom.User'
+
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -173,15 +301,15 @@ USE_TZ = True
 
 ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "indabom/static/"), ]
-
+# Storage - Google CLoud Storage if in cloud, else path if local
+STATIC_URL = "/static/"
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+if GS_BUCKET_NAME:
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
@@ -189,10 +317,10 @@ LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/bom/'
 LOGOUT_REDIRECT_URL = '/'
 
-# django-bom configuration
-bom_config_default = {
-    'base_template': 'base.html',
-}
+# SQL Explorer
+EXPLORER_CONNECTIONS = {'Default': 'default'}
+EXPLORER_DEFAULT_CONNECTION = 'default'
+
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/plus.login']
 SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
@@ -210,6 +338,7 @@ EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 # Stripe
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 
 
 def organization_request_callback(request):
@@ -221,8 +350,12 @@ def organization_request_callback(request):
 
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = organization_request_callback
 
-# Bom
-if BOM_CONFIG:
-    BOM_CONFIG.update(bom_config_default)
-else:
-    BOM_CONFIG = bom_config_default
+BOM_CONFIG = {
+    'base_template': 'base.html',
+    'octopart_api_key': OCTOPART_API_KEY,
+    'mouser_api_key': MOUSER_API_KEY,
+    'admin_dashboard': {
+        'enable_autocomplete': False,
+        'page_size': 50,
+    }
+}

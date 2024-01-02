@@ -284,3 +284,8 @@ venv
 # Pyre type checker
 
 # End of https://www.gitignore.io/api/macos,python,django,pycharm
+
+.env
+.env.*
+*.bak
+deploy.sh
