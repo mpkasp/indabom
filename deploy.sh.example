@@ -3,24 +3,24 @@
 gcloud secrets delete django_settings --quiet
 gcloud secrets create django_settings --data-file .env.prod
 gcloud secrets add-iam-policy-binding django_settings \
-    --member serviceAccount:449904336434-compute@developer.gserviceaccount.com \
+    --member <YOUR_COMPUTE_SA> \
     --role roles/secretmanager.secretAccessor
 gcloud secrets add-iam-policy-binding django_settings \
-    --member serviceAccount:449904336434@cloudbuild.gserviceaccount.com \
+    --member <YOUR_CLOUD_BUILD_SA> \
     --role roles/secretmanager.secretAccessor
 
 # 2. Run Cloud Build
-gcloud builds submit --config cloudmigrate.yaml --substitutions _INSTANCE_NAME=prod-02,_REGION=us-central1
+gcloud builds submit --config cloudmigrate.yaml --substitutions _INSTANCE_NAME=<INSTANCE_NAME>,_REGION=<REGION>
 
 # 3. Deploy
 SERVICE_URL=$(gcloud run services describe indabom --platform managed \
-    --region us-central1 --format "value(status.url)")
+    --region <REGION> --format "value(status.url)")
 
 gcloud run deploy indabom \
     --platform managed \
-    --region us-central1 \
-    --image gcr.io/my-project-1472838847531/indabom \
-    --add-cloudsql-instances indabom:us-central1:prod-02 \
+    --region <REGION> \
+    --image <IMAGE_URL> \
+    --add-cloudsql-instances <CLOUDSQL_URL> \
     --allow-unauthenticated \
     --set-env-vars CLOUDRUN_SERVICE_URL=$SERVICE_URL
     

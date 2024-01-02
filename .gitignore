@@ -288,3 +288,4 @@ venv
 .env
 .env.*
 *.bak
+deploy.sh
