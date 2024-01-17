@@ -32,11 +32,31 @@ steps:
   #       "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
   #       "-e",
   #       "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+  #       "-e",
+  #       "DB_HOST=${_DB_HOST}",
   #       "--",
   #       "python",
   #       "manage.py",
   #       "migrate",
   #     ]
+
+  - id: "update exchange rates via fixer"
+    name: "gcr.io/google-appengine/exec-wrapper"
+    args:
+      [
+        "-i",
+        "gcr.io/$PROJECT_ID/${_SERVICE_NAME}",
+        "-s",
+        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
+        "-e",
+        "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+        "-e",
+        "DB_HOST=${_DB_HOST}",
+        "--",
+        "python",
+        "manage.py",
+        "update_rates",
+      ]
 
   - id: "collect static"
     name: "gcr.io/google-appengine/exec-wrapper"
@@ -59,6 +79,7 @@ steps:
 
 substitutions:
   _INSTANCE_NAME: prod-02
+  _DB_HOST: /cloudsql/my-project-1472838847531:us-central1:prod-02
   _REGION: us-central1
   _SERVICE_NAME: indabom
   _SECRET_SETTINGS_NAME: django_settings
