@@ -79,7 +79,10 @@ steps:
 
 substitutions:
   _INSTANCE_NAME: prod-02
+<<<<<<< HEAD
   _DB_HOST: /cloudsql/my-project-1472838847531:us-central1:prod-02
+=======
+>>>>>>> master
   _REGION: us-central1
   _SERVICE_NAME: indabom
   _SECRET_SETTINGS_NAME: django_settings
