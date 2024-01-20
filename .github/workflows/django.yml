@@ -26,4 +26,5 @@ jobs:
     - name: Run Tests
       run: |
         pipenv sync
+        cp .env_example .env
         pipenv run python manage.py test
