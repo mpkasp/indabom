@@ -91,7 +91,7 @@ else:
     ALLOWED_HOSTS = ["*"]
 
 # Sentry.io config
-if not LOCALHOST:
+if not LOCALHOST and SENTRY_DSN != 'supersecretdsn':
     try:
         release = subprocess.check_output(["git", "describe", "--always"]).strip()
     except:
