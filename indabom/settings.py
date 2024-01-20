@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 env_file = os.path.join(BASE_DIR, '.env')
-db_host_override = env.str("DB_HOST") # for cloud build, see comment below on DB_HOST
+db_host_override = env.str("DB_HOST", None) # for cloud build, see comment below on DB_HOST
 
 # Attempt to load the Project ID into the environment, safely failing on error.
 try:
