@@ -59,11 +59,7 @@ DEBUG = env.bool("DEBUG", False)
 SENTRY_DSN = env.str("SENTRY_DSN")
 GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) # for django-storages, dont change
 GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
-<<<<<<< HEAD
 DB_HOST = env.str("DB_HOST") if db_host_override is not None # for cloud build to override db host due to private ip challenges
-=======
-DB_HOST = env.str("DB_HOST")
->>>>>>> master
 DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
 DB_NAME = env.str("DB_NAME")
@@ -83,10 +79,7 @@ STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
 STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
 DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
-<<<<<<< HEAD
 FIXER_ACCESS_KEY = env.str("FIXER_ACCESS_KEY")
-=======
->>>>>>> master
 
 CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
 if CLOUDRUN_SERVICE_URL:
@@ -256,13 +249,8 @@ LOGGING = {
     },
 }
 
-<<<<<<< HEAD
 if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     print("[GOOGLE_CLOUD_PROJECT] Google cloud project")
-=======
-if CLOUDRUN_SERVICE_URL:
-    print("[CLOUDRUN_SERVICE_URL] Cloud Run App")
->>>>>>> master
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
     DATABASES = {
@@ -332,13 +320,8 @@ LOGIN_REDIRECT_URL = '/bom/'
 LOGOUT_REDIRECT_URL = '/'
 
 # SQL Explorer
-<<<<<<< HEAD
 EXPLORER_CONNECTIONS = {'Default': 'readonly'}
 EXPLORER_DEFAULT_CONNECTION = 'readonly'
-=======
-EXPLORER_CONNECTIONS = {'Default': 'default'}
-EXPLORER_DEFAULT_CONNECTION = 'default'
->>>>>>> master
 
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/plus.login']
