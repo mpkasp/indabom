@@ -52,7 +52,7 @@ on:
         - completed
 
 env:
-  # environment: Production
+  environment: ${{ github.ref_name }}
   PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
   GAR_LOCATION: ${{ vars.GCP_GAR_LOCATION }}
   SERVICE: ${{ vars.GCP_SERVICE_NAME }}
@@ -60,7 +60,7 @@ env:
 
 jobs:
   deploy:
-    # environment: Production
+    environment: ${{ github.ref_name }}
     # Add 'id-token' with the intended permissions for workload identity federation
     permissions:
       contents: 'read'
