@@ -116,8 +116,6 @@ jobs:
           env_vars: |
             SECRET_KEY=${{ secrets.SECRET_KEY }}
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-            ALLOWED_HOSTS=${{ env.ALLOWED_HOSTS }}
-            CSRF_TRUSTED_ORIGINS=${{ env.CSRF_TRUSTED_ORIGINS }}
 
 
       # If required, use the Cloud Run url output in later steps

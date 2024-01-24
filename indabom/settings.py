@@ -83,11 +83,13 @@ FIXER_ACCESS_KEY = env.str("FIXER_ACCESS_KEY")
 
 CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
 if CLOUDRUN_SERVICE_URL:
+    print(f'Cloud run service url: {CLOUDRUN_SERVICE_URL}')
     ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
     CSRF_TRUSTED_ORIGINS = [CLOUDRUN_SERVICE_URL]
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 else:
+    print(f'No cloud run service url')
     ALLOWED_HOSTS = ["*"]
 
 # Sentry.io config
