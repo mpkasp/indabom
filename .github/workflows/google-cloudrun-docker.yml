@@ -114,6 +114,7 @@ jobs:
           # NOTE: If using a pre-built image, update the image name here
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/indabom:${{ github.sha }}
           env_vars: |
+            CLOUDRUN_SERVICE_URL=${{ env.CLOUDRUN_SERVICE_URL }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
