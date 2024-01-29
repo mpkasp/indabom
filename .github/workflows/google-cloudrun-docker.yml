@@ -150,7 +150,10 @@ jobs:
       - name: Use gcloud CLI
         run: |
           gcloud info
-          gcloud builds submit --config cloudmigrate.yaml
+
+      - name: Run cloudmigrate
+        run: |
+          gcloud builds submit --config cloudmigrate.yaml --no-source
 
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
