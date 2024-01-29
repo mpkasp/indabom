@@ -114,10 +114,43 @@ jobs:
           # NOTE: If using a pre-built image, update the image name here
           image: ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/indabom:${{ github.sha }}
           env_vars: |
-            CLOUDRUN_SERVICE_URL=${{ env.CLOUDRUN_SERVICE_URL }}
+            ENVIRONMENT=${{ github.ref_name }}
+            GITHUB_SHA=${{ github.sha }}
             SECRET_KEY=${{ secrets.SECRET_KEY }}
             SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_READONLY_PASSWORD=${{ secrets.DB_READONLY_PASSWORD }}
+            OCTOPART_API_KEY=${{ secrets.OCTOPART_API_KEY }}
+            MOUSER_API_KEY=${{ secrets.MOUSER_API_KEY }}
+            SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }}
+            SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}
+            SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
+            RECAPTCHA_PUBLIC_KEY=${{ secrets.RECAPTCHA_PUBLIC_KEY }}
+            RECAPTCHA_PRIVATE_KEY=${{ secrets.RECAPTCHA_PRIVATE_KEY }}
+            FIXER_ACCESS_KEY=${{ secrets.FIXER_ACCESS_KEY }}
+            STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }}
+            STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+            DJSTRIPE_WEBHOOK_SECRET=${{ secrets.DJSTRIPE_WEBHOOK_SECRET }}
+            DEBUG=${{ env.DEBUG || 'False' }}
+            DB_HOST=${{ env.DB_HOST }}
+            DB_USER=${{ env.DB_USER }}
+            DB_NAME=${{ env.DB_NAME }}
+            DB_READONLY_USER=${{ env.DB_READONLY_USER }}
+            GS_DEFAULT_ACL=${{ env.GS_DEFAULT_ACL }}
+            GS_BUCKET_NAME=${{ env.GS_BUCKET_NAME }}
+            INDABOM_STRIPE_PRICE_ID=${{ env.INDABOM_STRIPE_PRICE_ID }}
+            STRIPE_LIVE_MODE=${{ env.STRIPE_LIVE_MODE }}
+            CLOUDRUN_SERVICE_URL=${{ env.CLOUDRUN_SERVICE_URL }}
+    
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          version: '>= 363.0.0'
 
+      - name: Use gcloud CLI
+        run: |
+          gcloud info
+          gcloud builds submit --config cloudmigrate.yaml
 
       # If required, use the Cloud Run url output in later steps
       - name: Show Output
