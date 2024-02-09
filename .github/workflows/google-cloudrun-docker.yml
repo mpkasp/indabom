@@ -150,6 +150,9 @@ jobs:
       - name: Use gcloud CLI
         run: |
           gcloud info
+          gcloud auth list
+          gcloud config list account
+          gcloud auth list --filter=status:ACTIVE --format="value(account)"
 
       - name: Run cloudmigrate
         run: |
