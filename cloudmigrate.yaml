@@ -16,7 +16,7 @@
 steps:
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}", "--build-arg", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}" "."]
+    args: ["build", "-t", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}", "--build-arg", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}", "."]
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
