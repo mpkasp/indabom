@@ -18,3 +18,14 @@ $ export MYSQLCLIENT_LDFLAGS=$(pkg-config --libs mysqlclient)
 $ export MYSQLCLIENT_CFLAGS=$(pkg-config --cflags mysqlclient)
 $ pip install mysqlclient
 ```
+
+## Deploying
+
+Secrets are managed through GCP [Secret Manager](https://cloud.google.com/sdk/gcloud/reference/secrets). To update secrets for a respective environment run:
+
+```console
+gcloud secrets versions add django_settings_dev --data-file=.env.dev
+gcloud secrets versions add django_settings --data-file=.env.prod
+```
+
+Build and deploy is run automagically using GCP [Cloud Build](https://cloud.google.com/build/docs/overview). (We tried github actions, but had trouble finding a way to run management commands thru cloud run on github actions.)
