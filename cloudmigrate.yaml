@@ -22,23 +22,23 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"]
 
-  # - id: "apply migrations"
-  #   name: "gcr.io/google-appengine/exec-wrapper"
-  #   args:
-  #     [
-  #       "-i",
-  #       "gcr.io/$PROJECT_ID/${_SERVICE_NAME}",
-  #       "-s",
-  #       "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
-  #       "-e",
-  #       "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
-  #       "-e",
-  #       "DB_HOST=${_DB_HOST}",
-  #       "--",
-  #       "python",
-  #       "manage.py",
-  #       "migrate",
-  #     ]
+  - id: "apply migrations"
+    name: "gcr.io/google-appengine/exec-wrapper"
+    args:
+      [
+        "-i",
+        "gcr.io/$PROJECT_ID/${_SERVICE_NAME}",
+        "-s",
+        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
+        "-e",
+        "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+        "-e",
+        "DB_HOST=${_DB_HOST}",
+        "--",
+        "python",
+        "manage.py",
+        "migrate",
+      ]
 
   - id: "update exchange rates via fixer"
     name: "gcr.io/google-appengine/exec-wrapper"
