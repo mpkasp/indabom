@@ -85,6 +85,9 @@ substitutions:
   # _SERVICE_NAME: indabom
   # _SECRET_SETTINGS_NAME: django_settings
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 images:
   - "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"
 # [END cloudrun_django_cloudmigrate]
