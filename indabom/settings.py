@@ -31,24 +31,25 @@ db_host_override = env.str("DB_HOST", None) # for cloud build, see comment below
 # Attempt to load the Project ID into the environment, safely failing on error.
 try:
     _, os.environ['GOOGLE_CLOUD_PROJECT'] = google.auth.default()
-except google.auth.exceptions.DefaultCredentialsError:
-    pass
+except google.auth.exceptions.DefaultCredentialsError as e:
+    print('Credentials error.', e)
 except TypeError as e:
     print('No google cloud project found.', e)
 
 project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+print(f'project_id: {project_id}')
 if os.path.isfile(env_file):
+    print(f'Found env file, using the env file.')
     # Use a local secret file, if provided
     env.read_env(env_file)
 elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
-    settings_name = os.environ.get("SETTINGS_NAME", None)
+    settings_name = os.environ.get("SETTINGS_NAME")
     print(f'project_id: {project_id}, settings_name: {settings_name}')
     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
-
     env.read_env(io.StringIO(payload))
 
 # Set up secrets and environment variables
@@ -59,7 +60,8 @@ SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", False)
 SENTRY_DSN = env.str("SENTRY_DSN")
 GS_BUCKET_NAME_INCLUDE_PROJECT = env.bool("GS_BUCKET_NAME_INCLUDE_PROJECT", True)
-GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) if not GS_BUCKET_NAME_INCLUDE_PROJECT else f'{project_id}_{env.str("GS_BUCKET_NAME", None)}'
+# GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) if not GS_BUCKET_NAME_INCLUDE_PROJECT else f'{project_id}_{env.str("GS_BUCKET_NAME", None)}'
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None)
 GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
 DB_HOST = env.str("DB_HOST") if db_host_override is not None else db_host_override # for cloud build to override db host due to private ip challenges
 DB_USER = env.str("DB_USER")
