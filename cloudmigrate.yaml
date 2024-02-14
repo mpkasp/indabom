@@ -60,6 +60,7 @@ steps:
 
   - id: "collect static"
     name: "gcr.io/google-appengine/exec-wrapper"
+    waitFor: ['push image']
     args:
       [
         "-i",
@@ -68,6 +69,8 @@ steps:
         "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
         "-e",
         "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+        "-e",
+        "GS_BUCKET_NAME_INCLUDE_PROJECT=False",
         "--",
         "python",
         "manage.py",

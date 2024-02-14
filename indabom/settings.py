@@ -36,12 +36,12 @@ except google.auth.exceptions.DefaultCredentialsError:
 except TypeError as e:
     print('No google cloud project found.', e)
 
+project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
 if os.path.isfile(env_file):
     # Use a local secret file, if provided
     env.read_env(env_file)
 elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
     settings_name = os.environ.get("SETTINGS_NAME", None)
@@ -58,7 +58,8 @@ LOCALHOST = env.bool("LOCALHOST", False)
 SECRET_KEY = env.str("SECRET_KEY")
 DEBUG = env.bool("DEBUG", False)
 SENTRY_DSN = env.str("SENTRY_DSN")
-GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) # for django-storages, dont change
+GS_BUCKET_NAME_INCLUDE_PROJECT = env.bool("GS_BUCKET_NAME_INCLUDE_PROJECT", True)
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) if not GS_BUCKET_NAME_INCLUDE_PROJECT else f'{project_id}_{env.str("GS_BUCKET_NAME", None)}'
 GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
 DB_HOST = env.str("DB_HOST") if db_host_override is not None else db_host_override # for cloud build to override db host due to private ip challenges
 DB_USER = env.str("DB_USER")
