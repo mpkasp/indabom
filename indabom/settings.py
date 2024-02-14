@@ -313,6 +313,7 @@ ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
 # Storage - Google CLoud Storage if in cloud, else path if local
 STATIC_URL = "/static/"
 MEDIA_URL = '/media/'
+print(f'GS_BUCKET_NAME: {GS_BUCKET_NAME}')
 if GS_BUCKET_NAME:
     DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
