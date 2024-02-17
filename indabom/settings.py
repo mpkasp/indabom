@@ -31,19 +31,18 @@ db_host_override = env.str("DB_HOST", None) # for cloud build, see comment below
 # Attempt to load the Project ID into the environment, safely failing on error.
 try:
     _, os.environ['GOOGLE_CLOUD_PROJECT'] = google.auth.default()
-# except google.auth.exceptions.DefaultCredentialsError as e:
-#     print('Credentials error.', e)
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    print(f'project_id: {project_id}')
+except google.auth.exceptions.DefaultCredentialsError as e:
+    print('Credentials error.', e)
 except TypeError as e:
     print('No google cloud project found.', e)
 
-project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-print(f'project_id: {project_id}')
-# if os.path.isfile(env_file):
-#     print(f'Found env file, using the env file.')
-#     # Use a local secret file, if provided
-#     env.read_env(env_file)
-# el
-if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+if os.path.isfile(env_file):
+    print(f'Found env file, using the env file.')
+    # Use a local secret file, if provided
+    env.read_env(env_file)
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
@@ -52,7 +51,6 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
     env.read_env(io.StringIO(payload))
-    print(payload)
 else:
     raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
 
