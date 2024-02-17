@@ -36,17 +36,15 @@ except google.auth.exceptions.DefaultCredentialsError as e:
 except TypeError as e:
     print('No google cloud project found.', e)
 
-# if os.path.isfile(env_file):
-#     print(f'Found env file, using the env file.')
-#     # Use a local secret file, if provided
-#     env.read_env(env_file)
-# el
-if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+if os.path.isfile(env_file):
+    print(f'Found env file, using the env file.')
+    # Use a local secret file, if provided
+    env.read_env(env_file)
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
-    settings_name = os.environ.get("SETTINGS_NAME", None)
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+    settings_name = os.environ.get("SETTINGS_NAME")
     print(f'project_id: {project_id}, settings_name: {settings_name}')
     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
