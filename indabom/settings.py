@@ -45,7 +45,7 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
-    settings_name = os.environ.get("SETTINGS_NAME")
+    settings_name = os.environ.get("SETTINGS_NAME", None)
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     print(f'project_id: {project_id}, settings_name: {settings_name}')
     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
