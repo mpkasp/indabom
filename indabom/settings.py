@@ -31,8 +31,6 @@ db_host_override = env.str("DB_HOST", None) # for cloud build, see comment below
 # Attempt to load the Project ID into the environment, safely failing on error.
 try:
     _, os.environ['GOOGLE_CLOUD_PROJECT'] = google.auth.default()
-    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-    print(f'project_id: {project_id}')
 except google.auth.exceptions.DefaultCredentialsError as e:
     print('Credentials error.', e)
 except TypeError as e:
@@ -47,6 +45,7 @@ elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
     settings_name = os.environ.get("SETTINGS_NAME")
+    project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     print(f'project_id: {project_id}, settings_name: {settings_name}')
     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
