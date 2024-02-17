@@ -11,6 +11,8 @@ ENV LC_ALL C.UTF-8
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE=1
 
+RUN echo "settings name: $SETTINGS_NAME"
+
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install pipenv
 ADD . ${APP_HOME}/
