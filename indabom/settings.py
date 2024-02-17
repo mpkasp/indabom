@@ -51,6 +51,8 @@ elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
     payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
     env.read_env(io.StringIO(payload))
+else:
+    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
 
 # Set up secrets and environment variables
 ENVIRONMENT = env.str("ENVIRONMENT", "unset")
@@ -239,7 +241,7 @@ LOGGING = {
         # Might as well log any errors anywhere else in Django
         'django': {
             'handlers': ['console'],
-            'level': 'ERROR',
+            'level': 'INFO',
             'propagate': False,
         },
         'indabom': {
