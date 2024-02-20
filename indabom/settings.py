@@ -43,12 +43,11 @@ except TypeError as e:
     logger.error('No google cloud project found', e)
     print('No google cloud project found.', e)
 
-# if os.path.isfile(env_file):
-#     print(f'Found env file, using the env file.')
-#     # Use a local secret file, if provided
-#     env.read_env(env_file)
-# el
-if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+if os.path.isfile(env_file):
+    print(f'Found env file, using the env file.')
+    # Use a local secret file, if provided
+    env.read_env(env_file)
+elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
     # Pull secrets from Secret Manager
     client = secretmanager.SecretManagerServiceClient()
     # SETTINGS_NAME should be set in the Cloud Run instance
@@ -269,7 +268,7 @@ LOGGING = {
 }
 
 if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
-    print("[GOOGLE_CLOUD_PROJECT] Google cloud project")
+    print(f"[GOOGLE_CLOUD_PROJECT] Google cloud project, host: {DB_HOST}, user: {DB_USER}, name: {DB_NAME}")
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
     DATABASES = {
@@ -293,6 +292,7 @@ else:
     # to Cloud SQL via the proxy.  To start the proxy via command line:
     #    $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
     # See https://cloud.google.com/sql/docs/mysql-connect-proxy
+    print("[GOOGLE_CLOUD_PROJECT] Google cloud project environmet variable not found")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
