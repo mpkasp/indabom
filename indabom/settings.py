@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 env_file = os.path.join(BASE_DIR, '.env')
-db_host_override = env.str("DB_HOST", None) # for cloud build, see comment below on DB_HOST
+# db_host_override = env.str("DB_HOST", None) # for cloud build, see comment below on DB_HOST
 
 # Attempt to load the Project ID into the environment, safely failing on error.
 try:
@@ -71,7 +71,7 @@ GS_BUCKET_NAME_INCLUDE_PROJECT = env.bool("GS_BUCKET_NAME_INCLUDE_PROJECT", True
 # GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) if not GS_BUCKET_NAME_INCLUDE_PROJECT else f'{project_id}_{env.str("GS_BUCKET_NAME", None)}'
 GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None)
 GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
-DB_HOST = env.str("DB_HOST") if db_host_override is not None else db_host_override # for cloud build to override db host due to private ip challenges
+DB_HOST = env.str("DB_HOST") # if db_host_override is not None else db_host_override # for cloud build to override db host due to private ip challenges
 DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
 DB_NAME = env.str("DB_NAME")
