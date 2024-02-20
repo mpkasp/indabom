@@ -92,5 +92,5 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 images:
-  - "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"
+  - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"
 # [END cloudrun_django_cloudmigrate]
