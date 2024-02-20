@@ -89,7 +89,7 @@ substitutions:
   _INSTANCE_NAME: prod-02
   _DB_HOST: /cloudsql/my-project-1472838847531:us-central1:prod-02
   _REGION: us-central1
-  # Below are defined in gcp console so we can specify per run
+  # Below are defined in the cloud build triggers https://console.cloud.google.com/cloud-build/triggers
   # _SERVICE_NAME: indabom
   # _SECRET_SETTINGS_NAME: django_settings
 
