@@ -16,11 +16,16 @@
 steps:
   - id: "build image"
     name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}", "--build-arg", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}", ".", "--no-cache"]
+    args: ["build", "-t", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}", "--build-arg", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}", "."]
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"]
+  
+  - id: "deploy image"
+    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: ['run', 'deploy', '${_SERVICE_NAME}', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '--region', '${_LOCATION}']
 
   - id: "apply migrations"
     name: "gcr.io/google-appengine/exec-wrapper"
@@ -60,7 +65,7 @@ steps:
 
   - id: "collect static"
     name: "gcr.io/google-appengine/exec-wrapper"
-    waitFor: ['push image']
+    waitFor: ['deploy image']
     args:
       [
         "-i",
