@@ -86,6 +86,7 @@ django-storages = "*"
 google-cloud-secret-manager = "*"
 google-cloud = "*"
 google-cloud-storage = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
