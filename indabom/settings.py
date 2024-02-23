@@ -44,7 +44,7 @@ except TypeError as e:
     print('No google cloud project found.', e)
 
 if os.path.isfile(env_file):
-    print(f'Found env file, using the env file.')
+    print(f'Found env file, using the env file: {env_file}')
     # Use a local secret file, if provided
     env.read_env(env_file)
 elif os.environ.get("GOOGLE_CLOUD_PROJECT", None):
@@ -92,16 +92,21 @@ STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
 STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
 DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
 FIXER_ACCESS_KEY = env.str("FIXER_ACCESS_KEY")
-
 CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
+try:
+    ALLOWED_HOSTS = env.str("ALLOWED_HOSTS", None).split(',')
+except AttributeError:
+    ALLOWED_HOSTS = []
+
 if CLOUDRUN_SERVICE_URL:
     print(f'Cloud run service url: {CLOUDRUN_SERVICE_URL}')
-    ALLOWED_HOSTS = [urlparse(CLOUDRUN_SERVICE_URL).netloc]
+    # TODO: Update to include env variable
+    ALLOWED_HOSTS.append(urlparse(CLOUDRUN_SERVICE_URL).netloc)
     CSRF_TRUSTED_ORIGINS = [CLOUDRUN_SERVICE_URL]
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-else:
-    ALLOWED_HOSTS = ["*"]
+
+print(f'Allowed Hosts: {ALLOWED_HOSTS}, {env.str("ALLOWED_HOSTS", None)}')
 
 # Sentry.io config
 if not LOCALHOST and SENTRY_DSN != 'supersecretdsn':
