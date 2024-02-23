@@ -97,12 +97,16 @@ try:
     ALLOWED_HOSTS = env.str("ALLOWED_HOSTS", None).split(',')
 except AttributeError:
     ALLOWED_HOSTS = []
+try:
+    CSRF_TRUSTED_ORIGINS = env.str("CSRF_TRUSTED_ORIGINS", None).split(',')
+except AttributeError:
+    CSRF_TRUSTED_ORIGINS = []
 
 if CLOUDRUN_SERVICE_URL:
     print(f'Cloud run service url: {CLOUDRUN_SERVICE_URL}')
     # TODO: Update to include env variable
     ALLOWED_HOSTS.append(urlparse(CLOUDRUN_SERVICE_URL).netloc)
-    CSRF_TRUSTED_ORIGINS = [CLOUDRUN_SERVICE_URL]
+    CSRF_TRUSTED_ORIGINS.append(CLOUDRUN_SERVICE_URL)
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
