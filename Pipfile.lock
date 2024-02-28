@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1051817163d90984b6335600775f3c6d884537cc64993358fdaf42514ebea8cc"
+            "sha256": "35114e2d76c15595ae8cd37ba32a36921fb7a1c96e7ce811935ce3b83fd242c0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -22,6 +22,7 @@
                 "sha256:ffc141aa908e6f175673e7b1b3b7af4fdb0ecb738fc5c8b88f69f055c2415214"
             ],
             "index": "pypi",
+            "markers": "python_version >= '3.6'",
             "version": "==3.4.1"
         },
         "asn1crypto": {
@@ -207,11 +208,12 @@
         },
         "django": {
             "hashes": [
-                "sha256:115baf5049d5cf4163e43492cdc7139c306ed6d451e7d3571fe9612903903713",
-                "sha256:f71934b1a822f14a86c9ac9634053689279cd04ae69cb6ade4a59471b886582b"
+                "sha256:5dd5b787c3ba39637610fe700f54bf158e33560ea0dba600c19921e7ff926ec5",
+                "sha256:aaee9fb0fb4ebd4311520887ad2e33313d368846607f82a9a0ed461cd4c35b18"
             ],
             "index": "pypi",
-            "version": "==3.2.15"
+            "markers": "python_version >= '3.6'",
+            "version": "==3.2.24"
         },
         "django-bom": {
             "hashes": [
@@ -996,6 +998,7 @@
                 "sha256:48719e356bb8b42991bdbb1e8b83223757b93789c00910a616a071910ca4a64d"
             ],
             "index": "pypi",
+            "markers": "python_version >= '3.5'",
             "version": "==0.4.2"
         },
         "starkbank-ecdsa": {
