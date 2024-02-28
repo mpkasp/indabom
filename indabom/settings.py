@@ -110,8 +110,6 @@ if CLOUDRUN_SERVICE_URL:
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-print(f'Allowed Hosts: {ALLOWED_HOSTS}, {env.str("ALLOWED_HOSTS", None)}')
-
 # Sentry.io config
 if not LOCALHOST and SENTRY_DSN != 'supersecretdsn':
     try:
@@ -276,7 +274,7 @@ LOGGING = {
     },
 }
 
-if os.environ.get("GOOGLE_CLOUD_PROJECT", None):
+if os.environ.get("GOOGLE_CLOUD_PROJECT", None) and not LOCALHOST:
     print(f"[GOOGLE_CLOUD_PROJECT] Google cloud project, host: {DB_HOST}, user: {DB_USER}, name: {DB_NAME}")
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
@@ -301,7 +299,7 @@ else:
     # to Cloud SQL via the proxy.  To start the proxy via command line:
     #    $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
     # See https://cloud.google.com/sql/docs/mysql-connect-proxy
-    print("[GOOGLE_CLOUD_PROJECT] Google cloud project environmet variable not found")
+    print("Localhost database being used.")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -338,8 +336,8 @@ ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
 # Storage - Google CLoud Storage if in cloud, else path if local
 STATIC_URL = "/static/"
 MEDIA_URL = '/media/'
-print(f'GS_BUCKET_NAME: {GS_BUCKET_NAME}')
 if GS_BUCKET_NAME:
+    print(f'GS_BUCKET_NAME: {GS_BUCKET_NAME}')
     DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 else:
