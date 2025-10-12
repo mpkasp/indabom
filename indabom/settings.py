@@ -81,7 +81,7 @@ OCTOPART_API_KEY = env.str("OCTOPART_API_KEY")
 MOUSER_API_KEY = env.str("MOUSER_API_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
-SENDGRID_API_KEY = env.str("SENDGRID_API_KEY")
+MAILGUN_API_KEY = env.str("MAILGUN_API_KEY")
 RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
 RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
 INDABOM_STRIPE_PRICE_ID = env.str("INDABOM_STRIPE_PRICE_ID")
@@ -148,6 +148,7 @@ INSTALLED_APPS = [
     'djmoney',
     'djmoney.contrib.exchange',
     'captcha',
+    'anymail',
     'djstripe',
     'explorer',
 ]
@@ -164,6 +165,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'indabom.urls'
+DOMAIN = 'indabom.com' if not DEBUG else 'localhost:8000'
+ROOT_DOMAIN = f'https://{DOMAIN}'
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOpenId',
@@ -319,8 +322,14 @@ CACHES = {
 }
 
 # AUTH_USER_MODEL = 'indabom.User'
+ANYMAIL = {
+    "MAILGUN_API_KEY": MAILGUN_API_KEY,
+    "MAILGUN_SENDER_DOMAIN": f'mg.{DOMAIN}',  # your Mailgun domain, if needed
+}
+EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
+DEFAULT_FROM_EMAIL = "info@indabom.com"  # if you don't already have this in settings
+SERVER_EMAIL = "info@indabom.com"  # ditto (default from-email for Django errors)
 
-EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -330,8 +339,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
-ROOT_DOMAIN = 'https://indabom.com' if not DEBUG else 'http://localhost:8000'
 
 # Storage - Google CLoud Storage if in cloud, else path if local
 STATIC_URL = "/static/"

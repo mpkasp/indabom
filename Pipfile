@@ -22,7 +22,6 @@ django-bom = "==1.233"
 django-materializecss-form = "==1.1.17"
 django-money = "==2.0"
 django-recaptcha = "==2.0.6"
-django-sendgrid-v5 = "==0.9.1"
 django-sql-explorer = "==2.2"
 docutils = "==0.17.1"
 entrypoints = "==0.3"
@@ -86,6 +85,7 @@ django-storages = "*"
 google-cloud-secret-manager = "*"
 google-cloud = "*"
 google-cloud-storage = "*"
+django-anymail = {extras = ["mailgun"], version = "*"}
 psycopg2-binary = "*"
 
 [dev-packages]
