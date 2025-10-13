@@ -61,11 +61,13 @@ else:
     raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
 
 # Set up secrets and environment variables
+DEBUG = env.bool("DEBUG", False)
 ENVIRONMENT = env.str("ENVIRONMENT", "unset")
 GITHUB_SHA = env.str("GITHUB_SHA", "unset")
 LOCALHOST = env.bool("LOCALHOST", False)
+DOMAIN = 'indabom.com' if not DEBUG else 'localhost:8000'
+ROOT_DOMAIN = f'https://{DOMAIN}'
 SECRET_KEY = env.str("SECRET_KEY")
-DEBUG = env.bool("DEBUG", False)
 SENTRY_DSN = env.str("SENTRY_DSN")
 GS_BUCKET_NAME_INCLUDE_PROJECT = env.bool("GS_BUCKET_NAME_INCLUDE_PROJECT", True)
 # GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) if not GS_BUCKET_NAME_INCLUDE_PROJECT else f'{project_id}_{env.str("GS_BUCKET_NAME", None)}'
@@ -82,6 +84,7 @@ MOUSER_API_KEY = env.str("MOUSER_API_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
 MAILGUN_API_KEY = env.str("MAILGUN_API_KEY")
+MAILGUN_SENDER_DOMAIN = os.environ.get('MAILGUN_SENDER_DOMAIN', f'mg.{DOMAIN}')
 RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
 RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
 INDABOM_STRIPE_PRICE_ID = env.str("INDABOM_STRIPE_PRICE_ID")
@@ -165,8 +168,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'indabom.urls'
-DOMAIN = 'indabom.com' if not DEBUG else 'localhost:8000'
-ROOT_DOMAIN = f'https://{DOMAIN}'
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOpenId',
@@ -324,7 +325,7 @@ CACHES = {
 # AUTH_USER_MODEL = 'indabom.User'
 ANYMAIL = {
     "MAILGUN_API_KEY": MAILGUN_API_KEY,
-    "MAILGUN_SENDER_DOMAIN": f'mg.{DOMAIN}',  # your Mailgun domain, if needed
+    "MAILGUN_SENDER_DOMAIN": MAILGUN_SENDER_DOMAIN,
 }
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 DEFAULT_FROM_EMAIL = "info@indabom.com"  # if you don't already have this in settings
