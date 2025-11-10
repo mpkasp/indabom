@@ -57,6 +57,7 @@ urlpatterns = [
     path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
     path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
     path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
+    path('account/delete/', views.delete_account, name='account-delete'),
 
     path('explorer/', include('explorer.urls')),
     path('sentry-debug/', trigger_error)

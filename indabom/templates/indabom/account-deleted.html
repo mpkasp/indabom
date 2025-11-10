@@ -1,0 +1,12 @@
+{% extends 'indabom/base.html' %}
+
+{% block title %}Account Deleted{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3>Account Deleted</h3>
+  <p>Your account{% if username %} ({{ username }}){% endif %} has been deleted successfully.</p>
+  <p>We're sorry to see you go. If this was a mistake, you can create a new account at any time.</p>
+  <a title="Return to Home" class="waves-effect waves-light btn green lighten-1" href="{% url 'index' %}">Return to Home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'indabom/base.html' %}
+
+{% block title %}Delete Account{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3>Delete Your Account</h3>
+  {% if is_owner and organization %}
+    <div class="card-panel red lighten-4 red-text text-darken-4">
+      <strong>Warning:</strong> You are the owner of the organization "{{ organization.name }}".
+      Deleting your account will also permanently delete this organization and all of its data.
+    </div>
+  {% endif %}
+
+  {% if is_owner and has_active_sub %}
+    <div class="card-panel yellow lighten-4">
+      You currently have an active subscription. You must cancel it before you can delete your account.
+      <br>
+      <a class="btn" href="{% url 'stripe-manage' %}">Manage Subscription</a>
+    </div>
+  {% else %}
+    <p>This action is permanent and cannot be undone. Please confirm your password to proceed.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="input-field">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        {% for error in form.password.errors %}
+          <div class="red-text">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn red">Delete my account</button>
+      <a href="{% url 'bom:settings' %}#user" class="btn-flat">Cancel</a>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}
