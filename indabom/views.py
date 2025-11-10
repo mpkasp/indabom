@@ -3,6 +3,7 @@ from urllib.error import URLError
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render
 from django.template.response import TemplateResponse
@@ -15,7 +16,7 @@ from djstripe.models import Price
 
 from bom.models import Organization
 from indabom import stripe
-from indabom.forms import OrganizationForm, SubscriptionForm, UserForm
+from indabom.forms import OrganizationForm, SubscriptionForm, UserForm, PasswordConfirmForm
 from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
 
 
@@ -182,3 +183,53 @@ def stripe_manage(request):
 
     messages.warning(request, "Can't manage a subscription for an organization you don't own.")
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
+
+
+@login_required
+def delete_account(request):
+    user = request.user
+    user_profile = user.bom_profile()
+    organization = user_profile.organization
+
+    # Determine owner and subscription status
+    is_owner = user_profile.is_organization_owner()
+    has_active_sub = False
+    if is_owner and organization is not None:
+        try:
+            has_active_sub = stripe.active_organization_subscription(organization) is not None
+        except ValueError:
+            # If there's an inconsistency with subscriptions, be safe and block deletion
+            messages.error(request, 'There was an error checking your subscription. Please contact support at info@indabom.com.')
+            return HttpResponseRedirect(reverse('bom:settings') + '#organization')
+
+    # Block owners with active subscription
+    if is_owner and has_active_sub:
+        messages.error(request, 'You have an active subscription. Please cancel it first. Redirecting you to manage your subscription.')
+        return HttpResponseRedirect(reverse('stripe-manage'))
+
+    if request.method == 'POST':
+        form = PasswordConfirmForm(request.POST, user=user)
+        if form.is_valid():
+            # If owner (and not actively subscribed), delete their organization first
+            if is_owner and organization is not None:
+                org_name = organization.name
+                organization.delete()
+                messages.info(request, f'Organization "{org_name}" was deleted as part of account deletion.')
+
+            # Delete the user and logout
+            username = user.username
+            user.delete()
+            logout(request)
+            return TemplateResponse(request, 'indabom/account-deleted.html', {'username': username})
+        else:
+            messages.error(request, 'Incorrect password, please try again.')
+    else:
+        form = PasswordConfirmForm(user=user)
+
+    context = {
+        'form': form,
+        'is_owner': is_owner,
+        'organization': organization,
+        'has_active_sub': has_active_sub,
+    }
+    return TemplateResponse(request, 'indabom/delete-account.html', context)

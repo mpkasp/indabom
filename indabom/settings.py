@@ -107,7 +107,6 @@ except AttributeError:
 
 if CLOUDRUN_SERVICE_URL:
     print(f'Cloud run service url: {CLOUDRUN_SERVICE_URL}')
-    # TODO: Update to include env variable
     ALLOWED_HOSTS.append(urlparse(CLOUDRUN_SERVICE_URL).netloc)
     CSRF_TRUSTED_ORIGINS.append(CLOUDRUN_SERVICE_URL)
     SECURE_SSL_REDIRECT = True

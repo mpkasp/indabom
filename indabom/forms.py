@@ -58,3 +58,17 @@ class OrganizationForm(forms.Form):
         self.owner = kwargs.pop('owner')
         super(OrganizationForm, self).__init__(*args, **kwargs)
         self.fields['organization'].queryset = Organization.objects.filter(owner=self.owner)
+
+
+class PasswordConfirmForm(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput, label='Confirm your password')
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    def clean_password(self):
+        pwd = self.cleaned_data.get('password')
+        if not self.user.check_password(pwd):
+            raise ValidationError('Incorrect password.')
+        return pwd
