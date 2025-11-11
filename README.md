@@ -21,6 +21,14 @@ $ pip install mysqlclient
 
 ## Deploying
 
+To deploy simply:
+
+```
+git checkout prod
+git merge --ff-only master
+git push
+```
+
 Secrets are managed through GCP [Secret Manager](https://cloud.google.com/sdk/gcloud/reference/secrets). To update secrets for a respective environment, change to the correct project (using the gcloud PROJECT_ID) then run:
 
 ```console
