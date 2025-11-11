@@ -1,11 +1,10 @@
 from django.conf import settings
-from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.sitemaps.views import sitemap
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
 
 from . import views
@@ -26,8 +25,10 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
 
     path('admin/', admin.site.urls, name='admin'),
-    path('login/', auth_views.LoginView.as_view(template_name='indabom/login.html'),
-         {'redirect_authenticated_user': True}, name='login'),
+    path('login/', auth_views.LoginView.as_view(
+        template_name='indabom/login.html',
+        redirect_authenticated_user=True
+    ), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name='indabom/password-reset.html',

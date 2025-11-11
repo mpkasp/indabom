@@ -112,6 +112,24 @@ if CLOUDRUN_SERVICE_URL:
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# Django 4+/5+ require scheme in CSRF_TRUSTED_ORIGINS; normalize values from env
+_SCHEMES = ("http://", "https://")
+_normalized = []
+for origin in CSRF_TRUSTED_ORIGINS:
+    if not origin:
+        continue
+    o = origin.strip()
+    if not o.startswith(_SCHEMES):
+        # Default to https when scheme not provided
+        o = f"https://{o}"
+    _normalized.append(o)
+CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(_normalized))  # de-dupe, preserve order
+
+if DEBUG or LOCALHOST:
+    # Ensure local dev origin present
+    if "http://localhost:8000" not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append("http://localhost:8000")
+
 # Sentry.io config
 if not LOCALHOST and SENTRY_DSN != 'supersecretdsn':
     try:
@@ -149,7 +167,7 @@ INSTALLED_APPS = [
     'materializecssform',
     'djmoney',
     'djmoney.contrib.exchange',
-    'captcha',
+    'django_recaptcha',
     'anymail',
     'explorer',
 ]
@@ -168,9 +186,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'indabom.urls'
 
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOpenId',
     'social_core.backends.google.GoogleOAuth2',
-    'social_core.backends.google.GoogleOAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -315,7 +331,7 @@ else:
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
         'LOCATION': '127.0.0.1:11211',
     }
 }
@@ -361,7 +377,7 @@ EXPLORER_CONNECTIONS = {'Default': 'readonly'}
 EXPLORER_DEFAULT_CONNECTION = 'readonly'
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/plus.login']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive']
 SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
     'approval_prompt': 'force'  # forces storage of refresh token
