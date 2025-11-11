@@ -151,7 +151,6 @@ INSTALLED_APPS = [
     'djmoney.contrib.exchange',
     'captcha',
     'anymail',
-    'djstripe',
     'explorer',
 ]
 

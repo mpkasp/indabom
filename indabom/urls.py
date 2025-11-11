@@ -52,11 +52,11 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 
-    path('stripe/', include('djstripe.urls', namespace='djstripe')),
-    path('checkout/', login_required(views.Checkout.as_view()), name=views.Checkout.name),
-    path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
-    path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
-    path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
+    # path('stripe/', include('djstripe.urls', namespace='djstripe')),
+    # path('checkout/', login_required(views.Checkout.as_view()), name=views.Checkout.name),
+    # path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
+    # path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
+    # path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
     path('account/delete/', views.delete_account, name='account-delete'),
 
     path('explorer/', include('explorer.urls')),

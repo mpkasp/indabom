@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 
-from djstripe.models import Customer, Subscription
-
 from bom.models import Organization
 from indabom.settings import INDABOM_STRIPE_PRICE_ID
 
