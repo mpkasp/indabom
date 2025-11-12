@@ -68,4 +68,5 @@ handler404 = 'indabom.views.handler404'
 handler500 = 'indabom.views.handler500'
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    media_url_prefix = settings.MEDIA_URL if settings.MEDIA_URL else '/media/'
+    urlpatterns += static(media_url_prefix, document_root=settings.MEDIA_ROOT)
