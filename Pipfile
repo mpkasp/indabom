@@ -4,47 +4,27 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# Core framework
 django = "==5.2.8"
 asgiref = ">=3.8.1,<4"
 sqlparse = ">=0.4.4,<0.6"
-
-# Indabom app dependency
-django-bom = "==1.235"
-
-# Database
 mysqlclient = ">=2.2,<3"
 psycopg2-binary = ">=2.9"
 pymemcache = ">=4.0"
-
-# Auth and social
 social-auth-app-django = ">=5,<6"
 social-auth-core = ">=4,<6"
 python3-openid = ">=3.2"
-
-# Email
 django-anymail = {extras = ["mailgun"], version = ">=11"}
-
-# Forms / UI helpers
 django-materializecss-form = "*"
 django-recaptcha = ">=3,<5"
-
-# Money support
 django-money = ">=3,<5"
 py-moneyed = ">=3,<4"
-
-# Explorer (SQL)
 django-sql-explorer = ">=4,<5"
-
-# Google APIs and Cloud
 google-api-python-client = ">=2.0"
 google-auth = ">=2.0"
 google-auth-httplib2 = ">=0.2"
 google-cloud-secret-manager = ">=2.0"
 google-cloud-storage = ">=2.0"
 httplib2 = ">=0.22"
-
-# Utilities
 requests = ">=2.31"
 urllib3 = ">=2,<3"
 cryptography = ">=42"
@@ -55,22 +35,15 @@ bleach = ">=6.0"
 babel = ">=2.12"
 packaging = ">=23.0"
 pyjwt = ">=2.7"
-
-# Optional/legacy compat where still used
 pytz = ">=2024.1"
-
-# Server
 gunicorn = ">=21"
-
-# Env and storage
 django-environ = "*"
 django-storages = {extras = ["google"], version = ">=1.14.0"}
-
-# Other utilities retained
 invoke = ">=1.7"
 jsonfield = ">=3.1.0"
 paramiko = ">=2.8"
 protobuf = ">=4.0"
+django-bom = "*"
 
 [dev-packages]
 
