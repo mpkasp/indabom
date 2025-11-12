@@ -13,7 +13,14 @@
     {% endif %}
 {% endif %}
 {% if user.is_authenticated %}
-    <li><a title="IndaBOM | Log Out" href="{% url 'logout' %}">Logout</a></li>
+    <li>
+        <form id="logoutForm" method="post" action="{% url 'logout' %}" style="display: none;">
+            {% csrf_token %}
+        </form>
+        <a href="#" id="logoutLink" title="IndaBOM | Log Out">
+            Logout
+        </a>
+    </li>
 {% endif %}
 
 {% if not user.is_authenticated %}
@@ -22,3 +29,15 @@
     <li {% if name == 'signup' %}class="active"{% endif %}><a title="Sign Up" href="{% url 'signup' %}">Sign Up</a></li>
     <li {% if name == 'login' %}class="active"{% endif %}><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>
 {% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+const logoutLink = document.getElementById('logoutLink');
+if (logoutLink) {
+    logoutLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('logoutForm').submit();
+    });
+}
+});
+</script>
