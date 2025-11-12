@@ -201,7 +201,13 @@ if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST:
     logger.info(f"Using Cloud-based database configuration.")
 
     DATABASES = {
-        'default': env.db(), # Reads DATABASE_URL, or can be overridden by explicit env vars
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': env.str("DB_HOST"),
+            'NAME': env.str("DB_NAME"),
+            'USER': env.str("DB_USER"),
+            'PASSWORD': env.str("DB_PASSWORD"),
+        },
         'readonly': {
             'ENGINE': 'django.db.backends.mysql',
             'HOST': env.str("DB_HOST"),
