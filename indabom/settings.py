@@ -12,90 +12,77 @@ from google.cloud import secretmanager
 from pathlib import Path
 from sentry_sdk.integrations.django import DjangoIntegration
 
+# --- Basic Setup and Environment Loading ---
+## Basic Setup and Environment Loading
+
 logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Setup django-environ
 env = environ.Env()
 env_file = BASE_DIR / '.env'
-# db_host_override = env.str("DB_HOST", None) # for cloud build, see the comment below on DB_HOST
 
+# Determine project ID from Google Cloud credentials
 project_id = None
 try:
+    # This call is often used to establish the project context
     _, os.environ['GOOGLE_CLOUD_PROJECT'] = google.auth.default()
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
-    logger.info('project_id: {project_id}')
-except google.auth.exceptions.DefaultCredentialsError as e:
-    logger.error('Credentials error', e)
-except TypeError as e:
-    logger.error('No google cloud project found', e)
+    logger.info(f'Project ID: {project_id}')
+except (google.auth.exceptions.DefaultCredentialsError, TypeError) as e:
+    logger.warning(f'Could not determine Google Cloud Project ID: {e}')
 
+# Load environment variables
 if os.path.isfile(env_file):
-    logger.info(f'Found env file, using the env file: {env_file}')
+    logger.info(f'Found local .env file: {env_file}')
     env.read_env(env_file)
 elif project_id:
+    # Load secrets from Google Secret Manager
     client = secretmanager.SecretManagerServiceClient()
-    settings_name = os.environ.get("SETTINGS_NAME")
-    logger.info(f'project_id: {project_id}, settings_name: {settings_name}')
-    logger.info(f'project_id: {project_id}, settings_name: {settings_name}')
-    name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
-    payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
-    env.read_env(io.StringIO(payload))
+    settings_name = os.environ.get("SETTINGS_NAME", "django_settings")
+    logger.info(f'Fetching secrets from {settings_name} in project {project_id}')
+    try:
+        name = f"projects/{project_id}/secrets/{settings_name}/versions/latest"
+        payload = client.access_secret_version(name=name).payload.data.decode("UTF-8")
+        env.read_env(io.StringIO(payload))
+    except Exception as e:
+        logger.error(f"Error accessing secret manager: {e}")
+        raise
 else:
-    raise Exception("No local .env or GOOGLE_CLOUD_PROJECT detected. No secrets found.")
+    # Only raise if essential for running, otherwise default to minimal settings
+    logger.warning("No local .env or GOOGLE_CLOUD_PROJECT detected. Running with minimal environment.")
 
-# Set up secrets and environment variables
+
+# --- Core Django Settings and Secret Variables ---
+## Core Django Settings and Secret Variables
+
+# Variables loaded via env.str/env.bool
 DEBUG = env.bool("DEBUG", False)
 ENVIRONMENT = env.str("ENVIRONMENT", "unset")
 GITHUB_SHA = env.str("GITHUB_SHA", "unset")
 LOCALHOST = env.bool("LOCALHOST", False)
-DOMAIN = 'indabom.com' if not DEBUG else 'localhost:8000'
-ROOT_DOMAIN = f'https://{DOMAIN}'
 SECRET_KEY = env.str("SECRET_KEY")
-SENTRY_DSN = env.str("SENTRY_DSN")
-GS_BUCKET_NAME_INCLUDE_PROJECT = env.bool("GS_BUCKET_NAME_INCLUDE_PROJECT", True)
-# GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None) if not GS_BUCKET_NAME_INCLUDE_PROJECT else f'{project_id}_{env.str("GS_BUCKET_NAME", None)}'
-GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None)
-GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
-DB_HOST = env.str("DB_HOST") # if db_host_override is not None else db_host_override # for cloud build to override db host due to private ip challenges
-DB_USER = env.str("DB_USER")
-DB_PASSWORD = env.str("DB_PASSWORD")
-DB_NAME = env.str("DB_NAME")
-DB_READONLY_USER = env.str("DB_READONLY_USER")
-DB_READONLY_PASSWORD = env.str("DB_READONLY_PASSWORD")
-OCTOPART_API_KEY = env.str("OCTOPART_API_KEY")
-MOUSER_API_KEY = env.str("MOUSER_API_KEY")
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
-MAILGUN_API_KEY = env.str("MAILGUN_API_KEY")
-MAILGUN_SENDER_DOMAIN = os.environ.get('MAILGUN_SENDER_DOMAIN', f'mg.{DOMAIN}')
-RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
-RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
-INDABOM_STRIPE_PRICE_ID = env.str("INDABOM_STRIPE_PRICE_ID")
-STRIPE_TEST_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
-STRIPE_TEST_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
-STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
-STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
-STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
-DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
-FIXER_ACCESS_KEY = env.str("FIXER_ACCESS_KEY")
-CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
-try:
-    ALLOWED_HOSTS = env.str("ALLOWED_HOSTS", None).split(',')
-except AttributeError:
-    ALLOWED_HOSTS = []
-try:
-    CSRF_TRUSTED_ORIGINS = env.str("CSRF_TRUSTED_ORIGINS", None).split(',')
-except AttributeError:
-    CSRF_TRUSTED_ORIGINS = []
 
+# Domain and Host Configuration
+DOMAIN = 'indabom.com' if not DEBUG and not LOCALHOST else 'localhost:8000'
+ROOT_DOMAIN = f'https://{DOMAIN}'
+
+CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
+
+# List settings
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
+
+# Append Cloud Run specific settings
 if CLOUDRUN_SERVICE_URL:
-    logger.info(f'Cloud run service url: {CLOUDRUN_SERVICE_URL}')
-    ALLOWED_HOSTS.append(urlparse(CLOUDRUN_SERVICE_URL).netloc)
+    logger.info(f'Cloud Run Service URL detected: {CLOUDRUN_SERVICE_URL}')
+    parsed_url = urlparse(CLOUDRUN_SERVICE_URL)
+    ALLOWED_HOSTS.append(parsed_url.netloc)
     CSRF_TRUSTED_ORIGINS.append(CLOUDRUN_SERVICE_URL)
     SECURE_SSL_REDIRECT = True
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# Django 4+/5+ require scheme in CSRF_TRUSTED_ORIGINS; normalize values from env
+# Normalize CSRF_TRUSTED_ORIGINS to include a scheme (required since Django 4+)
 _SCHEMES = ("http://", "https://")
 _normalized = []
 for origin in CSRF_TRUSTED_ORIGINS:
@@ -103,38 +90,22 @@ for origin in CSRF_TRUSTED_ORIGINS:
         continue
     o = origin.strip()
     if not o.startswith(_SCHEMES):
-        # Default to https when scheme not provided
-        o = f"https://{o}"
+        o = f"https://{o}"  # Default to https
     _normalized.append(o)
-CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(_normalized))  # de-dupe, preserve order
+CSRF_TRUSTED_ORIGINS = list(dict.fromkeys(_normalized))
 
 if DEBUG or LOCALHOST:
-    # Ensure local dev origin present
     if "http://localhost:8000" not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append("http://localhost:8000")
 
-# Sentry.io config
-if not LOCALHOST and SENTRY_DSN != 'supersecretdsn':
-    try:
-        release = subprocess.check_output(["git", "describe", "--always"]).strip()
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        release = 'UNKNOWN'
-
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        release=GITHUB_SHA,
-        environment=ENVIRONMENT,
-        traces_sample_rate=1.0 if DEBUG else 0.5,
-        debug=DEBUG,
-    )
-
-
-# Application definition
+# --- Application Configuration ---
+## Application Configuration
 
 INSTALLED_APPS = [
     'indabom',
     'bom.apps.BomConfig',
+
+    # Django contrib apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -142,6 +113,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+
+    # Third-party apps
     'storages',
     'social_django',
     'materializecssform',
@@ -165,10 +138,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'indabom.urls'
 
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend',
-)
+# --- Templates and WSGI ---
+## Templates and WSGI
 
 TEMPLATES = [
     {
@@ -189,101 +160,58 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'indabom.wsgi.application'
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-# Password validation
-# https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
+# --- Authentication and Authorization ---
+## Authentication and Authorization
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
-# log_file_path = '/var/log/indabom/django.log' if not DEBUG else './django.log'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'timestamp': {
-            'format': "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
-        },
-    },
-    'handlers': {
-        'mail_admins': {
-            'class': 'django.utils.log.AdminEmailHandler',
-            'level': 'ERROR',
-            # But the emails are plain text by default - HTML is nicer
-            'include_html': True,
-            'formatter': 'timestamp',
-        },
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'timestamp',
-        },
-    },
-    'loggers': {
-        # Again, default Django configuration to email unhandled exceptions
-        # 'django.request': {
-        #     'handlers': ['mail_admins'],
-        #     'level': 'ERROR',
-        #     'propagate': True,
-        # },
-        # 'django.db.backends': {
-        #     'level': 'DEBUG',
-        # },
-        # # Might as well log any errors anywhere else in Django
-        # 'django': {
-        #     'handlers': ['console'],
-        #     'level': 'INFO',
-        #     'propagate': False,
-        # },
-        '': {
-            'level': 'INFO',
-            'handlers': ['console'],
-        },
-        'indabom': {
-            'handlers': ['console'],
-            'level': 'INFO',  # Or maybe INFO or DEBUG
-            'propagate': False
-        },
-        'bom': {
-            'handlers': ['console'],
-            'level': 'INFO',  # Or maybe INFO or DEBUG
-            'propagate': False
-        },
-    },
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/bom/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Social Auth
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = env.str("SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive']
+SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
+    'access_type': 'offline',
+    'approval_prompt': 'force'
 }
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = not DEBUG
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/bom/settings?tab_anchor=file'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/bom/settings?tab_anchor=file'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 
-if os.environ.get("GOOGLE_CLOUD_PROJECT", None) and not LOCALHOST:
-    logger.info(f"[GOOGLE_CLOUD_PROJECT] Google cloud project, host: {DB_HOST}, user: {DB_USER}, name: {DB_NAME}")
+# --- Database and Cache ---
+## Database and Cache
+
+if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST:
+    logger.info(f"Using Cloud-based database configuration.")
+
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'HOST': DB_HOST,
-            'USER': DB_USER,
-            'PASSWORD': DB_PASSWORD,
-            'NAME': DB_NAME,
-        },
+        'default': env.db(), # Reads DATABASE_URL, or can be overridden by explicit env vars
         'readonly': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': DB_HOST,
-            'USER': DB_READONLY_USER,
-            'PASSWORD': DB_READONLY_PASSWORD,
-            'NAME': DB_NAME,
+            'HOST': env.str("DB_HOST"),
+            'NAME': env.str("DB_NAME"),
+            'USER': env.str("DB_READONLY_USER"),
+            'PASSWORD': env.str("DB_READONLY_PASSWORD"),
         }
     }
 else:
-    print("Localhost database being used.")
+    logger.info("Using Localhost SQLite database.")
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -302,6 +230,51 @@ CACHES = {
     }
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Static and Media Files (Storage) ---
+## Static and Media Files (Storage)
+
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", None)
+GS_DEFAULT_ACL = env.str("GS_DEFAULT_ACL", 'publicRead')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+if GS_BUCKET_NAME:
+    logger.info(f"Using Google Cloud Storage bucket: {GS_BUCKET_NAME}")
+
+    GCS_STORAGE_BACKEND = "storages.backends.gcloud.GoogleCloudStorage"
+
+    STORAGES["default"] = {
+        "BACKEND": GCS_STORAGE_BACKEND,
+        "OPTIONS": {"bucket_name": GS_BUCKET_NAME},
+    }
+    STORAGES["staticfiles"] = {
+        "BACKEND": GCS_STORAGE_BACKEND,
+        "OPTIONS": {"bucket_name": GS_BUCKET_NAME},
+    }
+    # When using GCS for media, you typically don't set MEDIA_URL
+    MEDIA_URL = None
+
+
+# --- Email and Internationalization ---
+## Email and Internationalization
+
+# Anymail/Mailgun Configuration
+MAILGUN_API_KEY = env.str("MAILGUN_API_KEY")
+MAILGUN_SENDER_DOMAIN = os.environ.get('MAILGUN_SENDER_DOMAIN', f'mg.{DOMAIN}')
+
 ANYMAIL = {
     "MAILGUN_API_KEY": MAILGUN_API_KEY,
     "MAILGUN_SENDER_DOMAIN": MAILGUN_SENDER_DOMAIN,
@@ -314,78 +287,114 @@ SERVER_EMAIL = "info@indabom.com"
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
-STATIC_ROOT = BASE_DIR / "static"
-MEDIA_ROOT = BASE_DIR / "media"
-STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
+# --- Logging ---
+## Logging Configuration
 
-if GS_BUCKET_NAME:
-    logger.info(f"GS_BUCKET_NAME: {GS_BUCKET_NAME}")
-
-    STORAGES = {
-        "default": {
-            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-            "OPTIONS": {
-                "bucket_name": GS_BUCKET_NAME,
-            },
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'timestamp': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
         },
-        "staticfiles": {
-            "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
-            "OPTIONS": {
-                "bucket_name": GS_BUCKET_NAME,
-            },
+    },
+    'handlers': {
+        'mail_admins': {
+            'class': 'django.utils.log.AdminEmailHandler',
+            'level': 'ERROR',
+            'include_html': True,
+            'formatter': 'timestamp',
         },
-    }
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'timestamp',
+        },
+    },
+    'loggers': {
+        # Root logger
+        '': {
+            'level': 'INFO',
+            'handlers': ['console'],
+        },
+        # Your app loggers
+        'indabom': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False
+        },
+        'bom': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False
+        },
+    },
+}
 
-    # Let the backend construct media URLs (public or signed depending on bucket policy)
-    MEDIA_URL = None
+# --- Third-party Specific Settings ---
+## Third-party Specific Settings
 
-LOGIN_URL = '/login/'
-LOGOUT_URL = '/logout/'
+# Sentry.io config
+SENTRY_DSN = env.str("SENTRY_DSN")
+if not LOCALHOST and SENTRY_DSN and SENTRY_DSN != 'supersecretdsn':
+    try:
+        release = subprocess.check_output(["git", "describe", "--always"]).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        release = 'UNKNOWN'
 
-LOGIN_REDIRECT_URL = '/bom/'
-LOGOUT_REDIRECT_URL = '/'
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        release=GITHUB_SHA,
+        environment=ENVIRONMENT,
+        traces_sample_rate=1.0 if DEBUG else 0.5,
+        debug=DEBUG,
+    )
 
 # SQL Explorer
 EXPLORER_CONNECTIONS = {'Default': 'readonly'}
 EXPLORER_DEFAULT_CONNECTION = 'readonly'
 
-# Social Auth
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'profile', 'https://www.googleapis.com/auth/drive']
-SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS = {
-    'access_type': 'offline',
-    'approval_prompt': 'force'  # forces storage of refresh token
-}
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = not DEBUG
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/bom/settings?tab_anchor=file'
-SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/bom/settings?tab_anchor=file'
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
-
+# Django Money / Fixer
 CURRENCY_DECIMAL_PLACES = 4
 EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
+FIXER_ACCESS_KEY = env.str("FIXER_ACCESS_KEY")
 
 # Stripe
+INDABOM_STRIPE_PRICE_ID = env.str("INDABOM_STRIPE_PRICE_ID")
+STRIPE_LIVE_MODE = env.bool("STRIPE_LIVE_MODE", False)
+STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
+STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
+STRIPE_TEST_PUBLIC_KEY = env.str("STRIPE_TEST_PUBLIC_KEY", STRIPE_PUBLIC_KEY) # Fallback to live if test not provided
+STRIPE_TEST_SECRET_KEY = env.str("STRIPE_TEST_SECRET_KEY", STRIPE_SECRET_KEY) # Fallback to live if test not provided
+
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
-
+DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
 
 def organization_request_callback(request):
     """ Gets an organization instance from request"""
-
-    from bom.models import Organization  # Import models here to avoid an ``AppRegistryNotReady`` exception
+    # Import models here to avoid an ``AppRegistryNotReady`` exception
+    from bom.models import Organization
     return Organization.objects.get(id=request.user.bom_profile().organization)
-
 
 DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = organization_request_callback
 
+# reCAPTCHA
+RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")
+RECAPTCHA_PUBLIC_KEY = env.str("RECAPTCHA_PUBLIC_KEY")
+
+# Other API Keys
+OCTOPART_API_KEY = env.str("OCTOPART_API_KEY")
+MOUSER_API_KEY = env.str("MOUSER_API_KEY")
+
+# BOM Config
 BOM_CONFIG = {
     'base_template': 'base.html',
-    'octopart_api_key': OCTOPART_API_KEY,
-    'mouser_api_key': MOUSER_API_KEY,
+    'octopart_api_key': env.str("OCTOPART_API_KEY"),
+    'mouser_api_key': env.str("MOUSER_API_KEY"),
     'standalone_mode': False,
     'admin_dashboard': {
         'enable_autocomplete': False,
