@@ -1,4 +1,4 @@
-FROM python:3.11.1 as BASE
+FROM python:3.12.7 as BASE
 
 ENV APP_HOME /app
 WORKDIR $APP_HOME
