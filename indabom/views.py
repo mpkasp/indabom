@@ -1,17 +1,19 @@
+from typing import Optional
 from urllib.error import URLError
 
+from bom.models import Organization
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 from django.contrib.auth import logout
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
-from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
+from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 
-from bom.models import Organization
-from indabom.forms import OrganizationForm, SubscriptionForm, UserForm, PasswordConfirmForm
+from indabom import stripe
+from indabom.forms import SubscriptionForm, UserForm, PasswordConfirmForm
 from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
 
 
@@ -32,7 +34,7 @@ def handler500(request):
 
 def signup(request):
     name = 'signup'
-    
+
     if request.method == 'POST':
         form = UserForm(request.POST)
         try:
@@ -84,81 +86,98 @@ class Install(IndabomTemplateView):
     name = 'install'
 
 
-# class Checkout(IndabomTemplateView):
-#     name = 'checkout'
-#     initial = {}
-#     form_class = SubscriptionForm
-#
-#     def get_context_data(self, *args, **kwargs):
-#         context = super(Checkout, self).get_context_data(**kwargs)
-#         price = Price.objects.filter(id=INDABOM_STRIPE_PRICE_ID).first()
-#
-#         context.update({
-#             'price': price,
-#             'product': None,
-#             'form': self.form_class(owner=self.request.user),
-#             'human_readable_prices': [],
-#         })
-#
-#         if price is None:
-#             messages.error(self.request, "No stripe prices found, contact an administrator at info@indabom.com")
-#             return context
-#
-#         human_readable_prices = []
-#         for tier in price.tiers:
-#             up_to = tier['up_to']
-#             flat_amount = tier['flat_amount']
-#             unit_amount = tier['unit_amount']
-#             if flat_amount and up_to:
-#                 human_readable_prices.append(f'${flat_amount / 100:.2f} for up to {up_to} users')
-#             elif unit_amount:
-#                 human_readable_prices.append(f'${unit_amount / 100:.2f} per user')
-#
-#         form = self.form_class(initial={'price_id': price.id}, owner=self.request.user)
-#         del form.fields["additional_users"]
-#
-#         context.update({
-#             'price': price,
-#             'product': price.product,
-#             'form': form,
-#             'human_readable_prices': human_readable_prices,
-#         })
-#         return context
-#
-#     def get(self, request, *args, **kwargs):
-#         user_profile = request.user.bom_profile()
-#         organization = user_profile.organization
-#
-#         if not user_profile.is_organization_owner():
-#             if organization is not None and organization.owner is not None:
-#                 messages.error(request, f'Only your organization owner {organization.owner.email} can upgrade the organization.')
-#             else:
-#                 messages.error(request, f'You must be an organization owner to upgrade your organization.')
-#             return HttpResponseRedirect(reverse('bom:settings'))
-#
-#         try:
-#             if stripe.active_organization_subscription(organization) is not None:
-#                 messages.info(request, "You already have an active subscription. Forwarding to manage your subscription.")
-#                 return HttpResponseRedirect(reverse('stripe-manage'))
-#         except ValueError:
-#             messages.error(request, f'There was an error getting your organization. Please contact info@indabom.com with this error message.')
-#             return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
-#
-#         return render(request, self.template_name, self.get_context_data())
-#
-#     def post(self, request, *args, **kwargs):
-#         form = self.form_class(request.POST, owner=request.user)
-#
-#         if form.is_valid():
-#             organization = form.cleaned_data['organization']
-#             price_id = form.cleaned_data['price_id']
-#             quantity = form.cleaned_data['additional_users'] + 5
-#             return stripe.subscribe(request, price_id, organization, quantity)
-#
-#         del form.fields["additional_users"]
-#         context = self.get_context_data()
-#         context['form'] = form
-#         return render(request, self.template_name, context)
+class Checkout(IndabomTemplateView):
+    name = 'checkout'
+    initial = {}
+    form_class = SubscriptionForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(Checkout, self).get_context_data(**kwargs)
+        stripe_price = stripe.get_price(INDABOM_STRIPE_PRICE_ID, self.request)
+
+        context.update({
+            'price': stripe_price,
+            'product': None,
+            'form': self.form_class(owner=self.request.user),
+            'human_readable_prices': [],
+        })
+
+        if stripe_price is None:
+            return context
+
+        stripe_product = stripe.get_product(stripe_price.product, self.request)
+
+        if stripe_product is None:
+            return context
+
+        context.update({'product': stripe_product})
+
+        human_readable_prices = []
+        if stripe_price.billing_scheme == 'tiered' and stripe_price.tiers:
+            for tier in stripe_price.tiers:
+                flat_amount = tier.get('flat_amount')
+                unit_amount = tier.get('unit_amount')
+                up_to = tier.get('up_to')  # can be None
+                if flat_amount is not None:
+                    human_readable_prices.append(
+                        f'${flat_amount / 100:.2f} for up to {up_to if up_to else "unlimited"} users')
+                elif unit_amount is not None:
+                    human_readable_prices.append(f'${unit_amount / 100:.2f} per user')
+        elif stripe_price.type == 'recurring' and stripe_price.unit_amount is not None:
+            amount_usd = stripe_price.unit_amount / 100
+            interval = stripe_price.recurring.interval
+            human_readable_prices.append(f'${amount_usd:.2f} per user, billed {interval}.')
+
+        form = self.form_class(initial={'price_id': stripe_price.id}, owner=self.request.user)
+        del form.fields["additional_users"]
+
+        context.update({
+            'price': stripe_price,
+            'product': stripe_product,
+            'form': form,
+            'human_readable_prices': human_readable_prices,
+        })
+        return context
+
+    def get(self, request, *args, **kwargs):
+        user_profile = request.user.bom_profile()
+        organization: Optional[Organization] = user_profile.organization
+
+        if not user_profile.is_organization_owner():
+            if organization is not None and organization.owner is not None:
+                messages.error(request,
+                               f'Only your organization owner {organization.owner.email} can upgrade the organization.')
+            else:
+                messages.error(request, f'You must be an organization owner to upgrade your organization.')
+            return HttpResponseRedirect(reverse('bom:settings'))
+
+        try:
+            if stripe.get_active_subscription(organization) is not None:
+                messages.info(request,
+                              "You already have an active subscription. Forwarding to manage your subscription.")
+                return HttpResponseRedirect(reverse('stripe-manage'))
+        except Exception:  # Catch any exceptions from database lookup
+            messages.error(request,
+                           f'There was an error getting your organization. Please contact info@indabom.com with this error message.')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
+
+        return render(request, self.template_name, self.get_context_data())
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, owner=request.user)
+
+        if form.is_valid():
+            organization = form.cleaned_data['organization']
+            price_id = form.cleaned_data['price_id']
+            quantity = form.cleaned_data['additional_users'] + 5  # TODO: Do we want + 5?
+            return stripe.subscribe(request, price_id, organization, quantity)
+
+        if "additional_users" in form.fields:
+            del form.fields["additional_users"]
+
+        context = self.get_context_data()
+        context['form'] = form
+        return render(request, self.template_name, context)
 
 
 class CheckoutSuccess(IndabomTemplateView):
@@ -169,15 +188,16 @@ class CheckoutCancelled(IndabomTemplateView):
     name = 'checkout-cancelled'
 
 
-# @login_required
-# def stripe_manage(request):
-#     user_profile = request.user.bom_profile()
-#     organization = user_profile.organization
-#     if user_profile.is_organization_owner():
-#         return stripe.manage_subscription(request, organization)
-#
-#     messages.warning(request, "Can't manage a subscription for an organization you don't own.")
-#     return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
+@login_required
+def stripe_manage(request):
+    user_profile = request.user.bom_profile()
+    organization = user_profile.organization
+
+    if user_profile.is_organization_owner() and organization is not None:
+        return stripe.manage_subscription(request, organization)
+
+    messages.warning(request, "Can't manage a subscription for an organization you don't own.")
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings') + '#organization'))
 
 
 @login_required
@@ -189,13 +209,13 @@ def delete_account(request):
     # Determine owner and subscription status
     is_owner = user_profile.is_organization_owner()
     has_active_sub = False
-    # if is_owner and organization is not None:
-    #     try:
-    #         has_active_sub = stripe.active_organization_subscription(organization) is not None
-    #     except ValueError:
-    #         # If there's an inconsistency with subscriptions, be safe and block deletion
-    #         messages.error(request, 'There was an error checking your subscription. Please contact support at info@indabom.com.')
-    #         return HttpResponseRedirect(reverse('bom:settings') + '#organization')
+    if is_owner and organization is not None:
+        try:
+            has_active_sub = stripe.get_active_subscription(organization) is not None
+        except Exception:
+            messages.error(request,
+                           'There was an error checking your subscription. Please contact support at info@indabom.com.')
+            return HttpResponseRedirect(reverse('bom:settings') + '#organization')
 
     # Block owners with active subscription
     if is_owner and has_active_sub:
