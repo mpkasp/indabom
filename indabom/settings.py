@@ -1,15 +1,15 @@
-import os
 import io
 import logging
+import os
 import subprocess
-import sentry_sdk
+from pathlib import Path
+from urllib.parse import urlparse
+
 import environ
 import google.auth
 import google.auth.exceptions
-
-from urllib.parse import urlparse
+import sentry_sdk
 from google.cloud import secretmanager
-from pathlib import Path
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # --- Basic Setup and Environment Loading ---
@@ -232,8 +232,11 @@ else:
 if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST:
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-            'LOCATION': '127.0.0.1:11211',
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'indabom_cache',
+            'OPTIONS': {
+                'MAX_ENTRIES': 5000
+            }
         }
     }
 else:
