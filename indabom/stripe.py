@@ -71,7 +71,16 @@ def create_org_customer_if_needed(organization: Organization) -> str:
     org_meta = get_organization_meta_or_404(organization)
 
     if org_meta.stripe_customer_id:
-        return org_meta.stripe_customer_id
+        try:
+            stripe.Customer.retrieve(org_meta.stripe_customer_id)
+            return org_meta.stripe_customer_id
+        except stripe.InvalidRequestError as e:
+            if e.code == 'resource_missing':
+                logger.warning(
+                    f"Stale Stripe customer ID '{org_meta.stripe_customer_id}' found for Org {organization.id}. Re-creating.")
+                org_meta.stripe_customer_id = None
+            else:
+                raise e
 
     # Assuming organization.admin_user gives us the user to use for billing contact email
     billing_user = organization.owner

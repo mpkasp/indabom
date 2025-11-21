@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 from urllib.error import URLError
 
@@ -6,16 +7,18 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError
+from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError, HttpResponse
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 
 from indabom import stripe
 from indabom.forms import SubscriptionForm, UserForm, PasswordConfirmForm
 from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
 
+logger = logging.getLogger(__name__)
 
 def index(request):
     if request.user.is_authenticated:
@@ -93,12 +96,15 @@ class Checkout(IndabomTemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(Checkout, self).get_context_data(**kwargs)
+        form = self.form_class(owner=self.request.user)
+        del form.fields["additional_users"]
+
         stripe_price = stripe.get_price(INDABOM_STRIPE_PRICE_ID, self.request)
 
         context.update({
             'price': stripe_price,
             'product': None,
-            'form': self.form_class(owner=self.request.user),
+            'form': form,
             'human_readable_prices': [],
         })
 
@@ -128,8 +134,7 @@ class Checkout(IndabomTemplateView):
             interval = stripe_price.recurring.interval
             human_readable_prices.append(f'${amount_usd:.2f} per user, billed {interval}.')
 
-        form = self.form_class(initial={'price_id': stripe_price.id}, owner=self.request.user)
-        del form.fields["additional_users"]
+        form.initial = {'price_id': INDABOM_STRIPE_PRICE_ID}
 
         context.update({
             'price': stripe_price,
@@ -248,3 +253,16 @@ def delete_account(request):
         'has_active_sub': has_active_sub,
     }
     return TemplateResponse(request, 'indabom/delete-account.html', context)
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    # Check if the request method is POST, which is required for webhooks
+    if request.method != 'POST':
+        return HttpResponse('Method not allowed', status=405)
+
+    try:
+        return stripe.stripe_webhook(request)
+    except Exception as e:
+        logger.error(f"Failed to process Stripe webhook: {e}", exc_info=True)
+        return HttpResponse('Webhook failed to process.', status=500)
