@@ -97,51 +97,27 @@ class Checkout(IndabomTemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(Checkout, self).get_context_data(**kwargs)
         form = self.form_class(owner=self.request.user)
-        del form.fields["additional_users"]
+        del form.fields["unit"]
 
         stripe_price = stripe.get_price(INDABOM_STRIPE_PRICE_ID, self.request)
 
         context.update({
             'price': stripe_price,
-            'product': None,
             'form': form,
-            'human_readable_prices': [],
+            'product': None,
+            'human_readable_price': stripe_price.unit_amount / 100
         })
 
         if stripe_price is None:
             return context
 
         stripe_product = stripe.get_product(stripe_price.product, self.request)
-
         if stripe_product is None:
             return context
 
         context.update({'product': stripe_product})
-
-        human_readable_prices = []
-        if stripe_price.billing_scheme == 'tiered' and stripe_price.tiers:
-            for tier in stripe_price.tiers:
-                flat_amount = tier.get('flat_amount')
-                unit_amount = tier.get('unit_amount')
-                up_to = tier.get('up_to')  # can be None
-                if flat_amount is not None:
-                    human_readable_prices.append(
-                        f'${flat_amount / 100:.2f} for up to {up_to if up_to else "unlimited"} users')
-                elif unit_amount is not None:
-                    human_readable_prices.append(f'${unit_amount / 100:.2f} per user')
-        elif stripe_price.type == 'recurring' and stripe_price.unit_amount is not None:
-            amount_usd = stripe_price.unit_amount / 100
-            interval = stripe_price.recurring.interval
-            human_readable_prices.append(f'${amount_usd:.2f} per user, billed {interval}.')
-
         form.initial = {'price_id': INDABOM_STRIPE_PRICE_ID}
 
-        context.update({
-            'price': stripe_price,
-            'product': stripe_product,
-            'form': form,
-            'human_readable_prices': human_readable_prices,
-        })
         return context
 
     def get(self, request, *args, **kwargs):
@@ -174,11 +150,11 @@ class Checkout(IndabomTemplateView):
         if form.is_valid():
             organization = form.cleaned_data['organization']
             price_id = form.cleaned_data['price_id']
-            quantity = form.cleaned_data['additional_users'] + 5  # TODO: Do we want + 5?
+            quantity = form.cleaned_data['unit']
             return stripe.subscribe(request, price_id, organization, quantity)
 
-        if "additional_users" in form.fields:
-            del form.fields["additional_users"]
+        if "unit" in form.fields:
+            del form.fields["unit"]
 
         context = self.get_context_data()
         context['form'] = form

@@ -1,11 +1,10 @@
+from bom.models import Organization
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-
 from django_recaptcha.fields import ReCaptchaField
 
-from bom.models import Organization
 from indabom.settings import DEBUG
 
 
@@ -40,7 +39,7 @@ class UserForm(UserCreationForm):
 class SubscriptionForm(forms.Form):
     price_id = forms.CharField(widget=forms.HiddenInput(), max_length=255)
     organization = forms.ModelChoiceField(queryset=Organization.objects.none())
-    additional_users = forms.IntegerField(min_value=0)
+    unit = forms.IntegerField(min_value=1)
 
     def __init__(self, *args, **kwargs):
         self.owner = kwargs.pop('owner')

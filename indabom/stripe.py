@@ -109,7 +109,7 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization, q
             customer=customer_id,  # Use the Organization's Stripe Customer ID
             success_url=ROOT_DOMAIN + '/checkout-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=ROOT_DOMAIN + '/checkout-cancelled',
-            payment_method_types=['card'],
+            # payment_method_types=['card'],
             mode='subscription',
             line_items=[{
                 'price': price_id,

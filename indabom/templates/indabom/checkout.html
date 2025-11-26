@@ -28,13 +28,15 @@
                     </div>
                     <div class="row">
                         <div class="col s12">
-                            <h5 style="display: inline-block">{{ human_readable_prices.0 }} +&nbsp;</h5>
                             <div class="input-field" style="display: inline-block">
-                                <input id="additional_users" name="additional_users" type="number" class="validate" value="0" min="0" style="font-size: 1.64rem;">
-                                <label for="additional_users">Additional Users</label>
+                                <input id="unit" name="unit" type="number" class="validate" value="1"
+                                       min="1" style="font-size: 1.64rem;">
+                                <label for="unit">Users</label>
                             </div>
                             <div class="input-field" style="display: inline-block">
-                                <h5><span>&nbsp;=&nbsp;</span><span id="finalValue">$100</span><span>&nbsp;/ month</span></h5>
+                                <h5><span>&nbsp;=&nbsp;</span><span
+                                        id="finalValue">${{ human_readable_price|floatformat:"2g" }}</span><span>&nbsp;/ month</span>
+                                </h5>
                             </div>
                             <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px;" type="submit">Continue with {{ product.name }}</button>
                         </div>
@@ -49,9 +51,9 @@
 {% block script %}
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        $('#additional_users').on('change input', function () {
-            const users = $('#additional_users');
-            const val = users.val() * 25 + 100;
+        $('#unit').on('change input', function () {
+            const users = $('#unit');
+            const val = users.val() * {{human_readable_price}};
             const text = `$${val}`;
             console.log(users.val(), text);
             $('#finalValue').text(text);

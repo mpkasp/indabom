@@ -6,15 +6,68 @@
 
 {% block content %}
     {% load static %}
-    <div class="container">
-        <div class="section center">
-            <h1 class="">Success!</h1>
-        </div>
+    <div class="container" style="padding-top: 60px; padding-bottom: 60px;">
+        <div class="row">
+            <div class="col s12 m8 offset-m2 center-align">
 
-        <div class="section center">
-            <div class="container ">
+                {# Icon and Primary Header #}
+                <i class="material-icons large green-text text-lighten-1" style="font-size: 80px;">check_circle</i>
+                <h2 class="green-text text-darken-1">Success! Welcome to IndaBOM Professional.</h2>
+
+                <p class="flow-text">
+                    Your subscription is now <b>active</b>.
+                    Thank you for joining the IndaBOM community!
+                </p>
+
+                <div class="divider" style="margin: 30px 0;"></div>
+
+                {# Primary CTA - Go to the App #}
+                <h5 class="light" style="margin-bottom: 30px;">Your workspace is ready. You can now add your first
+                    user from the settings page!</h5>
+
+                <a href="{% url 'bom:settings' %}#organization"
+                   class="btn-large waves-effect waves-light green lighten-1 btn">
+                    <i class="material-icons left">send</i> Add your first user
+                </a>
+
+                {#                <div class="row">#}
+                {#                    <div class="col s12">#}
+                {# Secondary Options - Key Next Steps #}
+                {#                        <h6 class="light">Next Steps:</h6>#}
+                {#                        <p>#}
+                {#                            <a href="{% url 'billing_management' %}"#}
+                {#                               class="btn-flat waves-effect waves-dark grey-text text-darken-2">#}
+                {#                                <i class="material-icons left">credit_card</i> Manage Billing & Invoices#}
+                {#                            </a>#}
+                {#                        </p>#}
+                {#                    </div>#}
+                {#                </div>#}
+
+                <div class="divider" style="margin: 30px 0;"></div>
+
+                {# Support Section #}
+                <div class="support-section">
+                    <h5 class="light">Need Help Getting Started?</h5>
+                    <p>
+                        We want to ensure your setup is smooth. Don't hesitate to reach out if you have any questions.
+                    </p>
+
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <a href="mailto:support@indabom.com" class="waves-effect waves-light btn green lighten-1">
+                                <i class="material-icons left">email</i> Email Support
+                            </a>
+                        </div>
+                        <div class="col s12 m6">
+                            <a href="{% url 'bom:help' %}" class="btn waves-effect waves-light grey darken-2">
+                                <i class="material-icons left">info_outline</i> Quick Start Guide
+                            </a>
+                        </div>
+                    </div>
+
             </div>
-        </div>
+
+            </div>
     </div>
     </div>
 {% endblock %}
