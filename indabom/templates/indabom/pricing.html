@@ -62,10 +62,7 @@
     <!-- Pricing Tiers Grid -->
     <div class="row" style="margin-top: 50px;">
 
-        <!-- ============================================== -->
-        <!-- 1. FREE TIER (m6) -->
-        <!-- ============================================== -->
-        <div class="col s12 m6">
+        <div class="col s12 m4">
             <div class="card price-card hoverable">
 
                 <!-- Card Header (Price) -->
@@ -92,7 +89,8 @@
                     </li>
                     <li class="collection-item">
                         <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Full Part Library
+                            <i class="material-icons green-text text-lighten-1 tiny"
+                               style="vertical-align: middle; margin-right: 5px;">check</i> Fully managed
                         </div>
                     </li>
                     <li class="collection-item">
@@ -121,10 +119,7 @@
             </div>
         </div>
 
-        <!-- ============================================== -->
-        <!-- 3. PROFESSIONAL TIER (HIGHLIGHTED - m6) -->
-        <!-- ============================================== -->
-        <div class="col s12 m6">
+        <div class="col s12 m4">
             <div class="card price-card highlighted-card z-depth-4">
 
                 <!-- Card Header (Price) - This one retains hardcoded background as it is the highlight color -->
@@ -151,7 +146,8 @@
                     </li>
                     <li class="collection-item">
                         <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Full Part Library
+                            <i class="material-icons green-text text-lighten-1 tiny"
+                               style="vertical-align: middle; margin-right: 5px;">check</i> Fully managed
                         </div>
                     </li>
                     <li class="collection-item">
@@ -180,12 +176,78 @@
             </div>
         </div>
 
+        <div class="col s12 m4">
+            <div class="card price-card hoverable">
+
+                <!-- Card Header (Price) -->
+                <div class="card-content" style="padding-top: 20px; padding-bottom: 20px;">
+                    <h5 class="grey-text">Self Hosted</h5>
+                    <div class="divider" style="margin: 10px auto; width: 60%;"></div>
+                    <h2 class="teal-text text-darken-1" style="margin: 0; font-size: 3rem; font-weight: 500;">$0</h2>
+                    <p class="grey-text">Per User / Always Free</p>
+                </div>
+
+                <!-- FIX: Descriptive Text - Background set to transparent -->
+                <div class="center-align"
+                     style="padding-top: 15px; padding-bottom: 15px; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent !important;">
+                    <p class="grey-text text-darken-2" style="font-weight: 500; margin: 0;">
+                        For the techies.
+                    </p>
+                </div>
+
+                <!-- Feature List -->
+                <ul class="feature-list collection">
+                    <li class="collection-item">
+                        <div class="feature-item-content">
+                            <i class="material-icons green-text text-lighten-1 tiny"
+                               style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
+                        </div>
+                    </li>
+                    <li class="collection-item">
+                        <div class="feature-item-content">
+                            <i class="material-icons red-text tiny" style="vertical-align: middle; margin-right: 5px;">close</i>
+                            Fully managed
+                        </div>
+                    </li>
+                    <li class="collection-item">
+                        <div class="feature-item-content">
+                            <i class="material-icons green-text text-lighten-1 tiny"
+                               style="vertical-align: middle; margin-right: 5px;">check</i> Multi User Access
+                        </div>
+                    </li>
+                    <li class="collection-item">
+                        <div class="feature-item-content">
+                            <i class="material-icons green-text text-lighten-1 tiny"
+                               style="vertical-align: middle; margin-right: 5px;">check</i> Multi-User Organizations
+                        </div>
+                    </li>
+                    <li class="collection-item grey-text">
+                        <div class="feature-item-content">
+                            <i class="material-icons red-text tiny" style="vertical-align: middle; margin-right: 5px;">close</i>
+                            Priority Support
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- FIX: CTA Button - Background set to transparent -->
+                <div class="card-action center-align"
+                     style="padding-bottom: 30px; background-color: transparent !important;">
+                    <a href="{% url 'signup' %}" class="waves-effect waves-light btn grey z-depth-1"
+                       style="min-width: 200px; border-radius: 20px;">
+                        Start For Free
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- Fine Print / Enterprise CTA -->
     <div class="section" style="margin-top: 50px;">
         <h5 class="light grey-text text-darken-2">Need a custom solution for 50+ users?</h5>
-        <a href="mailto:info@indabom.com" class="btn-flat teal-text text-darken-1 waves-effect">Contact us</a>
+        <a href="mailto:info@indabom.com" class="btn-flat teal-text text-darken-1 waves-effect">
+            Contact us
+        </a>
     </div>
 
 </div>
