@@ -6,26 +6,105 @@
 
 {% block content %}
 {% load static %}
-<div class="section container">
-    <!-- <h3 class="light center header">The Story</h3> -->
-    <h1 class="text-center">About us</h1>
-    <p>
-        Hi! I'm <a title="Mike's Linkedin" href="https://www.linkedin.com/in/michaelkasparian/">Mike</a>. I built IndaBOM as a side project to support the hardware development going on at my last startup, Atlas Wearables (Austin, TX, USA).
-    </p>
-    <p>
-        When we first started Atlas, like many, we were just using spreadsheets to manage our bill of materials, sourcing, and revisions. We quickly outgrew this and moved on to using a bulky Product Lifecycle Management (PLM) tool. Paying large amounts of dollars per seat, per month for a tool that we only utilized a fraction of the features got old FAST. Not to mention that the added complexity required an additional part time consultant to assist with! After our first project, we cancelled that subscription and we were back to square one.
-    </p>
-    <h2 class="text-center">Why IndaBOM?</h2>
-    <p>
-        I started developing Indabom.com, and django-bom as a project that would fill the void above - more powerful than a spreadsheet, and much simpler than today's PLM tools. Hitting the biggest pain points first and continuing to improve functionality, the tool continues to grow, while lots of thought is put into keeping the tool simple!
-    </p>
-    <h2 class="text-center">How you can help</h2>
-    <p>
-        After using it internally to track our parts, estimate BOM costs, and manage quotes, I decided to share it with the world. If you share similar frustations, I'd love for you to help! <a title="Django Bom Pypi" href="https://pypi.python.org/pypi/django-bom/" target="_blank">Install the latest build</a> on Pypi using pip, check out the <a title="Django Bom Github" href="https://github.com/mpkasp/django-bom" target="_blank">open source project</a> on Github, or reach out to me via e-mail at mike at indabom dot com.
-    </p>
-    <p>
+
+    <div class="section container center-align" style="padding-top: 60px; padding-bottom: 30px;">
+
+        <h1 class="teal-text text-darken-3" style="margin-bottom: 10px; font-weight: 300;">
+            Built by Engineers, for Engineers
+        </h1>
+        <h3 class="grey-text text-darken-1 light" style="margin-top: 0; font-size: 1.6rem;">
+            Solving the real-world frustration of overly complex PLM tools.
+        </h3>
+
+    </div>
+
+    <div class="section container" style="max-width: 800px;">
+
+        <div class="card-panel z-depth-1 hoverable">
+            <h4 class="light teal-text text-darken-1">The Origin Story</h4>
+            <p class="flow-text grey-text text-darken-1">
+                Hi! I'm <a title="Mike's Linkedin" href="https://www.linkedin.com/in/michaelkasparian/"
+                           class="green-text text-lighten-1">Mike</a>. I built IndaBOM as a side project to support the
+                hardware development going on at my last startup, Atlas Wearables (Austin, TX, USA).
+            </p>
+            <p class="flow-text grey-text text-darken-1">
+                When we first started Atlas, like many, we were just using spreadsheets. We quickly outgrew this and
+                moved on to using a <b>bulky Product Lifecycle Management (PLM) tool.</b> Paying large amounts per seat,
+                per month for a tool that we only utilized a fraction of the features got old <b>fast</b>. Not to
+                mention
+                that the added complexity required an additional part-time consultant to assist with! After our first
+                project, we cancelled that subscription and we were back to square one.
+            </p>
+        </div>
+
+        <!-- 3. THE INDABOM MISSION (Iconic Highlight Section) -->
+        <div class="row" style="margin-top: 50px;">
+            <div class="col s12 center-align">
+                <h2 class="light grey-text text-darken-1" style="margin-bottom: 30px;">Why IndaBOM?</h2>
+            </div>
+
+            <!-- Mission Statement: Simple & Powerful -->
+            <div class="col s12 m6">
+                <div class="card-panel center-align green lighten-5 z-depth-1 white" style="border-radius: 8px;">
+                    <i class="material-icons teal-text text-lighten-1 large">flash_on</i>
+                    <h5 class="light grey-text text-darken-1">More Powerful Than a Spreadsheet</h5>
+                    <p class="grey-text text-darken-1">
+                        Manage complex BOM revisions, track sourcing costs, and connect supply chain data without the
+                        hassle of manual data management.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mission Statement: Simple & Affordable -->
+            <div class="col s12 m6">
+                <div class="card-panel center-align green lighten-5 z-depth-1" style="border-radius: 8px;">
+                    <i class="material-icons teal-text text-lighten-1 large">verified_user</i>
+                    <h5 class="light grey-text text-darken-1">Simpler Than Traditional PLM</h5>
+                    <p class="grey-text text-darken-1">
+                        We focus on the biggest pain points first, putting lots of thought into keeping the tool
+                        intuitive, fast, and affordable for modern hardware teams.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. CALL TO ACTION (Actionable Buttons) -->
+        <div class="section center-align" style="margin-top: 40px; padding-bottom: 50px;">
+            <h2 class="light grey-text text-darken-3" style="margin-bottom: 30px;">How You Can Help</h2>
+            <p class="flow-text">
+                After using it internally to track our parts and manage quotes, I decided to share IndaBOM with the
+                world. If you share similar frustrations, we'd love your help!
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="row" style="margin-top: 40px;">
+                <div class="col s12 m4 offset-m2">
+                    <a title="Django Bom Github" href="https://github.com/mpkasp/django-bom" target="_blank"
+                       class="waves-effect waves-light btn-large green lighten-1 z-depth-2"
+                       style="width: 100%; border-radius: 20px; margin-bottom: 15px;">
+                        <i class="material-icons left">code</i> View on GitHub
+                    </a>
+                </div>
+                <div class="col s12 m4">
+                    <a title="Django Bom Pypi" href="https://pypi.python.org/pypi/django-bom/" target="_blank"
+                       class="waves-effect waves-light btn-large teal lighten-1 z-depth-2"
+                       style="width: 100%; border-radius: 20px;">
+                        <i class="material-icons left">system_update_alt</i> Install Latest Build
+                    </a>
+                </div>
+            </div>
+
+            <p class="grey-text" style="margin-top: 40px;">
+                Or reach out to Mike directly via e-mail at mike at indabom dot com.
+            </p>
+
+        </div>
+
+        <div class="divider"></div>
+        <p class="center-align grey-text" style="padding-top: 20px;">
         For Privacy Policy and Terms & Conditions, see the links at the bottom of this page.
     </p>
-</div>
+
+    </div>
 
 {% endblock %}

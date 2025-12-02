@@ -49,6 +49,7 @@ urlpatterns = [
     path('privacy-policy/', views.PrivacyPolicy.as_view(), name=views.PrivacyPolicy.name),
     path('terms-and-conditions/', views.TermsAndConditions.as_view(), name=views.TermsAndConditions.name),
     path('install/', views.Install.as_view(), name=views.Install.name),
+    path('pricing/', views.Pricing.as_view(), name=views.Pricing.name),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 

@@ -89,6 +89,10 @@ class Install(IndabomTemplateView):
     name = 'install'
 
 
+class Pricing(IndabomTemplateView):
+    name = 'pricing'
+
+
 class Checkout(IndabomTemplateView):
     name = 'checkout'
     initial = {}
@@ -105,11 +109,12 @@ class Checkout(IndabomTemplateView):
             'price': stripe_price,
             'form': form,
             'product': None,
-            'human_readable_price': stripe_price.unit_amount / 100
         })
 
         if stripe_price is None:
             return context
+
+        context.update({'human_readable_price': stripe_price.unit_amount / 100})
 
         stripe_product = stripe.get_product(stripe_price.product, self.request)
         if stripe_product is None:

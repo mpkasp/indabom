@@ -59,6 +59,20 @@ html {
     table.treetable tr.branch {
         background-color: #212121 !important;
     }
+
+    .card {
+        background-color: #121212;
+        border: 1px solid #5f5f5f;
+    }
+
+    .card-panel {
+        background-color: #121212;
+        border: 1px solid #5f5f5f;
+    }
+
+    .card-panel .white {
+        background-color: transparent !important;
+    }
 }
 
 main {
@@ -74,7 +88,11 @@ h1 {
 }
 
 h2 {
-    font-size: 3.3rem;
+    font-size: 3.0rem;
+}
+
+h3 {
+    font-size: 1.6rem;
 }
 
 .btn {

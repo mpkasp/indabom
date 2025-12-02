@@ -38,7 +38,7 @@ class UserForm(UserCreationForm):
 
 class SubscriptionForm(forms.Form):
     price_id = forms.CharField(widget=forms.HiddenInput(), max_length=255)
-    organization = forms.ModelChoiceField(queryset=Organization.objects.none())
+    organization = forms.ModelChoiceField(queryset=Organization.objects.none(), widget=forms.HiddenInput())
     unit = forms.IntegerField(min_value=1)
 
     def __init__(self, *args, **kwargs):
