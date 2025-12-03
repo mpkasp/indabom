@@ -396,7 +396,7 @@ MOUSER_API_KEY = env.str("MOUSER_API_KEY")
 
 # BOM Config
 BOM_CONFIG = {
-    'base_template': 'base.html',
+    'base_template': 'base-bom.html',
     'octopart_api_key': env.str("OCTOPART_API_KEY"),
     'mouser_api_key': env.str("MOUSER_API_KEY"),
     'standalone_mode': False,

@@ -1,0 +1,248 @@
+:root {
+    /* Base Background/Foreground Colors */
+    --color-background: #fff;
+    --color-background-surface: #eaeaea;
+    --color-background-surface-hover: #dfdfdf;
+    --color-text: #121212;
+    --color-text-grey: #757575;
+
+    /* Brand Colors (Teal Palette) - does not change in dark mode */
+    --color-brand: #00695C;
+    --color-brand-surface: #B2DFDB;
+    --color-brand-contrast: #004D40;
+
+    /* Accent Colors (Green Palette) - does not change in dark mode */
+    --color-accent: #66BB6A;
+    --color-accent-surface: #C8E6C9;
+    --color-accent-contrast: #4CAF50;
+
+    /* Text on Brand Colors */
+    --color-text-on-brand: #fff;
+    --color-text-on-brand-grey: #BDBDBD;
+    --color-link-on-brand: #EEE;
+
+    /* Primary Colors (Teal Palette) */
+    --color-primary: #00695C;
+    --color-primary-surface: #B2DFDB;
+    --color-primary-contrast: #004D40;
+
+    /* Secondary Colors (Green Palette) */
+    --color-secondary: #66BB6A;
+    --color-secondary-surface: #C8E6C9;
+    --color-secondary-contrast: #4CAF50;
+
+    /* State Colors */
+    --color-error: #F44336;
+    --color-error-surface: #FFEBEE;
+    --color-error-contrast: #D32F2F;
+
+    --color-warning: #FFEB3B;
+    --color-warning-surface: #FFF9C4;
+    --color-warning-contrast: #FFC107;
+
+    --color-info: #dce775;
+    --color-info-surface: #f0f4c3;
+    --color-info-contrast: #aed581;
+
+    /* Other one-offs */
+    --color-table-stripe: #f5f5f5;
+}
+
+@media (prefers-color-scheme: dark) {
+    .supports-dark-mode {
+        /* Swap the base colors for high contrast */
+        --color-background: #121212;
+        --color-background-surface: #424242;
+        --color-background-surface-hover: #303030;
+        --color-text: #fff;
+        --color-text-grey: #BDBDBD;
+
+        /* Primary Colors - Adjusting values for dark background visibility */
+        --color-primary: #81C784;
+        --color-primary-surface: #004D40;
+        --color-primary-contrast: #B2DFDB;
+
+        /* Secondary Colors */
+        --color-secondary: #00695C;
+        --color-secondary-surface: #004D40;
+        --color-secondary-contrast: #C8E6C9;
+
+        /* State Colors */
+        --color-error: #F44336;
+        --color-error-surface: #D32F2F;
+        --color-error-contrast: #FFEBEE;
+
+        --color-warning: #FFEB3B;
+        --color-warning-surface: #FFC107;
+        --color-warning-contrast: #FFF9C4;
+
+        --color-info: #aed581;
+        --color-info-surface: #dce775;
+        --color-info-contrast: #f0f4c3;
+
+        /* Other one-offs */
+        --color-table-stripe: #1c1c1c;
+    }
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+/* Foreground Color Utilities */
+.text-brand {color: var(--color-brand);}
+.text-accent {color: var(--color-accent);}
+.text-primary {color: var(--color-primary);}
+.text-secondary {color: var(--color-secondary);}
+.text-grey {color: var(--color-text-grey);}
+.text-warning {color: var(--color-warning);}
+.text-error {color: var(--color-error);}
+.text-on-background {color: var(--color-background);}
+.text-on-brand {color: var(--color-text-on-brand);}
+.text-on-brand-grey {color: var(--color-text-on-brand-grey);}
+.link-on-brand {color: var(--color-link-on-brand);}
+
+
+/* Background Color Utilities */
+.bg-brand {background-color: var(--color-brand);}
+.bg-accent {background-color: var(--color-accent);}
+.bg-primary {background-color: var(--color-primary);}
+.bg-secondary {background-color: var(--color-secondary);}
+.bg-surface-brand {background-color: var(--color-brand-surface);}
+.bg-surface-accent {background-color: var(--color-accent-surface);}
+.bg-warning {background-color: var(--color-warning);}
+.bg-error {background-color: var(--color-error);}
+
+/* Materialize Overrides */
+body, .tabs, input, .btn-flat {
+    color: var(--color-text);
+}
+
+body, .tabs {
+    background: var(--color-background);
+}
+
+.btn-flat, .btn-flat:focus {
+    background-color: var(--color-background-surface);
+}
+
+.btn-primary, .btn-primary:focus {
+    background-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary);
+}
+
+.modal, .modal .modal-footer {
+    background-color: var(--color-background-surface);
+}
+
+.input-field input[type=search]:focus:not(.browser-default) {
+    background: transparent;
+    color: var(--color-background-surface);
+}
+
+.dropdown-content {
+    background: var( --color-background);
+    border: 1px solid var(--color-background-surface);
+    color: var(--color-text);
+}
+
+.select-dropdown li.disabled, .select-dropdown li.disabled > span, .select-dropdown li.optgroup {
+    color: var(--color-text-grey);
+}
+
+.dropdown-content li:hover, .dropdown-content li.active {
+    background-color: var(--color-background-surface-hover) !important;
+}
+
+.dropdown-content li > a, .dropdown-content li > span {
+    color: var(--color-primary);
+}
+
+table.striped > tbody > tr:nth-child(odd) {
+    background-color: var(--color-table-stripe);
+}
+
+.collection.with-header .collection-header, .collection .collection-item {
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-background-surface);
+}
+
+.collapsible-header {
+    background-color: var(--color-background);
+}
+
+.tablesorter-header {
+    background-color: var(--color-background-surface) !important;
+}
+
+table.highlight > tbody > tr:hover {
+    background-color: var(--color-background-surface-hover);
+}
+
+table.treetable tr.branch {
+    background-color: var(--color-background-surface-hover) !important;
+}
+
+.card {
+    background-color: var(--color-background);
+    border: 1px solid var(--color-background-surface);
+}
+
+.card-panel {
+    background-color: var(--color-background);
+    border: 1px solid var(--color-background-surface);
+}
+
+input:focus {
+    border-bottom: 1px solid var(--color-primary) !important;
+    box-shadow: 0 1px 0 0 var(--color-primary) !important;
+}
+
+label.active {
+    color: var(--color-primary) !important;
+}
+
+.input-field .prefix.active {
+    color: var(--color-primary);
+}
+
+.tabs .tab a {
+    color: var(--color-secondary);
+}
+
+.tabs .tab a:hover, .tabs .tab a.active {
+    background-color: transparent;
+    color: var(--color-primary);
+}
+
+.tabs .indicator {
+    background-color: var(--color-primary);
+}
+
+.tabs .tab.disabled a, .tabs .tab.disabled a:hover {
+    color: var(--color-text-grey);
+}
+
+.alert {
+    padding: 5px;
+    background-color: var(--color-info-surface); /* light green lighten-4 */
+    margin: 5px;
+    border: solid var(--color-info) 1px; /* light green lighten-2 */
+    color: var(--color-text);
+}
+
+.alert-error {
+    color: var(--color-text);
+    background-color: var(--color-error-surface); /* red */
+    border: solid var(--color-error) 1px; /* red lighten-2 */
+}
+
+.alert-warning {
+    color: var(--color-text);
+    background-color: var(--color-warning-surface); /* lime lighten-4 */
+    border: solid var(--color-warning) 1px; /* lime lighten-2 */
+}

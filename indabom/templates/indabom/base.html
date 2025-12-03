@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="{% block html-class %}{% endblock %}">
 {% load static %}
 
 <head>
@@ -69,8 +69,8 @@
     </script>
 
     <!-- Custom -->
+    <link rel="stylesheet" href="{% static 'bom/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'indabom/css/indabom.css' %}">
-    <link rel="stylesheet" href="{% static 'bom/style.css' %}">
     <link rel="canonical" href="{% block canonical_url %}{% endblock %}">
     {% block head %}
     {% endblock head %}
@@ -80,7 +80,7 @@
 <body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <div class="navbar-fixed">
-    <nav class="teal darken-3">
+    <nav class="bg-brand">
         <div class="nav-wrapper">
             <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo"
                                                                                                  src="{% static 'bom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
@@ -110,30 +110,34 @@
     {% endblock main %}
     {% if title %}
         <div class="container">
-            <h1 class="col s12 light header center">{{ title|safe }}</h1>
+            <h1 class="col s12 text-primary header center">{{ title|safe }}</h1>
         </div>
     {% endif %}
     {% block content %}{% endblock %}
     {% block action-btn %}{% endblock %}
 </main>
 
-<footer class="page-footer teal darken-3">
+<footer class="page-footer bg-brand">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <h3 class="white-text">Help IndaBOM Grow</h3>
-                <p class="grey-text text-lighten-4">We hope you are as excited about IndaBOM as we are! Please reach out if you'd like to learn more, or help take down expensive PLM at <a
+                <h3 class="text-on-brand">Help IndaBOM Grow</h3>
+                <p class="text-on-brand-grey">We hope you are as excited about IndaBOM as we are! Please reach out if
+                    you'd like to learn more, or help take down expensive PLM at <a
                         title="IndaBOM | Email Us" href="mailto:info@indabom.com">info@indabom.com</a></p>
             </div>
             <div class="col l4 offset-l2 s12">
-                <h3 class="white-text">Links</h3>
+                <h3 class="text-on-brand">Links</h3>
                 <ul>
-                    <li><a title="IndaBOM | Pricing" class="grey-text text-lighten-3"
+                    <li><a title="IndaBOM | Pricing" class="link-on-brand"
                            href="{% url 'pricing' %}">Pricing</a></li>
-                    <li><a title="IndaBOM | Support" class="grey-text text-lighten-3" href="https://github.com/sponsors/mpkasp" target="_blank">Support</a></li>
-                    <li><a title="IndaBOM | About" class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
-                    <li><a title="IndaBOM | Privacy Policy" class="grey-text text-lighten-3" href="{% url 'privacy-policy' %}">Privacy Policy</a></li>
-                    <li><a title="IndaBOM | Terms and Conditions" class="grey-text text-lighten-3" href="{% url 'terms-and-conditions' %}">Terms and Conditions</a></li>
+                    <li><a title="IndaBOM | Support" class="link-on-brand" href="https://github.com/sponsors/mpkasp"
+                           target="_blank">Support</a></li>
+                    <li><a title="IndaBOM | About" class="link-on-brand" href="{% url 'about' %}">About</a></li>
+                    <li><a title="IndaBOM | Privacy Policy" class="link-on-brand" href="{% url 'privacy-policy' %}">Privacy
+                        Policy</a></li>
+                    <li><a title="IndaBOM | Terms and Conditions" class="link-on-brand"
+                           href="{% url 'terms-and-conditions' %}">Terms and Conditions</a></li>
                 </ul>
             </div>
         </div>
@@ -143,7 +147,7 @@
         </div>
     </div>
     <div class="footer-copyright">
-        <div class="container">
+        <div class="container text-on-brand-grey">
             © 2017-{% now "Y" %} Copyright IndaBOM
         </div>
     </div>

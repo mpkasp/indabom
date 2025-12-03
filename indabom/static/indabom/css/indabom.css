@@ -1,102 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('indabom-colors.css');
 
 html {
     line-height: normal;
-}
-
-@media (prefers-color-scheme: dark) {
-    body, .tabs, .dropdown-content {
-        background: #121212;
-        color: #fff;
-    }
-
-    input, .btn-flat {
-        color: #fff;
-    }
-
-    .modal, .modal .modal-footer {
-        background-color: #212121;
-    }
-
-    .input-field input[type=search]:focus:not(.browser-default) {
-        background: transparent;
-        color: #fff;
-    }
-
-    .select-dropdown li.disabled, .select-dropdown li.disabled > span, .select-dropdown li.optgroup {
-        color: rgba(255, 255, 255, 0.3);
-    }
-
-    .dropdown-content li:hover, .dropdown-content li.active {
-        background-color: #5f5f5f !important;
-    }
-
-    table.striped > tbody > tr:nth-child(odd) {
-        background-color: rgba(13, 13, 13, 0.5);
-    }
-
-    .collection.with-header .collection-header, .collection .collection-item {
-        background-color: #121212;
-        border-bottom: 1px solid #0e0e0e;
-    }
-
-    .grey.lighten-4 {
-        background-color: #5f5f5f !important;
-    }
-
-    .red.lighten-5 {
-        background-color: #E57373 !important;
-    }
-
-    .red-text.text-darken-2 {
-        color: #FFEBEE !important;
-    }
-
-    .green.lighten-5 {
-        background-color: #388E3C !important;
-    }
-
-    .green-text.text-darken-2 {
-        color: #B9F6CA !important;
-    }
-
-    .grey-text {
-        color: #fff !important;
-    }
-
-    .teal-text.text-darken-3 {
-        color: #b2dfdb !important;
-    }
-
-    .collapsible-header {
-        background-color: #121212;
-    }
-
-    .tablesorter-header {
-        background-color: #5f5f5f !important;
-    }
-
-    table.highlight > tbody > tr:hover {
-        background-color: #212121;
-    }
-
-    table.treetable tr.branch {
-        background-color: #212121 !important;
-    }
-
-    .card {
-        background-color: #121212;
-        border: 1px solid #5f5f5f;
-    }
-
-    .card-panel {
-        background-color: #121212;
-        border: 1px solid #5f5f5f;
-    }
-
-    .card-panel .white {
-        background-color: transparent !important;
-    }
 }
 
 main {
@@ -141,23 +47,6 @@ h4 {
     padding-left: 15px !important;
 }
 
-.tabs .tab a {
-    color: #a5d6a7;
-}
-
-.tabs .tab a:hover, .tabs .tab a.active {
-    background-color: transparent;
-    color: #66bb6a;
-}
-
-.tabs .tab.disabled a, .tabs .tab.disabled a:hover {
-    color: rgba(165, 214, 167, 0.5);
-}
-
-.tabs .indicator {
-    background-color: #66bb6a;
-}
-
 .tabs .tab a:focus, .tabs .tab a:focus.active {
     background-color: transparent;
 }
@@ -177,24 +66,6 @@ input[type=text]:focus:not([readonly]) {
     box-shadow: 0 0px 0 0;
 }
 
-.alert {
-    padding: 5px;
-    background-color: #dcedc8; /* light green lighten-4 */
-    margin: 5px;
-    border: solid #aed581 1px; /* light green lighten-2 */
-}
-
-.alert-error {
-    color: white;
-    background-color: #f44336; /* red */
-    border: solid #e57373 1px; /* red lighten-2 */
-}
-
-.alert-warning {
-    background-color: #f0f4c3; /* lime lighten-4 */
-    border: solid #dce775 1px; /* lime lighten-2 */
-}
-
 /* Cards */
 .card {
     border-radius: 12px;
@@ -202,6 +73,10 @@ input[type=text]:focus:not([readonly]) {
 
 .card-panel {
     border-radius: 12px;
+}
+
+.card-panel .white {
+    background-color: transparent !important;
 }
 
 .feature-card {
@@ -262,23 +137,6 @@ input.invalid:not([type]), input.invalid:not([type]):focus, input.invalid[type=t
     border-bottom: 1px solid #a5d6a7;
     -webkit-box-shadow: none;
     box-shadow: none;
-}
-
-input:focus {
-    border-bottom: 1px solid #66BB6A !important;
-    box-shadow: 0 1px 0 0 #66BB6A !important;
-}
-
-label.active {
-    color: #66BB6A !important;
-}
-
-.dropdown-content li > a, .dropdown-content li > span {
-    color: #66BB6A;
-}
-
-.input-field .prefix.active {
-    color: #66BB6A;
 }
 
 #toast-container .toast {
