@@ -73,8 +73,8 @@ class About(IndabomTemplateView):
     name = 'about'
 
 
-class LearnMore(IndabomTemplateView):
-    name = 'learn-more'
+class Product(IndabomTemplateView):
+    name = 'product'
 
 
 class PrivacyPolicy(IndabomTemplateView):

@@ -44,6 +44,14 @@ html {
         background-color: #5f5f5f !important;
     }
 
+    .red.lighten-5 {
+        background-color: #E57373 !important;
+    }
+
+    .red-text.text-darken-2 {
+        color: #FFEBEE !important;
+    }
+
     .collapsible-header {
         background-color: #121212;
     }
@@ -81,18 +89,32 @@ main {
 
 p {
     font-size: 1.2em;
+    font-weight: 300;
+}
+
+li {
+    font-size: 1.2em;
+    font-weight: 300;
 }
 
 h1 {
     font-size: 3.5rem;
+    font-weight: 300;
 }
 
 h2 {
     font-size: 3.0rem;
+    font-weight: 300;
 }
 
 h3 {
     font-size: 1.6rem;
+    font-weight: 300;
+}
+
+h4 {
+    font-size: 1.3rem;
+    font-weight: 300;
 }
 
 .btn {
@@ -157,6 +179,62 @@ input[type=text]:focus:not([readonly]) {
     border: solid #dce775 1px; /* lime lighten-2 */
 }
 
+/* Cards */
+.card {
+    border-radius: 12px;
+}
+
+.card-panel {
+    border-radius: 12px;
+}
+
+.feature-card {
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.highlighted-card {
+    border: 3px solid #66BB6A;
+    box-shadow: 0 6px 15px rgba(102, 187, 106, 0.6) !important;
+}
+
+.row-equal-height-cards {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row-equal-height-cards > .col {
+    display: flex; /* Make the column flexible */
+}
+
+.row-equal-height-cards .card-panel {
+    flex-grow: 1; /* Tell the card to fill all available space */
+}
+
+.row-equal-height-cards .card {
+    flex-grow: 1; /* Tell the card to fill all available space */
+}
+
+/* Large padding inside focused card content (e.g., forms) */
+.card-pad-lg {
+    padding: 30px;
+}
+
+/* Style for the footer area inside a card (e.g., "Already have an account?" link) */
+.card-footer-separator {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Screen size media queries */
 @media only screen and (min-width: 600px) {
     .inline-flex-medium {
         display: inline-flex;
@@ -212,4 +290,92 @@ label.active {
     .printer-show {
         display: block;
     }
+}
+
+/* 4. Feature List Styling (Custom list inside a card) */
+/* Standardizes the look of custom lists used in feature, benefit, or pricing blocks. */
+.feature-list {
+    flex-grow: 1; /* Key for pushing card-action to the bottom on feature cards */
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.feature-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.feature-list li.collection-item {
+    /* Override Materialize default horizontal padding for centering */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* 5. Centering Content in List Items */
+/* General utility to center text/icons within a flex container. */
+.feature-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- Vertical Spacing Utilities --- */
+
+/* Standard section padding for page wrapper (e.g., around the main container) */
+.page-v-pad-lg {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Margin Top Utilities */
+.mt-0 {
+    margin-top: 0;
+}
+
+.mt-sm { /* Small margin top (e.g., between logo and heading) */
+    margin-top: 15px;
+}
+
+.mt-md { /* Medium margin top (e.g., after the main heading block) */
+    margin-top: 25px;
+}
+
+.mt-lg { /* Large margin top (e.g., starting a major new row/component block) */
+    margin-top: 40px;
+}
+
+.mt-xl { /* Extra-large margin top (e.g., before the main CTA button) */
+    margin-top: 30px;
+}
+
+/* Margin Bottom Utilities */
+.mb-0 { /* Remove default Materialize bottom margin on rows */
+    margin-bottom: 0;
+}
+
+.mb-sm {
+    margin-bottom: 15px; /* Used below the logo */
+}
+
+/* --- Component Specific Styles --- */
+
+/* Consistent style for separators directly under main headings */
+.header-divider {
+    max-width: 300px;
+}
+
+/* Responsive CTA Button Sizing (used for primary sign-up/login buttons) */
+.btn-cta-responsive {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* --- Forms --- */
+form p {
+    font-size: .8rem;
+}
+
+form li {
+    font-size: .8rem;
 }

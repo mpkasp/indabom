@@ -45,7 +45,7 @@ urlpatterns = [
         template_name='indabom/password-reset-complete.html'), name='password_reset_complete'),
 
     path('about/', views.About.as_view(), name=views.About.name),
-    path('learn-more/', views.LearnMore.as_view(), name=views.LearnMore.name),
+    path('product/', views.Product.as_view(), name=views.Product.name),
     path('privacy-policy/', views.PrivacyPolicy.as_view(), name=views.PrivacyPolicy.name),
     path('terms-and-conditions/', views.TermsAndConditions.as_view(), name=views.TermsAndConditions.name),
     path('install/', views.Install.as_view(), name=views.Install.name),

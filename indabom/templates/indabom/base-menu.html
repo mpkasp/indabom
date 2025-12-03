@@ -26,6 +26,8 @@
 {% if not user.is_authenticated %}
     <li {% if name == 'pricing' %}class="active"{% endif %}><a title="IndaBOM | Pricing" href="{% url 'pricing' %}">Pricing</a>
     </li>
+    <li {% if name == 'product' %}class="active"{% endif %}><a title="IndaBOM | Product" href="{% url 'product' %}">Product</a>
+    </li>
     <li {% if name == 'about' %}class="active"{% endif %}><a title="IndaBOM | About" href="{% url 'about' %}">About</a></li>
     <li {% if name == 'signup' %}class="active"{% endif %}><a title="Sign Up" href="{% url 'signup' %}">Sign Up</a></li>
     <li {% if name == 'login' %}class="active"{% endif %}><a title="IndaBOM | Log In" href="{% url 'login' %}">Login</a></li>

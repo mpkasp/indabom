@@ -2,80 +2,168 @@
 
 {% block head-title %}Free, Simple, Open Source BOM Management and Sourcing Tool{% endblock %}
 
-{% block title %}IndaBOM{% endblock %}
+{% block head %}
+    <style>
+        .ib-logo-stack {
+            position: relative;
+            width: 4.5rem; /* roughly matches the 4rem material icons visually */
+            height: 4.5rem;
+            margin: 10px auto 5px; /* mirrors spacing from previous inline styles */
+        }
 
-{% block menu %}
-{% endblock %}
+        .ib-logo-stack img {
+            display: block;
+        }
+
+        .ib-logo-mouser-base {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+
+        .ib-logo-gdrive-front {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+        }
+
+        @media (max-width: 400px) {
+            .ib-logo-stack {
+                width: 4rem;
+                height: 4rem;
+            }
+        }
+    </style>
+{% endblock head %}
+
+{% block title %}IndaBOM{% endblock %}
 
 {% block content %}
     {% load static %}
-    <div class="container">
-        <div class="section">
-            <div style="text-align: center;">
-                <img width="300" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
-                <h2 class="header light center" style="margin: 5% 0%; font-size: 1.64rem; line-height: 110%;">A simple, <a title="IndaBOM Github" href="https://github.com/mpkasp/django-bom"
-                                                                                                                           target="_blank">open source</a> <b>ind</b>ented <b>b</b>ill <b>o</b>f
-                    <b>m</b>aterials tool.</h2>
-                {% if not user.is_authenticated %}<p><a title="Get Started" class="waves-effect waves-light btn green lighten-1" href="{% url 'signup' %}">Get Started</a></p>{% endif %}
-                {% if user.is_authenticated %}<p><a title="Enter" class="waves-effect waves-light btn green lighten-1" href="{% url 'bom' %}">Enter</a></p>{% endif %}
+    <div class="section container center-align page-v-pad-lg">
+        <img class="responsive-img mb-sm" width="220" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo">
+        <h1 class="teal-text text-darken-3 light mt-0">IndaBOM</h1>
+        <h3 class="grey-text text-darken-1 light" style="margin-bottom: 40px;">
+            Free, simple, open source BOM management and sourcing tool.
+        </h3>
+
+        <div class="divider container header-divider"></div>
+
+        <div class="row mt-lg">
+            <div class="col s12 m8 offset-m2 l6 offset-l3">
+                <div class="row">
+                    {% if not user.is_authenticated %}
+                        <div class="col s12 m6">
+                            <a title="Get Started" href="{% url 'signup' %}"
+                               class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                                Get Started
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <div class="col s12 m6">
+                            <a title="Enter" href="{% url 'bom' %}"
+                               class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                                Enter
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="col s12 m6">
+                        <a title="Learn More" href="{% url 'product' %}"
+                           class="waves-effect waves-light btn btn-large teal darken-1 z-depth-2 btn-cta-responsive">
+                            Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12">
+                <h2 class="light grey-text text-darken-3 center" style="margin-bottom: 30px;">
+                    Built by hardware engineers to do what Excel can't
+                </h2>
             </div>
         </div>
 
-        <div class="divider"></div>
+        <div class="row row-equal-height-cards">
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                    <i class="material-icons green-text text-darken-1" style="font-size: 4rem;">thumb_up</i>
+                    <h5 class="light grey-text text-darken-2">Simple</h5>
+                    <p class="grey-text text-darken-1">
+                        Most PLM tools are overloaded and expensive. IndaBOM stays focused on your bill of materials,
+                        sourcing, and revision control — nothing you don't need.
+                    </p>
+                </div>
+            </div>
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                    <div class="ib-logo-stack" aria-label="Integrations: Google Drive and Mouser">
+                        <img class="ib-logo-mouser-base" src="{% static 'bom/img/mouser.png' %}" alt="Mouser logo"
+                             title="Integrated with Mouser">
+                        <img class="ib-logo-gdrive-front" src="{% static 'bom/img/google_drive_logo.svg' %}"
+                             alt="Google Drive logo" title="Integrated with Google Drive">
+                    </div>
+                    <h5 class="light grey-text text-darken-2">Integrated</h5>
+                    <p class="grey-text text-darken-1">
+                        Connect with modern tools like Google Drive for easy file sharing and Mouser to pull the latest
+                        sourcing data and optimize cost.
+                    </p>
+                </div>
+            </div>
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                    <i class="material-icons teal-text text-darken-1" style="font-size: 4rem;">settings</i>
+                    <h5 class="light grey-text text-darken-2">Open Source</h5>
+                    <p class="grey-text text-darken-1">
+                        Built on Django and Python. Transparent, extensible, and community-driven so you can adapt it to
+                        your workflow.
+                    </p>
+                </div>
+            </div>
+        </div>
 
-        <div class="section">
-            <div class="row">
-                <h2 class="col s12 light center header">Indabom is a a full-featured parts and bill of materials management tool built by hardware engineers.</h2>
+        <div class="row mt-lg">
+            <div class="col m12 l8 push-l2">
+                <img src="{% static 'indabom/img/part-list.png' %}" width="100%" class="center"
+                     alt="IndaBOM Part List" style="padding: 16px;">
             </div>
-            <div class="row">
-                <div class="col s12 m4">
-                    <div class="center promo">
-                        <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">thumb_up</i>
-                        <p class="promo-caption">Simple</p>
-                        <p class="light center flow-text">Many Product Lifecycle Management (PLM) tools have way more features than most people actually use, making the tool artificially expensive,
-                            and over complicated especially for hobbiests, startups, and freelancers. We keep Indabom simple, focusing on your bill of materials, component sourcing, and revision
-                            control.</p>
-                    </div>
-                </div>
-                <div class="col s12 m4">
-                    <div class="center promo">
-                        <img title="Integrated with Google Drive" style="width:115px; vertical-align: middle; margin: 40px 5%;" src="{% static 'bom/img/google_drive_logo.svg' %}">
-                        <img title="Integrated with Mouser" style="width:115px; vertical-align: middle; margin: 40px 5%;" src="{% static 'bom/img/mouser.png' %}">
-                        <p class="promo-caption">Integrated</p>
-                        <p class="light center flow-text">Integrated with modern tools like <a href="https://drive.google.com" target="_blank">Google Drive</a> for free, quick, accessible and
-                            shareable access to your files, and <a href="https://mouser.com/" target="_blank">Mouser</a> to pull in the latest sourcing information and optimizing
-                            your BOM for cost.</p>
-                    </div>
-                </div>
-                <div class="col s12 m4">
-                    <div class="center promo">
-                        <i class="material-icons" style="color: #66BB6A; margin: 40px 0; font-size: 7rem; display: block;">settings</i>
-                        <p class="promo-caption">Open Source</p>
-                        <p class="light center flow-text">Indabom was started because excel wasn't enough, and PLM and PDM tools were too complex. It's open source utilizing the Django web framework
-                            written in Python so you can participate in the development and contribute to the features and concepts.</p>
-                    </div>
-                </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12">
+                <p class="grey-text text-darken-1 center">
+                    Organize all your parts in one place. Auto-generate internal part numbers with a scalable numbering
+                    scheme. Track multiple manufacturer and seller options, quotes, and prices per part.
+                </p>
             </div>
-            <div class="row">
-                <div class="col s12">
-                    <h2 class="light center header">Do what Excel can't.</h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col m12 l8 push-l2">
-                    <img src="{% static 'indabom/img/part-list.png' %}" width="100%" class="center" alt="IndaBOM Part List" style="padding: 16px;"></img>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12">
-                    <p class="light center flow-text">All of your parts, organized, in one place. IndaBOM auto-generates internal part numbers with a simple defined, scalable numbering scheme. Add
-                        multiple manufacturer part numbers to a single part in your BOM. Add one, or many sellers, quotes, or prices for each manufacturer part.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col s12" style="text-align: center;">
-                    <a title="Learn More" class="waves-effect waves-light btn green lighten-1" href="{% url 'learn-more' %}">Learn More</a>
-                </div>
+        </div>
+
+        <div class="row mt-lg">
+            <div class="col s12 center-align">
+                {% if not user.is_authenticated %}
+                    <a title="Start For Free" href="{% url 'signup' %}"
+                       class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                        Start For Free
+                    </a>
+                {% else %}
+                    <a title="Enter" href="{% url 'bom' %}"
+                       class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                        Enter
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>

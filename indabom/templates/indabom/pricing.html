@@ -6,249 +6,207 @@
 {% block content %}
 {% load static %}
 
-<!-- Custom CSS for Spacing and Alignment (Simplified for better Materialize integration) -->
-<style>
-    .price-card {
-        transition: transform 0.2s, box-shadow: 0.2s;
-        border-radius: 12px;
-        /* Using 100% height to ensure columns are balanced */
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    .price-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    }
-    /* FIX: Custom class to center the text and icon within the list item */
-    .feature-list li .feature-item-content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .feature-list {
-        flex-grow: 1; /* Ensures lists push the CTA to the bottom */
-        padding: 0; /* REMOVED HORIZONTAL PADDING from UL */
-        margin: 0; /* Remove default collection margin */
-        border: none;
-    }
-    .feature-list li {
-        padding: 10px 0;
-        border-bottom: 1px solid #eee;
-    }
-    /* FIX: Override default Materialize horizontal padding on list items for perfect centering */
-    .feature-list li.collection-item {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    /* Styling for the paid tier */
-    .highlighted-card {
-        border: 3px solid #66BB6A;
-        box-shadow: 0 6px 15px rgba(102, 187, 106, 0.6) !important;
-    }
-</style>
+    <div class="section container center-align page-v-pad-lg">
+        <h1 class="teal-text text-darken-3 mb-sm">
+            Get Started with IndaBOM
+        </h1>
+        <h3 class="grey-text text-darken-1 light">
+            The essential BOM lifecycle and supply chain collaboration platform.
+        </h3>
+        <div class="row mt-lg row-equal-height-cards">
 
-<div class="section container center-align" style="padding-top: 60px; padding-bottom: 60px;">
+            <!-- Card 1: Free Tier -->
+            <div class="col s12 m4">
+                <div class="card feature-card hoverable">
 
-    <!-- Header Section (GitLab-inspired Copy) -->
-    <h1 class="teal-text text-darken-3" style="margin-bottom: 10px; font-weight: 300;">
-        Get Started with IndaBOM
-    </h1>
-    <!-- FIX: Reduced font-size to 1.6rem for a smaller, more supportive sub-headline -->
-    <h3 class="grey-text text-darken-1" style="margin-top: 0; font-weight: 300;">
-        The essential BOM lifecycle and supply chain collaboration platform.
-    </h3>
+                    <div class="card-content" style="padding-top: 20px; padding-bottom: 20px;">
+                        <h5 class="grey-text">Free</h5>
+                        <div class="divider" style="margin: 10px auto; width: 60%;"></div>
+                        <h2 class="teal-text text-darken-1 mt-0" style="font-size: 3rem; font-weight: 500;">$0</h2>
+                        <p class="grey-text mt-0">One User / Always Free</p>
+                    </div>
 
-    <!-- Pricing Tiers Grid -->
-    <div class="row" style="margin-top: 50px;">
+                    <div class="center-align mb-0"
+                         style="padding: 15px 0; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent;">
+                        <p class="grey-text text-darken-2 mt-0" style="font-weight: 500;">
+                            Perfect for solo professionals and evaluation.
+                        </p>
+                    </div>
 
-        <div class="col s12 m4">
-            <div class="card price-card hoverable">
+                    <ul class="feature-list collection">
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Fully managed
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons grey-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">remove</i> Single User Access
+                            </div>
+                        </li>
+                        <li class="collection-item grey-text">
+                            <div class="feature-item-content">
+                                <i class="material-icons red-text tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">close</i> Multi-User Organizations
+                            </div>
+                        </li>
+                        <li class="collection-item grey-text">
+                            <div class="feature-item-content">
+                                <i class="material-icons red-text tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">close</i> Priority Support
+                            </div>
+                        </li>
+                    </ul>
 
-                <!-- Card Header (Price) -->
-                <div class="card-content" style="padding-top: 20px; padding-bottom: 20px;">
-                    <h5 class="grey-text">Free</h5>
-                    <div class="divider" style="margin: 10px auto; width: 60%;"></div>
-                    <h2 class="teal-text text-darken-1" style="margin: 0; font-size: 3rem; font-weight: 500;">$0</h2>
-                    <p class="grey-text">Per User / Always Free</p>
-                </div>
-
-                <!-- FIX: Descriptive Text - Background set to transparent -->
-                <div class="center-align" style="padding-top: 15px; padding-bottom: 15px; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent !important;">
-                    <p class="grey-text text-darken-2" style="font-weight: 500; margin: 0;">
-                        Perfect for solo professionals and evaluation.
-                    </p>
-                </div>
-
-                <!-- Feature List -->
-                <ul class="feature-list collection">
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny"
-                               style="vertical-align: middle; margin-right: 5px;">check</i> Fully managed
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Single User Access
-                        </div>
-                    </li>
-                    <li class="collection-item grey-text">
-                        <div class="feature-item-content">
-                            <i class="material-icons red-text tiny" style="vertical-align: middle; margin-right: 5px;">close</i> Multi-User Organizations
-                        </div>
-                    </li>
-                    <li class="collection-item grey-text">
-                        <div class="feature-item-content">
-                            <i class="material-icons red-text tiny" style="vertical-align: middle; margin-right: 5px;">close</i> Priority Support
-                        </div>
-                    </li>
-                </ul>
-
-                <!-- FIX: CTA Button - Background set to transparent -->
-                <div class="card-action center-align" style="padding-bottom: 30px; background-color: transparent !important;">
-                    <a href="{% url 'signup' %}" class="waves-effect waves-light btn grey z-depth-1" style="min-width: 200px; border-radius: 20px;">
-                        Start For Free
-                    </a>
+                    <div class="card-action center-align" style="padding-bottom: 30px; background-color: transparent;">
+                        <a href="{% url 'signup' %}"
+                           class="waves-effect waves-light btn grey z-depth-1 btn-cta-responsive">
+                            Start For Free
+                        </a>
+                    </div>
                 </div>
             </div>
+
+            <!-- Card 2: Professional Tier (Highlight) -->
+            <div class="col s12 m4">
+                <div class="card feature-card highlighted-card z-depth-4">
+                    <div class="card-content green darken-1" style="padding-top: 20px; padding-bottom: 20px;">
+                        <h5 class="white-text">Professional</h5>
+                        <div class="divider white" style="margin: 10px auto; width: 60%;"></div>
+                        <h2 class="white-text mt-0" style="font-size: 3rem; font-weight: 700;">$35</h2>
+                        <p class="white-text mt-0">Per User / Month</p>
+                    </div>
+
+                    <div class="center-align mb-0"
+                         style="padding: 15px 0; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent;">
+                        <p class="grey-text text-darken-2 mt-0" style="font-weight: 500;">
+                            Full enterprise control and customization.
+                        </p>
+                    </div>
+
+                    <ul class="feature-list collection">
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Fully managed
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Multi User Access
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Multi-User Organizations
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Priority Support
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="card-action center-align" style="padding-bottom: 30px; background-color: transparent;">
+                        <a href="{% url 'checkout' %}"
+                           class="waves-effect waves-light btn green darken-1 z-depth-2 btn-cta-responsive">
+                            Upgrade to Professional
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Self Hosted Tier -->
+            <div class="col s12 m4">
+                <!-- Used .feature-card -->
+                <div class="card feature-card hoverable">
+
+                    <div class="card-content" style="padding-top: 20px; padding-bottom: 20px;">
+                        <h5 class="grey-text">Self Hosted</h5>
+                        <div class="divider" style="margin: 10px auto; width: 60%;"></div>
+                        <h2 class="teal-text text-darken-1 mt-0" style="font-size: 3rem; font-weight: 500;">$0</h2>
+                        <p class="grey-text mt-0">Per User / Always Free</p>
+                    </div>
+
+                    <div class="center-align mb-0"
+                         style="padding: 15px 0; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent;">
+                        <p class="grey-text text-darken-2 mt-0" style="font-weight: 500;">
+                            For the techies.
+                        </p>
+                    </div>
+
+                    <!-- Feature List -->
+                    <ul class="feature-list collection">
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons red-text tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">close</i>
+                                Fully managed
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Multi User Access
+                            </div>
+                        </li>
+                        <li class="collection-item">
+                            <div class="feature-item-content">
+                                <i class="material-icons green-text text-lighten-1 tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">check</i> Multi-User Organizations
+                            </div>
+                        </li>
+                        <li class="collection-item grey-text">
+                            <div class="feature-item-content">
+                                <i class="material-icons red-text tiny"
+                                   style="vertical-align: middle; margin-right: 5px;">close</i>
+                                Priority Support
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="card-action center-align"
+                         style="padding-bottom: 30px; background-color: transparent;">
+                        <a href="{% url 'install' %}"
+                           class="waves-effect waves-light btn grey z-depth-1 btn-cta-responsive">
+                            Self host
+                        </a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="col s12 m4">
-            <div class="card price-card highlighted-card z-depth-4">
-
-                <!-- Card Header (Price) - This one retains hardcoded background as it is the highlight color -->
-                <div class="card-content green lighten-1" style="padding-top: 20px; padding-bottom: 20px;">
-                    <h5 class="white-text">Professional</h5>
-                    <div class="divider white" style="margin: 10px auto; width: 60%;"></div>
-                    <h2 class="white-text" style="margin: 0; font-size: 3rem; font-weight: 700;">$35</h2>
-                    <p class="white-text">Per User / Month</p>
-                </div>
-
-                <!-- FIX: Descriptive Text - Background set to transparent -->
-                <div class="center-align" style="padding-top: 15px; padding-bottom: 15px; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent !important;">
-                    <p class="grey-text text-darken-2" style="font-weight: 500; margin: 0;">
-                        Full enterprise control and customization.
-                    </p>
-                </div>
-
-                <!-- Feature List -->
-                <ul class="feature-list collection">
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny"
-                               style="vertical-align: middle; margin-right: 5px;">check</i> Fully managed
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Multi User Access
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Multi-User Organizations
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny" style="vertical-align: middle; margin-right: 5px;">check</i> Priority Support
-                        </div>
-                    </li>
-                </ul>
-
-                <!-- FIX: CTA Button - Background set to transparent -->
-                <div class="card-action center-align" style="padding-bottom: 30px; background-color: transparent !important;">
-                    <a href="{% url 'checkout' %}" class="waves-effect waves-light btn green darken-1 z-depth-2" style="min-width: 200px; border-radius: 20px;">
-                        Upgrade to Professional
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col s12 m4">
-            <div class="card price-card hoverable">
-
-                <!-- Card Header (Price) -->
-                <div class="card-content" style="padding-top: 20px; padding-bottom: 20px;">
-                    <h5 class="grey-text">Self Hosted</h5>
-                    <div class="divider" style="margin: 10px auto; width: 60%;"></div>
-                    <h2 class="teal-text text-darken-1" style="margin: 0; font-size: 3rem; font-weight: 500;">$0</h2>
-                    <p class="grey-text">Per User / Always Free</p>
-                </div>
-
-                <!-- FIX: Descriptive Text - Background set to transparent -->
-                <div class="center-align"
-                     style="padding-top: 15px; padding-bottom: 15px; flex-grow: 0; border-top: 1px solid rgba(0,0,0,0.1); background-color: transparent !important;">
-                    <p class="grey-text text-darken-2" style="font-weight: 500; margin: 0;">
-                        For the techies.
-                    </p>
-                </div>
-
-                <!-- Feature List -->
-                <ul class="feature-list collection">
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny"
-                               style="vertical-align: middle; margin-right: 5px;">check</i> Unlimited BOMs
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons red-text tiny" style="vertical-align: middle; margin-right: 5px;">close</i>
-                            Fully managed
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny"
-                               style="vertical-align: middle; margin-right: 5px;">check</i> Multi User Access
-                        </div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="feature-item-content">
-                            <i class="material-icons green-text text-lighten-1 tiny"
-                               style="vertical-align: middle; margin-right: 5px;">check</i> Multi-User Organizations
-                        </div>
-                    </li>
-                    <li class="collection-item grey-text">
-                        <div class="feature-item-content">
-                            <i class="material-icons red-text tiny" style="vertical-align: middle; margin-right: 5px;">close</i>
-                            Priority Support
-                        </div>
-                    </li>
-                </ul>
-
-                <!-- FIX: CTA Button - Background set to transparent -->
-                <div class="card-action center-align"
-                     style="padding-bottom: 30px; background-color: transparent !important;">
-                    <a href="{% url 'install' %}" class="waves-effect waves-light btn grey z-depth-1"
-                       style="min-width: 200px; border-radius: 20px;">
-                        Self host
-                    </a>
-                </div>
-            </div>
+        <div class="section mt-lg">
+            <h5 class="light grey-text text-darken-2">Need a custom solution for 50+ users?</h5>
+            <a href="mailto:info@indabom.com" class="btn-flat teal-text text-darken-1 waves-effect">
+                Contact us at info@indabom.com
+            </a>
         </div>
 
     </div>
-
-    <!-- Fine Print / Enterprise CTA -->
-    <div class="section" style="margin-top: 50px;">
-        <h5 class="light grey-text text-darken-2">Need a custom solution for 50+ users?</h5>
-        <a href="mailto:info@indabom.com" class="btn-flat teal-text text-darken-1 waves-effect">
-            Contact us
-        </a>
-    </div>
-
-</div>
 {% endblock %}
