@@ -1,0 +1,313 @@
+{% extends 'indabom/base.html' %}
+
+{% block head-title %}Product{% endblock %}
+
+{% block title %}Why IndaBOM?{% endblock %}
+
+{% block content %}
+{% load static %}
+
+    <!-- Hero / Intro -->
+    <div class="section container center-align page-v-pad-lg">
+        <img class="responsive-img mb-sm" width="220" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo">
+        <h1 class="teal-text text-darken-3 light mt-0">Why IndaBOM?</h1>
+        <h3 class="grey-text text-darken-1 light" style="margin-bottom: 40px;">
+            Streamlined BOM management and sourcing — professional tools without the bloat.
+        </h3>
+
+        <div class="row mt-lg">
+            <div class="col s12 m8 offset-m2 l6 offset-l3">
+                <div class="row">
+                    {% if not user.is_authenticated %}
+                        <div class="col s12 m6">
+                            <a title="Get Started" href="{% url 'signup' %}"
+                               class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                                Get Started
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <div class="col s12 m6">
+                            <a title="Enter" href="{% url 'bom:home' %}"
+                               class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                                Enter
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="col s12 m6">
+                        <a title="Pricing" href="{% url 'pricing' %}"
+                           class="waves-effect waves-light btn btn-large teal darken-1 z-depth-2 btn-cta-responsive">
+                            View Pricing
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider container header-divider"></div>
+
+    <!-- Key Benefits -->
+    <div class="section container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12">
+                <h2 class="light grey-text text-darken-3 center" style="margin-bottom: 30px;">Jump right in</h2>
+            </div>
+        </div>
+
+        <div class="row row-equal-height-cards">
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                    <i class="material-icons green-text text-darken-1" style="font-size: 4rem;">format_list_numbered</i>
+                    <h5 class="light grey-text text-darken-2">Flexible Numbering</h5>
+                    <p class="grey-text text-darken-1">
+                        Choose the integrated semi‑intelligent scheme or roll your own with intelligent numbering. IndaBOM ensures uniqueness.
+                    </p>
+                </div>
+            </div>
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                    <i class="material-icons teal-text text-darken-1" style="font-size: 4rem;">file_upload</i>
+                    <h5 class="light grey-text text-darken-2">Bulk Upload</h5>
+                    <p class="grey-text text-darken-1">
+                        Grab your existing CSV or Excel list and batch upload parts and assemblies to get started fast.
+                    </p>
+                </div>
+            </div>
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                    <i class="material-icons green-text text-darken-1" style="font-size: 4rem;">inventory_2</i>
+                    <h5 class="light grey-text text-darken-2">Manage Revisions</h5>
+                    <p class="grey-text text-darken-1">
+                        Revision management from development to production and the whole product lifecycle to track electrical, mechanical, hardware and more.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-lg">
+            <div class="col s12 center-align">
+                {% if not user.is_authenticated %}
+                    <a title="Start For Free" href="{% url 'signup' %}"
+                       class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                        Start For Free
+                    </a>
+                {% else %}
+                    <a title="Enter" href="{% url 'bom:home' %}"
+                       class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                        Enter
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="teal lighten-5">
+        <div class="section container page-v-pad-lg">
+            <div class="row">
+                <div class="col s12">
+                    <h2 class="light grey-text text-darken-3 center" style="margin-bottom: 30px;">Level Up Your BOM</h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col m6 s12">
+                    <img src="{% static 'indabom/img/part-info-short.png' %}" width="100%" class="center" alt="IndaBOM Part Info">
+                </div>
+                <div class="col m6 s12">
+                    <h3 class="light grey-text text-darken-2">Indented BOM</h3>
+                    <p class="grey-text text-darken-1">
+                        Know your full assembly. Using an Indented BOM provides a clear, tree-like structure that shows exactly how sub-assemblies and individual components build up to the final product
+                    </p>
+                    <h3 class="light grey-text text-darken-2">Integrated Sourcing</h3>
+                    <p class="grey-text text-darken-1">
+                        IndaBOM integrates with Mouser to bring pricing and datasheets directly into your indented BOM
+                        and part information views.
+                    </p>
+                    <h3 class="light grey-text text-darken-2">Simple Cost Estimates</h3>
+                    <p class="grey-text text-darken-1">
+                        Estimate BOM costs at different volumes. Manage alternate manufacturers and sellers to keep builds on track when
+                        parts go out of stock.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12">
+                    <p class="grey-text text-darken-1 center">
+                        Want more? Unlike expensive PLM/PDM systems, IndaBOM is free and open source so you can customize it
+                        to your needs. We're always open to ideas — message us at
+                        <a href="mailto:info@indabom.com">info@indabom.com</a> or submit a pull request.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row mt-lg">
+                <div class="col s12 center-align">
+                    {% if not user.is_authenticated %}
+                        <a title="Get Started" href="{% url 'signup' %}"
+                           class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                            Get Started
+                        </a>
+                    {% else %}
+                        <a title="Enter" href="{% url 'bom:home' %}"
+                           class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
+                            Enter
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12 center-align">
+                <h2 class="light grey-text text-darken-3" style="margin-bottom: 20px;">Flexible Part Numbering</h2>
+                <p class="grey-text text-darken-1" style="max-width: 820px; margin: 0 auto;">
+                    IndaBOM helps you stay organized with an opinionated industry standard semi-intelligent
+                    part numbering scheme. Already have a scheme? Want something different? Use any scheme with intelligent
+                    numbering.
+                </p>
+            </div>
+        </div>
+        <div class="row row-equal-height-cards">
+            <div class="col s12 m6" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2" style="height: 100%;">
+                    <h5 class="light teal-text text-darken-1">Semi‑Intelligent</h5>
+                    <ul class="browser-default grey-text text-darken-1">
+                        <li>Three part numbering: Class-Number-Variation</li>
+                        <li>Organized and easy to search</li>
+                        <li>Fast to assign and communicate</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col s12 m6" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2" style="height: 100%;">
+                    <h5 class="light teal-text text-darken-1">Intelligent</h5>
+                    <ul class="browser-default grey-text text-darken-1">
+                        <li>Human‑readable codes (e.g., size, dielectric)</li>
+                        <li>Familiar for some teams and workflows</li>
+                        <li>Less structure, and less flexible when requirements change</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="divider container header-divider"></div>
+
+    <div class="section container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12 center-align">
+                <h2 class="light grey-text text-darken-3" style="margin-bottom: 20px;">An Integrated BOM Tool</h2>
+                <p class="grey-text text-darken-1" style="max-width: 820px; margin: 0 auto;">
+                    Always know where to go. Stay organized, and always up to date with the latest pricing and datasheets, right at your fingertips.
+                </p>
+            </div>
+        </div>
+        <div class="row row-equal-height-cards">
+            <div class="col s12 m6" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2" style="height: 100%;">
+                    <i class="material-icons teal-text text-darken-1" style="font-size: 3rem;">integration_instructions</i>
+                    <h5 class="light grey-text text-darken-2">Google Drive</h5>
+                    <p class="grey-text text-darken-1">Integrate with Google Drive, and IndaBOM automatically generates a dedicated folder for each part number in your BOM, housing all associated files in one precise location.</p>
+                    <p class="grey-text text-darken-1">Keep your data all in one place, and use the storage system you're familiar with.</p>
+                </div>
+            </div>
+            <div class="col s12 m6" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2" style="height: 100%;">
+                    <i class="material-icons teal-text text-darken-1" style="font-size: 3rem;">integration_instructions</i>
+                    <h5 class="light grey-text text-darken-2">Mouser</h5>
+                    <p class="grey-text text-darken-1">The Mouser API provides up to date pricing. Enable pricing for your part class, and pricing information appears throughout your BOM including:</p>
+                    <ul class="browser-default grey-text text-darken-1">
+                        <li>Bill of Materials</li>
+                        <li>Part Sourcing</li>
+                        <li>Cost Estimation for Assembly totals</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Who is this for? -->
+    <div class="teal lighten-5">
+        <div class="section container page-v-pad-lg">
+            <div class="row">
+                <div class="col s12 center-align">
+                    <h2 class="light grey-text text-darken-3" style="margin-bottom: 20px;">Who is this for?</h2>
+                </div>
+            </div>
+            <div class="row row-equal-height-cards">
+                <div class="col s12 m4" style="margin-bottom: 20px;">
+                    <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                        <i class="material-icons teal-text text-darken-1" style="font-size: 3rem;">memory</i>
+                        <h5 class="light grey-text text-darken-2">Engineers</h5>
+                        <p class="grey-text text-darken-1">Consistent part numbers, revisions, alternates, and specs.</p>
+                    </div>
+                </div>
+                <div class="col s12 m4" style="margin-bottom: 20px;">
+                    <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                        <i class="material-icons green-text text-darken-1" style="font-size: 3rem;">local_shipping</i>
+                        <h5 class="light grey-text text-darken-2">Operations</h5>
+                        <p class="grey-text text-darken-1">Share BOMs, align sourcing, and simplify vendor comms.</p>
+                    </div>
+                </div>
+                <div class="col s12 m4" style="margin-bottom: 20px;">
+                    <div class="card-panel center-align hoverable z-depth-3" style="height: 100%;">
+                        <i class="material-icons teal-text text-darken-1" style="font-size: 3rem;">rocket_launch</i>
+                        <h5 class="light grey-text text-darken-2">Founders</h5>
+                        <p class="grey-text text-darken-1">See cost roll‑ups quickly and keep builds on track.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-lg">
+                <div class="col s12 center-align">
+                    <a href="{% url 'pricing' %}" class="waves-effect waves-light btn btn-large teal darken-1 z-depth-2 btn-cta-responsive">View Pricing</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12 center-align">
+                <h2 class="light grey-text text-darken-3" style="margin-bottom: 10px;">Quick Start</h2>
+                <p class="grey-text text-darken-1">From zero to useful BOMs in minutes.</p>
+            </div>
+        </div>
+        <div class="row row-equal-height-cards">
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2 center-align" style="height: 100%;">
+                    <i class="material-icons teal-text text-darken-1" style="font-size: 3.2rem;">tune</i>
+                    <h5 class="light grey-text text-darken-2">1. Configure</h5>
+                    <p class="grey-text text-darken-1">Create your organization, choose your numbering scheme, and define part classes.</p>
+                </div>
+            </div>
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2 center-align" style="height: 100%;">
+                    <i class="material-icons green-text text-darken-1" style="font-size: 3.2rem;">playlist_add</i>
+                    <h5 class="light grey-text text-darken-2">2. Add Parts</h5>
+                    <p class="grey-text text-darken-1">Create parts via form or upload a CSV. IndaBOM keeps numbers unique and consistent.</p>
+                </div>
+            </div>
+            <div class="col s12 m4" style="margin-bottom: 20px;">
+                <div class="card-panel hoverable z-depth-2 center-align" style="height: 100%;">
+                    <i class="material-icons teal-text text-darken-1" style="font-size: 3.2rem;">schema</i>
+                    <h5 class="light grey-text text-darken-2">3. Build BOMs</h5>
+                    <p class="grey-text text-darken-1">Upload or create indented BOMs and begin to see rolled‑up costs.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-lg">
+            <div class="col s12 center-align">
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'signup' %}" class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">Start For Free</a>
+                {% else %}
+                    <a href="{% url 'bom:home' %}" class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">Enter</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

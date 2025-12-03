@@ -1,35 +1,48 @@
 {% extends 'indabom/base.html' %}
 
 {% load materializecss %}
-{% block head-title %}Login{% endblock %}
-{% block title %}Login{% endblock %}
+{% block head-title %}Log In{% endblock %}
+{% block title %}Log In to IndaBOM{% endblock %}
 
 {% block content %}
     {% load static %}
-    <div class="container">
-        <div class="section center">
-            <img class="responsive-img" width="250" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo"></img>
-            <h5 class="">Login into your IndaBOM account</h5>
+
+    <div class="container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12 center-align">
+                <img class="responsive-img mb-sm" width="180" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo">
+                <h2 class="teal-text text-darken-3 light mt-0">Welcome Back</h2>
+                <h5 class="grey-text text-darken-1 light">Log in to continue managing your BOMs.</h5>
+            </div>
         </div>
 
-        <div class="section center">
-            <div class="container ">
-                <div class="row" style="display: inline-block; ">
+        <div class="row mt-lg">
+            <div class="col m8 push-m2 l6 push-l3 s12">
+                <div class="card-panel hoverable z-depth-3 card-pad-lg" style="border-radius: 12px;">
                     <form method="post">
                         {% csrf_token %}
-                        <div class="row">
+                        <div class="row mb-0">
                             <div class="col s12">
                                 {{ form|materializecss }}
-                                <div class="center">
-                                    <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px" type="submit">Login</button>
-                                </div>
                             </div>
                         </div>
+
+                        <div class="center-align mt-xl">
+                            <button class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive"
+                                    style="border-radius: 20px;" type="submit">
+                                Log In
+                            </button>
+                        </div>
                     </form>
+
+                    <div class="center-align grey-text text-darken-1 card-footer-separator">
+                        <a href="{% url 'password_reset' %}" class="teal-text text-darken-1">Forgot password?</a>
+                        &nbsp;|&nbsp;
+                        New to IndaBOM? <a href="{% url 'signup' %}" class="teal-text text-darken-1">Create an account</a>
+                    </div>
                 </div>
             </div>
-            <a href="{% url 'password_reset' %}">Forgot password</a> |
-            <a href="{% url 'signup' %}">Create account</a>
         </div>
+
     </div>
 {% endblock %}

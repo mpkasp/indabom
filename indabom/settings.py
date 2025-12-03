@@ -384,19 +384,7 @@ STRIPE_PUBLIC_KEY = env.str("STRIPE_PUBLIC_KEY")
 STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY")
 STRIPE_TEST_PUBLIC_KEY = env.str("STRIPE_TEST_PUBLIC_KEY", STRIPE_PUBLIC_KEY) # Fallback to live if test not provided
 STRIPE_TEST_SECRET_KEY = env.str("STRIPE_TEST_SECRET_KEY", STRIPE_SECRET_KEY) # Fallback to live if test not provided
-
-DJSTRIPE_USE_NATIVE_JSONFIELD = True
-DJSTRIPE_SUBSCRIBER_MODEL = 'bom.Organization'
-DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
-DJSTRIPE_WEBHOOK_SECRET = env.str("DJSTRIPE_WEBHOOK_SECRET")
-
-def organization_request_callback(request):
-    """ Gets an organization instance from request"""
-    # Import models here to avoid an ``AppRegistryNotReady`` exception
-    from bom.models import Organization
-    return Organization.objects.get(id=request.user.bom_profile().organization)
-
-DJSTRIPE_SUBSCRIBER_MODEL_REQUEST_CALLBACK = organization_request_callback
+STRIPE_WEBHOOK_SECRET = env.str("STRIPE_WEBHOOK_SECRET")
 
 # reCAPTCHA
 RECAPTCHA_PRIVATE_KEY = env.str("RECAPTCHA_PRIVATE_KEY")

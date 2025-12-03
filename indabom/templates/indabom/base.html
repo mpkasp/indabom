@@ -80,7 +80,7 @@
 <body>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <div class="navbar-fixed">
-    <nav class="green lighten-1">
+    <nav class="teal darken-3">
         <div class="nav-wrapper">
             <a href="/" title="IndaBOM | Home" class="brand-logo left hide-on-med-and-down"><img style="margin-top: 2px; margin-right: 6px;" width="52" alt="IndaBOM Logo"
                                                                                                  src="{% static 'bom/img/indabom.png' %}"/><span style="position: absolute;">IndaBOM</span></a>
@@ -117,7 +117,7 @@
     {% block action-btn %}{% endblock %}
 </main>
 
-<footer class="page-footer green lighten-1">
+<footer class="page-footer teal darken-3">
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
@@ -128,7 +128,8 @@
             <div class="col l4 offset-l2 s12">
                 <h3 class="white-text">Links</h3>
                 <ul>
-                    <li><a title="IndaBOM | Learn More" class="grey-text text-lighten-3" href="{% url 'learn-more' %}">Learn More</a></li>
+                    <li><a title="IndaBOM | Pricing" class="grey-text text-lighten-3"
+                           href="{% url 'pricing' %}">Pricing</a></li>
                     <li><a title="IndaBOM | Support" class="grey-text text-lighten-3" href="https://github.com/sponsors/mpkasp" target="_blank">Support</a></li>
                     <li><a title="IndaBOM | About" class="grey-text text-lighten-3" href="{% url 'about' %}">About</a></li>
                     <li><a title="IndaBOM | Privacy Policy" class="grey-text text-lighten-3" href="{% url 'privacy-policy' %}">Privacy Policy</a></li>
@@ -166,7 +167,11 @@
 
 <script>
 {% for message in messages %}
-    M.toast({html: '{{ message.message|safe }}', classes: "rounded alert-{{ message.tags }}", displayLength: undefined});
+    M.toast({
+        html: "{{ message.message|safe }}",
+        classes: "rounded alert-{{ message.tags }}",
+        displayLength: undefined
+    });
 {% endfor %}
 </script>
 

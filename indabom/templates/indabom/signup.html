@@ -7,23 +7,46 @@
 
 {% block content %}
     {% load static %}
-    <div class="container">
-        <div class="section center">
-            <img class="responsive-img" width="250" src="{% static 'indabom/img/indabom.png' %}" alt="IndaBOM Logo">
-            <h5 class="">Sign up for IndaBOM</h5>
+
+
+    <div class="container page-v-pad-lg">
+        <div class="row">
+            <div class="col s12 center-align">
+                <img class="responsive-img mb-sm" width="180" src="{% static 'indabom/img/indabom.png' %}"
+                     alt="IndaBOM Logo">
+                <h2 class="teal-text text-darken-3 light mt-0">Create Your Account</h2>
+                <h5 class="grey-text text-darken-1 light">Start simplifying your BOM management today.</h5>
+            </div>
         </div>
-        <div class="section center">
+
+        <div class="row mt-lg">
+            <div class="col m8 push-m2 l6 push-l3 s12">
+                <div class="card-panel hoverable z-depth-3 card-pad-lg" style="border-radius: 12px;">
             <form method="post">
                 {% csrf_token %}
-                <div class="row">
-                    <div class="col m6 push-m3 s12">
+                <div class="row mb-0">
+                    <div class="col s12">
                         {{ form|materializecss }}
-                        <div class="center">
-                            <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px" type="submit">Sign Up</button>
-                        </div>
                     </div>
                 </div>
+
+                <div class="center-align mt-xl">
+                    <button class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive"
+                            style="border-radius: 20px;" type="submit">
+                        Sign Up Now
+                    </button>
+                </div>
             </form>
+
+                    <div class="center-align grey-text text-darken-1 card-footer-separator">
+                        Already have an account? <a href="{% url 'login' %}" class="teal-text text-darken-1">Log in
+                        here</a>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
     </div>
+
 {% endblock %}

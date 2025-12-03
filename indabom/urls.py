@@ -10,7 +10,6 @@ from django.views.generic import TemplateView
 from . import views
 from .sitemaps import StaticViewSitemap
 
-
 # Dictionary containing your sitemap classes
 sitemaps = {
     'static': StaticViewSitemap(),
@@ -46,18 +45,19 @@ urlpatterns = [
         template_name='indabom/password-reset-complete.html'), name='password_reset_complete'),
 
     path('about/', views.About.as_view(), name=views.About.name),
-    path('learn-more/', views.LearnMore.as_view(), name=views.LearnMore.name),
+    path('product/', views.Product.as_view(), name=views.Product.name),
     path('privacy-policy/', views.PrivacyPolicy.as_view(), name=views.PrivacyPolicy.name),
     path('terms-and-conditions/', views.TermsAndConditions.as_view(), name=views.TermsAndConditions.name),
     path('install/', views.Install.as_view(), name=views.Install.name),
+    path('pricing/', views.Pricing.as_view(), name=views.Pricing.name),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type="text/plain"), name="robots-file"),
 
-    # path('stripe/', include('djstripe.urls', namespace='djstripe')),
-    # path('checkout/', login_required(views.Checkout.as_view()), name=views.Checkout.name),
-    # path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
-    # path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
-    # path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
+    path('checkout/', login_required(views.Checkout.as_view()), name=views.Checkout.name),
+    path('checkout-success/', views.CheckoutSuccess.as_view(), name=views.CheckoutSuccess.name),
+    path('checkout-cancelled/', views.CheckoutCancelled.as_view(), name=views.CheckoutCancelled.name),
+    path('stripe-manage/', views.stripe_manage, name='stripe-manage'),
+    path('webhooks/stripe/', views.stripe_webhook, name='stripe-webhook'),
     path('account/delete/', views.delete_account, name='account-delete'),
 
     path('explorer/', include('explorer.urls')),

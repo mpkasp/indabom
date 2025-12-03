@@ -6,55 +6,130 @@
 
 {% block content %}
     {% load static %}
+    <style>
+        /* ADD THIS TO YOUR GLOBAL CSS OR WITHIN <style> TAGS */
+        /* Custom CSS to vertically align content in the column */
+        .v-align-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%; /* Ensure the column takes full height for centering */
+        }
+    </style>
+
     <div class="container">
-        <div class="section center">
-            <h1 class="">Upgrade to IndaBOM {{ product.name }}</h1>
-            <p>Gain access to multi-user organizations, prioritized support, and fully managed BOM management software.</p>
+
+        <div class="section center" style="padding-top: 60px;">
+            <h2 class="teal-text text-darken-3" style="margin-bottom: 30px;">Unlock IndaBOM {{ product.name }}</h2>
+            <p class="flow-text">Streamline your workflow with these exclusive features:</p>
+
+            <div class="row" style="max-width: 800px; margin-top: 40px;">
+
+                <div class="col s12 m4" style="margin-bottom: 20px;">
+                    <i class="material-icons green-text text-lighten-1 large">group</i>
+                    <h5 class="light">Multi-User Access</h5>
+                    <p class="grey-text text-darken-1">Enable secure, organization-wide BOM collaboration.</p>
+                </div>
+
+                <div class="col s12 m4" style="margin-bottom: 20px;">
+                    <i class="material-icons green-text text-lighten-1 large">star_rate</i>
+                    <h5 class="light">Prioritized Support</h5>
+                    <p class="grey-text text-darken-1">Get dedicated, rapid assistance from our expert team.</p>
+                </div>
+
+                <div class="col s12 m4" style="margin-bottom: 20px;">
+                    <i class="material-icons green-text text-lighten-1 large">cloud_done</i>
+                    <h5 class="light">Managed Software</h5>
+                    <p class="grey-text text-darken-1">Enjoy a fully managed, always up-to-date BOM environment.</p>
+                </div>
+
+            </div>
         </div>
 
-        <div class="section center">
-            <div class="container ">
+        <hr>
+
+        <div class="section">
+            <div class="container" style="max-width: 700px;">
+
                 <form action="{% url 'checkout' %}" method="POST">
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col s12">
-                            <p>{{ product.description }}</p>
+
+                    <div class="card green lighten-5 z-depth-2">
+                        <div class="card-content">
+                            <h5 class="green-text text-darken-2">Plan Details</h5>
+
+                            <div class="row" style="margin-bottom: 0;">
+                                <div class="col s12 m6">
+                                    <div class="input-field">
+                                        <input id="unit" name="unit" type="number" class="validate" value="1" min="1">
+                                        <label for="unit">Number of Users</label>
+                                    </div>
+                                </div>
+
+                                <div class="col s12 m6 right-align v-align-center" style="padding: 10px;">
+                                    <p class="flow-text" style="line-height: 1.5rem;">
+                                        <small class="grey-text">Monthly Cost:</small><br>
+                                        <strong id="finalValue"
+                                                class="teal-text text-darken-3">${{ human_readable_price|floatformat:"2" }}</strong>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="divider"></div>
+                            <p class="center-align" style="padding-top: 10px; font-size: 0.9rem;">
+                                <i class="material-icons tiny"
+                                   style="vertical-align: top; position: relative; top: 1px;">lock</i> Secure Checkout.
+                                Billed monthly. Cancel anytime.
+                            </p>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col s12">
                             {{ form|materializecss }}
                         </div>
                     </div>
-                    <div class="row">
+
+                    <div class="row center">
                         <div class="col s12">
-                            <h5 style="display: inline-block">{{ human_readable_prices.0 }} +&nbsp;</h5>
-                            <div class="input-field" style="display: inline-block">
-                                <input id="additional_users" name="additional_users" type="number" class="validate" value="0" min="0" style="font-size: 1.64rem;">
-                                <label for="additional_users">Additional Users</label>
-                            </div>
-                            <div class="input-field" style="display: inline-block">
-                                <h5><span>&nbsp;=&nbsp;</span><span id="finalValue">$100</span><span>&nbsp;/ month</span></h5>
-                            </div>
-                            <button class="waves-effect waves-light btn green lighten-1" style="min-width:150px;" type="submit">Continue with {{ product.name }}</button>
+                            <button class="waves-effect waves-light btn green lighten-1 z-depth-1"
+                                    style="min-width:280px; border-radius: 20px;"
+                                    type="submit">
+                                Go Live with {{ product.name }} Plan
+                            </button>
+
+                            <p class="grey-text" style="margin-top: 15px;">You will be redirected to our secure payment
+                                portal.</p>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    </div>
 {% endblock %}
 
 {% block script %}
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        $('#additional_users').on('change input', function () {
-            const users = $('#additional_users');
-            const val = users.val() * 25 + 100;
-            const text = `$${val}`;
-            console.log(users.val(), text);
+        // Script logic for calculation remains the same
+        $('#unit').on('change input', function () {
+            const users = $('#unit');
+            const base_price = parseFloat("{{ human_readable_price|safe }}");
+
+            let user_count = parseInt(users.val());
+            if (isNaN(user_count) || user_count < 1) {
+                user_count = 1;
+                users.val(1);
+            }
+
+            const val = user_count * base_price;
+            const text = `$${val.toFixed(2)}`;
+
             $('#finalValue').text(text);
+        });
+
+        $(document).ready(function () {
+            $('#unit').trigger('change');
         });
     </script>
 {% endblock script %}
