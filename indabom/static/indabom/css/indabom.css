@@ -52,6 +52,22 @@ html {
         color: #FFEBEE !important;
     }
 
+    .green.lighten-5 {
+        background-color: #388E3C !important;
+    }
+
+    .green-text.text-darken-2 {
+        color: #B9F6CA !important;
+    }
+
+    .grey-text {
+        color: #fff !important;
+    }
+
+    .teal-text.text-darken-3 {
+        color: #b2dfdb !important;
+    }
+
     .collapsible-header {
         background-color: #121212;
     }
