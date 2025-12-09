@@ -22,26 +22,29 @@
         <div class="row mt-lg">
             <div class="col m8 push-m2 l6 push-l3 s12">
                 <div class="card-panel hoverable z-depth-3 card-pad-lg" style="border-radius: 12px;">
-            <form method="post">
-                {% csrf_token %}
-                <div class="row mb-0">
-                    <div class="col s12">
-                        {{ form|materializecss }}
-                    </div>
-                </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-0">
+                            <div class="col s12">
+                                {{ form|materializecss }}
+                            </div>
+                        </div>
 
-                <div class="center-align mt-xl">
-                    <button class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive"
-                            style="border-radius: 20px;" type="submit">
-                        Sign Up Now
-                    </button>
-                </div>
-            </form>
-
+                        <div class="center-align mt-xl">
+                            <button class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive"
+                                    style="border-radius: 20px;" type="submit">
+                                Sign Up Now
+                            </button>
+                        </div>
+                    </form>
                     <div class="center-align grey-text text-darken-1 card-footer-separator">
-                        Already have an account? <a href="{% url 'login' %}" class="teal-text text-darken-1">Log in
-                        here</a>
+                        By signing up, I agree to IndaBOM's <a href="{% url 'terms-and-conditions' %}">Terms
+                        and Conditions</a> and <a href="{% url 'privacy-policy' %}">Privacy Policy</a>.
                     </div>
+                </div>
+                <div class="center-align grey-text text-darken-1" style="padding-top: 20px;">
+                    Already have an account? <a href="{% url 'login' %}" class="teal-text text-darken-1">Log in
+                    here</a>
                 </div>
             </div>
         </div>
