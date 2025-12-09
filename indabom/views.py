@@ -2,7 +2,7 @@ import logging
 from typing import Optional
 from urllib.error import URLError
 
-from bom.models import Organization
+from bom.models import Organization, UserMeta
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -97,6 +97,13 @@ class Checkout(IndabomTemplateView):
     name = 'checkout'
     initial = {}
     form_class = SubscriptionForm
+    user_profile: Optional[UserMeta] = None
+    organization: Optional[Organization] = None
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.user_profile = request.user.bom_profile()
+        self.organization = self.user_profile.organization
 
     def get_context_data(self, *args, **kwargs):
         context = super(Checkout, self).get_context_data(**kwargs)
@@ -106,6 +113,8 @@ class Checkout(IndabomTemplateView):
         stripe_price = stripe.get_price(INDABOM_STRIPE_PRICE_ID, self.request)
 
         context.update({
+            'organization': self.organization,
+            'user_profile': self.user_profile,
             'price': stripe_price,
             'form': form,
             'product': None,
@@ -126,8 +135,8 @@ class Checkout(IndabomTemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        user_profile = request.user.bom_profile()
-        organization: Optional[Organization] = user_profile.organization
+        user_profile = self.user_profile
+        organization: Optional[Organization] = self.organization
 
         if not user_profile.is_organization_owner():
             if organization is not None and organization.owner is not None:

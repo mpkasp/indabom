@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 from typing import Optional
 
 import stripe
@@ -16,6 +17,11 @@ from .models import OrganizationMeta, OrganizationSubscription
 
 logger = logging.getLogger(__name__)
 stripe.api_key = STRIPE_SECRET_KEY
+
+
+def _to_dt(ts):
+    # Stripe sends seconds since epoch; adjust if already a datetime
+    return ts if isinstance(ts, datetime) else datetime.fromtimestamp(ts, tz=timezone.utc)
 
 
 def get_organization_meta_or_404(organization: Organization) -> OrganizationMeta:
@@ -147,7 +153,7 @@ def manage_subscription(request: HttpRequest, organization: Organization) -> Htt
 # Note: This requires the @csrf_exempt decorator in the URL configuration,
 # but it is omitted here as it belongs in views.py or urls.py.
 def subscription_changed_handler(event: stripe.Event):
-    data = event.data.get('object')
+    data = event.get('data', {}).get('object')
 
     try:
         org_meta = OrganizationMeta.objects.get(stripe_customer_id=data.get('customer'))
@@ -160,23 +166,27 @@ def subscription_changed_handler(event: stripe.Event):
     status = data.get('status')
 
     quantity = data.get('quantity', 1)
-    price_id = data.items.data[0].price.id
+    prices = data.get('items', {}).get('data', [])
+    if len(prices) == 0:
+        logger.error(f"Subscription changed event for {organization.name} ({organization.id}) has no prices.")
+        return
+    price = prices[0]
+    price_id = price.get('price', {}).get('id')
 
-    try:
-        sub_obj = OrganizationSubscription.objects.get(stripe_subscription_id=subscription_id)
-    except OrganizationSubscription.DoesNotExist:
-        sub_obj = OrganizationSubscription(
-            stripe_subscription_id=subscription_id,
-            organization_meta=org_meta,
-            stripe_price_id=price_id
-        )
-
-    sub_obj.status = status
-    sub_obj.quantity = quantity
-    sub_obj.current_period_start = data.get('current_period_start')
-    sub_obj.current_period_end = data.get('current_period_end')
-    sub_obj.started_by = org_meta.organization.owner
-    sub_obj.save()
+    sub_obj, created = OrganizationSubscription.objects.update_or_create(
+        stripe_subscription_id=subscription_id,
+        defaults={
+            "organization_meta": org_meta,
+            "stripe_price_id": price_id,
+            "status": status,
+            "quantity": quantity,
+            "current_period_start": _to_dt(data.get("current_period_start")),
+            "current_period_end": _to_dt(data.get("current_period_end")),
+        },
+    )
+    if created and not sub_obj.started_by:
+        sub_obj.started_by = org_meta.organization.owner
+        sub_obj.save(update_fields=["started_by"])
 
     if status == 'active':
         organization.subscription = SUBSCRIPTION_TYPE_PRO
@@ -191,13 +201,13 @@ def subscription_changed_handler(event: stripe.Event):
 
 
 def subscription_issue_handler(event: stripe.Event):
-    data = event.data.get('object')
+    data = event.get('data', {}).get('object')
 
     try:
         org_meta = OrganizationMeta.objects.get(stripe_customer_id=data.get('customer'))
         organization = org_meta.organization
 
-        email = organization.email  # Assuming the organization model has a primary contact email
+        email = organization.owner.email  # Assuming the organization model has a primary contact email
         send_mail(
             'IndaBOM Payment Failed',
             'Just writing to give you a heads up that your payment has failed and your subscription has been marked to be suspended. Please visit IndaBOM and update your payment settings.',

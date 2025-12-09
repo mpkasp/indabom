@@ -1,11 +1,9 @@
 from unittest.mock import patch, Mock
 
+from bom.models import Organization, UserMeta
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
-from bom.models import Organization, UserMeta
-
 
 User = get_user_model()
 
@@ -42,9 +40,8 @@ class AccountDeletionTests(TestCase):
         self.assertTemplateUsed(resp, 'indabom/account-deleted.html')
         self.assertFalse(User.objects.filter(id=user.id).exists())
 
-    @patch('indabom.indabom.views.stripe.active_organization_subscription')
+    @patch('indabom.views.stripe.get_active_subscription')
     def test_owner_with_active_subscription_blocked_and_redirected(self, mock_active_sub):
-        # Mock active subscription present
         mock_active_sub.return_value = Mock()
 
         self.login(self.owner, 'ownerpass')
@@ -57,7 +54,7 @@ class AccountDeletionTests(TestCase):
         self.assertTrue(User.objects.filter(id=self.owner.id).exists())
         self.assertTrue(Organization.objects.filter(id=self.org.id).exists())
 
-    @patch('indabom.indabom.views.stripe.active_organization_subscription')
+    @patch('indabom.views.stripe.get_active_subscription')
     def test_owner_without_active_subscription_deletes_org_and_user(self, mock_active_sub):
         mock_active_sub.return_value = None
 
