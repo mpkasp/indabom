@@ -119,6 +119,9 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization, q
             automatic_tax={
                 "enabled": True,
             },
+            customer_update={
+                'address': 'auto'
+            },
             mode='subscription',
             line_items=[{
                 'price': price_id,
