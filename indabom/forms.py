@@ -40,6 +40,8 @@ class SubscriptionForm(forms.Form):
     price_id = forms.CharField(widget=forms.HiddenInput(), max_length=255)
     organization = forms.ModelChoiceField(queryset=Organization.objects.none(), widget=forms.HiddenInput())
     unit = forms.IntegerField(min_value=1)
+    renewal_consent_text = "I understand and agree that my subscription will automatically renew each month at the current rate unless canceled."
+    renewal_consent = forms.BooleanField(required=True, label=renewal_consent_text)
 
     def __init__(self, *args, **kwargs):
         self.owner = kwargs.pop('owner')

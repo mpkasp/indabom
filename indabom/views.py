@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from typing import Optional
 from urllib.error import URLError
 
@@ -8,7 +9,7 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -16,6 +17,7 @@ from django.views.generic.base import TemplateView
 
 from indabom import stripe
 from indabom.forms import SubscriptionForm, UserForm, PasswordConfirmForm
+from indabom.models import CheckoutSessionRecord
 from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
 
 logger = logging.getLogger(__name__)
@@ -165,7 +167,19 @@ class Checkout(IndabomTemplateView):
             organization = form.cleaned_data['organization']
             price_id = form.cleaned_data['price_id']
             quantity = form.cleaned_data['unit']
-            return stripe.subscribe(request, price_id, organization, quantity)
+            checkout_session_record = CheckoutSessionRecord.objects.create(
+                user=request.user,
+                renewal_consent=form.cleaned_data['renewal_consent'],
+                renewal_consent_text=form.renewal_consent_text,
+                renewal_consent_timestamp=datetime.now(),
+            )
+
+            checkout_session = stripe.subscribe(request, price_id, organization, quantity, checkout_session_record)
+            if checkout_session is None:
+                return HttpResponseRedirect(reverse('bom:settings'))
+            checkout_session_record.checkout_session_id = checkout_session.id
+            checkout_session_record.save()
+            return redirect(checkout_session.url, code=303)
 
         if "unit" in form.fields:
             del form.fields["unit"]

@@ -65,7 +65,7 @@ SECRET_KEY = env.str("SECRET_KEY")
 
 # Domain and Host Configuration
 DOMAIN = 'indabom.com' if not DEBUG and not LOCALHOST else 'localhost:8000'
-ROOT_DOMAIN = f'https://{DOMAIN}'
+ROOT_DOMAIN = f'https://{DOMAIN}' if not LOCALHOST else f'http://{DOMAIN}'
 
 CLOUDRUN_SERVICE_URL = env("CLOUDRUN_SERVICE_URL", default=None)
 

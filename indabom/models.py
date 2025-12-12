@@ -42,3 +42,14 @@ class OrganizationSubscription(models.Model):
 
     def __str__(self):
         return f"{self.organization_meta.organization.name} - {self.status}"
+
+
+class CheckoutSessionRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    renewal_consent = models.BooleanField(default=False)
+    renewal_consent_timestamp = models.DateTimeField(null=True)
+    renewal_consent_text = models.TextField(null=True, blank=True)
+    checkout_session_id = models.CharField(max_length=50)
+    stripe_subscription_id = models.CharField(max_length=50)
+    organization_subscription = models.ForeignKey(OrganizationSubscription, null=True, default=None,
+                                                  on_delete=models.CASCADE)

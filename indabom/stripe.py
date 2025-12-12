@@ -12,6 +12,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 
+from indabom.models import CheckoutSessionRecord
 from indabom.settings import ROOT_DOMAIN, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
 from .models import OrganizationMeta, OrganizationSubscription
 
@@ -102,12 +103,13 @@ def create_org_customer_if_needed(organization: Organization) -> str:
     return customer.id
 
 
-def subscribe(request: HttpRequest, price_id: str, organization: Organization, quantity: int) -> HttpResponse:
+def subscribe(request: HttpRequest, price_id: str, organization: Organization, quantity: int,
+              pending_subscription: CheckoutSessionRecord) -> Optional[
+    stripe.checkout.Session]:
     if get_active_subscription(organization) is not None:
         messages.error(request, f"The organization ({organization.name}) is already subscribed. "
                                 f"Manage subscriptions in Settings > Organization.")
-        # Ensure 'redirect_if_referer_not_found' is replaced with a real URL name
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('bom:settings')))
+        return None
 
     try:
         customer_id = create_org_customer_if_needed(organization)
@@ -127,12 +129,13 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization, q
                 'price': price_id,
                 'quantity': quantity
             }],
+            metadata={'pending_subscription_id': pending_subscription.id},
         )
-        return redirect(checkout_session.url, code=303)
+        return checkout_session
     except Exception as e:
         messages.error(request, str(e))
         logger.error(f"Stripe Checkout Error: {e}", exc_info=True)
-        return HttpResponseRedirect(reverse('bom:settings'))
+        return None
 
 
 def manage_subscription(request: HttpRequest, organization: Organization) -> HttpResponse:
@@ -158,6 +161,78 @@ def manage_subscription(request: HttpRequest, organization: Organization) -> Htt
 
 # Note: This requires the @csrf_exempt decorator in the URL configuration,
 # but it is omitted here as it belongs in views.py or urls.py.
+def subscription_completed_handler(event: stripe.Event):
+    checkout_session = event.get('data', {}).get('object')
+
+    pending_sub_pk = checkout_session.metadata.get('pending_subscription_id')
+    stripe_subscription_id = checkout_session.get('subscription')
+    customer_id = checkout_session.get('customer')
+
+    logger.info(f"Checkout completed for Subscription ID: {stripe_subscription_id}. Pending PK: {pending_sub_pk}")
+
+    if not pending_sub_pk or not stripe_subscription_id:
+        logger.error(
+            f"Missing IDs in completed session. Sub ID: {stripe_subscription_id}, Pending PK: {pending_sub_pk}")
+        return
+
+    try:
+        pending_record = CheckoutSessionRecord.objects.get(pk=pending_sub_pk)
+    except CheckoutSessionRecord.DoesNotExist:
+        checkout_session_id = checkout_session.get('id')
+        logger.error(
+            f"PendingSubscription PK {pending_sub_pk} not found for linking. Trying to use Checkout Session ID instead: {checkout_session_id}")
+        try:
+            pending_record = CheckoutSessionRecord.objects.get(checkout_session_id=checkout_session_id)
+        except CheckoutSessionRecord.DoesNotExist:
+            logger.error(f"PendingSubscription not found for Checkout Session ID either. Giving up.")
+            return
+
+    pending_record.stripe_subscription_id = stripe_subscription_id
+    pending_record.save()
+
+    try:
+        org_meta = OrganizationMeta.objects.get(stripe_customer_id=customer_id)
+        stripe_sub = stripe.Subscription.retrieve(stripe_subscription_id)
+        status = stripe_sub.get('status')
+        quantity = stripe_sub.get('quantity', 1)
+        price_id = stripe_sub.items.data[0].price.id if stripe_sub.items.data else None
+
+        if not price_id:
+            logger.error(f"Subscription {stripe_subscription_id} has no price data.")
+            return
+
+        sub_obj, created = OrganizationSubscription.objects.update_or_create(
+            stripe_subscription_id=stripe_subscription_id,
+            defaults={
+                "organization_meta": org_meta,
+                "stripe_price_id": price_id,
+                "status": status,
+                "quantity": quantity,
+                "started_by": org_meta.organization.owner,
+                "current_period_start": _to_dt(stripe_sub.get("current_period_start")),
+                "current_period_end": _to_dt(stripe_sub.get("current_period_end")),
+            },
+        )
+
+        pending_record.subscription = sub_obj
+        pending_record.save()
+
+        organization = org_meta.organization
+        organization.subscription = SUBSCRIPTION_TYPE_PRO
+        organization.subscription_quantity = quantity
+        organization.save()
+
+        logger.info(
+            f"Subscription {stripe_subscription_id} created, active status applied to organization "
+            f"{organization.name}, and auto-renewal consent successfully linked."
+        )
+
+    except OrganizationMeta.DoesNotExist:
+        logger.error(f"OrganizationMeta not found for customer ID: {customer_id}.")
+    except Exception as e:
+        logger.error(f"Critical error in completion handler: {e}", exc_info=True)
+
+
 def subscription_changed_handler(event: stripe.Event):
     data = event.get('data', {}).get('object')
 
@@ -241,8 +316,7 @@ def stripe_webhook(request: HttpRequest) -> HttpResponse:
         return HttpResponse(status=400)
 
     if event['type'] == 'checkout.session.completed':
-        # Let 'customer.subscription.created' or 'customer.subscription.updated' handle the creation/status change
-        pass
+        transaction.on_commit(lambda: subscription_completed_handler(event))
 
     elif event['type'] == 'customer.subscription.updated' or event['type'] == 'customer.subscription.created':
         transaction.on_commit(lambda: subscription_changed_handler(event))
