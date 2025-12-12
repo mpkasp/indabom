@@ -116,6 +116,9 @@ def subscribe(request: HttpRequest, price_id: str, organization: Organization, q
             success_url=ROOT_DOMAIN + '/checkout-success?session_id={CHECKOUT_SESSION_ID}',
             cancel_url=ROOT_DOMAIN + '/checkout-cancelled',
             # payment_method_types=['card'],
+            automatic_tax={
+                "enabled": True,
+            },
             mode='subscription',
             line_items=[{
                 'price': price_id,
