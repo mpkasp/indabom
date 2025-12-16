@@ -5,4 +5,6 @@
 - The front end uses MaterializeCSS, vanilla JavaScript, CSS, and JQuery.
 - The main database is Postgres, but SQLite is also supported for local development.
 - Prefer KISS and Django native implementations over custom code.
-- This project is mainly used as an hosted web implementation of the open source reusable app django-bom.
+- This project, IndaBOM, is mainly used as an hosted web implementation of the open source reusable app django-bom.
+- IndaBOM extends django-bom by adding subscription management, database management, email, terms and conditions,
+  privacy policy, and other things specific to being the hosted managed version of django-bom.

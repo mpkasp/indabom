@@ -5,6 +5,19 @@ A simple bill of materials web app using [django-bom](https://github.com/mpkasp/
 - Octopart price matching
 - BOM Cost reporting, with sourcing recommendations
 
+## Local Dev
+
+Install django-bom locally as a sibling directory to indabom then in this directory run:
+
+```shell
+pipenv sync
+# Install django-bom in editable mode for local dev
+pipenv run pip install -e ../django-bom
+pipenv shell
+python manage.py migrate
+python manage.py runserver
+```
+
 ## Stripe
 - To sync models, call `python manage.py djstripe_sync_models`
 - Set up stripe cli to forward events to local webhook endpoint here using:

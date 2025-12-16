@@ -39,6 +39,10 @@ h4 {
     font-weight: 300;
 }
 
+h5 {
+    font-size: 1.1rem;
+}
+
 .btn {
     border-radius: 20px;
 }
@@ -252,4 +256,71 @@ form p {
 
 form li {
     font-size: .8rem;
+}
+
+/* --- Settings & Admin Layout Refinements (flat, Material-inspired) --- */
+/* These rules lightly standardize the look of sectioned settings pages
+   (e.g., Settings tabs) without impacting card-based marketing pages. */
+
+/* Section spacing */
+.container-app .section {
+    padding-top: 16px;
+    padding-bottom: 16px;
+}
+
+/* Consistent section headers with optional leading/trailing icons */
+.container-app .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px 0; /* no extra space above headings inside sections */
+    letter-spacing: 0.2px;
+}
+
+.container-app .section-title .material-icons {
+    line-height: 1;
+}
+
+/* Trailing service logos (e.g., Google Drive) line up nicely with text */
+.container-app .section-title img {
+    height: 1.8rem;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+/* When a service logo/image is used as a leading icon, adjust spacing */
+.container-app .section-title img:first-child {
+    margin-left: 0;
+    margin-right: 6px;
+}
+
+/* Dividers provide comfortable breathing room between sections */
+.container-app .divider {
+    margin: 16px 0;
+}
+
+/* Paragraph sizing inside settings sections (denser than marketing pages) */
+.container-app .section p {
+    margin: 0 0 12px 0;
+}
+
+/* Tabs sit a bit away from content below (e.g., in Settings) */
+.container-app .tabs {
+    margin-bottom: 12px;
+}
+
+/* Flat collections (used for quick key-value lists) */
+.container-app .collection.z-depth-0 {
+    border: none;
+}
+
+.container-app .collection.z-depth-0 .collection-item {
+    border: none;
+    padding-left: 0; /* align with surrounding text blocks */
+}
+
+/* Button group spacing in right-aligned action rows */
+.container-app .right-align .btn,
+.container-app .right-align .btn-flat {
+    margin-left: 4px;
 }

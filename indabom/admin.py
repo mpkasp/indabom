@@ -19,6 +19,7 @@ class CheckoutSessionRecordInline(admin.TabularInline):
 class OrganizationSubscriptionAdmin(admin.ModelAdmin):
     list_display = ('organization_meta', 'quantity', 'started_by', 'status')
     inlines = [CheckoutSessionRecordInline]
+    raw_id_fields = ('organization_meta', 'started_by',)
 
 
 class CheckoutSessionRecordAdmin(admin.ModelAdmin):

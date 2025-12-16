@@ -1,0 +1,76 @@
+{# IndaBOM override for the BOM Subscription & Billing panel (flat, no cards). #}
+
+<div class="section">
+    <h4 class="section-title" style="display:flex;align-items:center;gap:8px;margin-top:0;">
+        <i class="material-icons teal-text text-darken-1">credit_card</i>
+        Subscription & Billing
+    </h4>
+
+    <div class="row" style="margin-bottom:0;">
+        <div class="col s12 m6">
+            <ul class="collection z-depth-0" style="border:none;">
+                <li class="collection-item" style="border:none;">
+                    <span class="grey-text">Plan</span><br>
+                    <b>{% if is_pro %}Pro{% else %}Free{% endif %}</b>
+                </li>
+                <li class="collection-item" style="border:none;">
+                    <span class="grey-text">Seats</span><br>
+                    {% if is_pro %}
+                        {% with used=users_in_organization_count total=organization.subscription_quantity %}
+                            <b>{{ used }}/{{ total }}</b>
+                            {% if has_member_capacity %}
+                                <span class="new badge green" data-badge-caption="available">{{ seats_available }}</span>
+                            {% else %}
+                                <span class="new badge red" data-badge-caption="full">0</span>
+                            {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        <b>1</b>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+        <div class="col s12 m6">
+            {% with sub=organization.meta.active_subscription %}
+                {% if sub %}
+                    <ul class="collection z-depth-0" style="border:none;">
+                        <li class="collection-item" style="border:none;">
+                            <span class="grey-text">Status</span><br>
+                            <b class="{% if sub.status == 'active' %}green-text text-darken-2{% else %}orange-text text-darken-2{% endif %}">{{ sub.status|title }}</b>
+                        </li>
+                        <li class="collection-item" style="border:none;">
+                            <span class="grey-text">Current Period</span><br>
+                            <b>{{ sub.current_period_start|date:"M j, Y" }} – {{ sub.current_period_end|date:"M j, Y" }}</b>
+                        </li>
+                    </ul>
+                {% else %}
+                    <p class="grey-text" style="margin-top: 8px;">No active subscription found.</p>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <div class="divider" style="margin: 10px 0 16px 0;"></div>
+    <p class="grey-text" style="margin:0 0 12px 0; font-size: 0.95rem;">
+        Subscriptions renew automatically each billing period. You can update payment method, change seats, or cancel anytime in the billing portal.
+        See our <a href="{% url 'terms-and-conditions' %}" target="_blank">Terms</a> and <a href="{% url 'privacy-policy' %}" target="_blank">Privacy Policy</a>.
+    </p>
+
+    <div class="right-align">
+        {% if is_pro %}
+            <a href="{% url 'stripe-manage' %}"
+               class="btn waves-effect waves-light teal darken-1" style="margin-right:8px;">
+                <i class="material-icons left">settings</i>Manage Billing
+            </a>
+            <a href="{% url 'checkout' %}"
+               class="btn-flat waves-effect">
+                <i class="material-icons left">group_add</i>Change Seats
+            </a>
+        {% else %}
+            <a href="{% url 'checkout' %}"
+               class="btn waves-effect waves-light green">
+                <i class="material-icons left">upgrade</i>Upgrade to Pro
+            </a>
+        {% endif %}
+    </div>
+</div>
