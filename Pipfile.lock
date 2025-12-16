@@ -428,12 +428,12 @@
         },
         "django-bom": {
             "hashes": [
-                "sha256:25d00321014e417c6b173208f3d84234db0df6849c7150075d7d02e056b7c054",
-                "sha256:c8c0b635cd4e325358cb021b7354ff0550d3c76982cb2712e036caa1d5a70cce"
+                "sha256:7fd66a830683a22f45e1c2932c79604feeb70ba2fab71015034105ed4d835011",
+                "sha256:d16af6912930d491e786b8c7fe03361b30fc23e91ea10ae9e65ec1d2f846d882"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==1.240"
+            "version": "==1.241"
         },
         "django-environ": {
             "hashes": [
