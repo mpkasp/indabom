@@ -62,7 +62,7 @@
                             <div class="row" style="margin-bottom: 0;">
                                 <div class="col s12 m6">
                                     <div class="input-field">
-                                        <input id="unit" name="unit" type="number" class="validate" value="1" min="1">
+                                        <input id="unit" name="unit" type="number" class="validate" value="2" min="1">
                                         <label for="unit">Number of Users</label>
                                     </div>
                                 </div>
@@ -120,7 +120,7 @@
             let user_count = parseInt(users.val());
             if (isNaN(user_count) || user_count < 1) {
                 user_count = 1;
-                users.val(1);
+                {#users.val(2);#}
             }
 
             const val = user_count * base_price;
