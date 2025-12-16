@@ -6,7 +6,7 @@ from django.db import models
 
 class OrganizationMeta(models.Model):
     organization = models.OneToOneField(Organization, db_index=True, on_delete=models.CASCADE)
-    stripe_customer_id = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    stripe_customer_id = models.CharField(max_length=256, blank=True, null=True, unique=True)
 
     def _organization_meta(self):
         return OrganizationMeta.objects.get_or_create(organization=self)[0]
@@ -32,8 +32,8 @@ class OrganizationMeta(models.Model):
 
 class OrganizationSubscription(models.Model):
     organization_meta = models.ForeignKey(OrganizationMeta, on_delete=models.CASCADE)
-    stripe_subscription_id = models.CharField(max_length=50, unique=True, db_index=True)
-    stripe_price_id = models.CharField(max_length=50)
+    stripe_subscription_id = models.CharField(max_length=256, unique=True, db_index=True)
+    stripe_price_id = models.CharField(max_length=256)
     status = models.CharField(max_length=20, default='incomplete')  # e.g., 'active', 'canceled', 'incomplete'
     quantity = models.IntegerField(default=1)  # The number of allowed users/seats
     current_period_start = models.DateTimeField()
@@ -49,7 +49,7 @@ class CheckoutSessionRecord(models.Model):
     renewal_consent = models.BooleanField(default=False)
     renewal_consent_timestamp = models.DateTimeField(null=True)
     renewal_consent_text = models.TextField(null=True, blank=True)
-    checkout_session_id = models.CharField(max_length=50)
-    stripe_subscription_id = models.CharField(max_length=50)
+    checkout_session_id = models.CharField(max_length=256)
+    stripe_subscription_id = models.CharField(max_length=256)
     organization_subscription = models.ForeignKey(OrganizationSubscription, null=True, default=None,
                                                   on_delete=models.CASCADE)
