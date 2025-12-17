@@ -39,11 +39,27 @@ steps:
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"]
-  
-  - id: "deploy image"
-    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args: ['run', 'deploy', '${_SERVICE_NAME}', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '--region', '${_LOCATION}']
+
+  - id: "collect static"
+    name: "gcr.io/google-appengine/exec-wrapper"
+    args:
+      [
+        "-i",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}",
+        "-s",
+        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
+        "-e",
+        "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+        "-e",
+        "GS_BUCKET_NAME_INCLUDE_PROJECT=False",
+        "--",
+        "python",
+        "manage.py",
+        "collectstatic",
+        "--verbosity",
+        "2",
+        "--no-input",
+      ]
 
   - id: "apply migrations"
     name: "gcr.io/google-appengine/exec-wrapper"
@@ -83,6 +99,12 @@ steps:
         "indabom_cache",
       ]
 
+  - id: "deploy image"
+    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    waitFor: [ "apply migrations", "collect static", "create cache table", "push image", "run unittests" ]
+    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '--region', '${_LOCATION}' ]
+
   - id: "update exchange rates via fixer"
     name: "gcr.io/google-appengine/exec-wrapper"
     args:
@@ -101,28 +123,6 @@ steps:
         "update_rates",
       ]
 
-  - id: "collect static"
-    name: "gcr.io/google-appengine/exec-wrapper"
-    waitFor: ['deploy image']
-    args:
-      [
-        "-i",
-        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}",
-        "-s",
-        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
-        "-e",
-        "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
-        "-e",
-        "GS_BUCKET_NAME_INCLUDE_PROJECT=False",
-        "--",
-        "python",
-        "manage.py",
-        "collectstatic",
-        "--verbosity",
-        "2",
-        "--no-input",
-      ]
-
 substitutions:
   _INSTANCE_NAME: prod-02
   _DB_HOST: /cloudsql/my-project-1472838847531:us-central1:prod-02
@@ -130,9 +130,6 @@ substitutions:
   # Below are defined in the cloud build triggers https://console.cloud.google.com/cloud-build/triggers
   # _SERVICE_NAME: indabom
   # _SECRET_SETTINGS_NAME: django_settings
-
-options:
-  logging: CLOUD_LOGGING_ONLY
 
 images:
   - "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"
