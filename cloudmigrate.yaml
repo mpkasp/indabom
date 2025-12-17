@@ -28,13 +28,13 @@ steps:
         "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
         "-e",
         "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+        "-e",
+        "CI=true",
         "--",
         "python",
         "manage.py",
         "test",
       ]
-    env:
-      - 'CI=true'
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
