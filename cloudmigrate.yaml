@@ -18,6 +18,24 @@ steps:
     name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}", "--build-arg", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}", "."]
 
+  - id: "run unittests"
+    name: "gcr.io/google-appengine/exec-wrapper"
+    args:
+      [
+        "-i",
+        "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}",
+        "-s",
+        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
+        "-e",
+        "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
+        "-e",
+        "DB_HOST=${_DB_HOST}",
+        "--",
+        "python",
+        "manage.py",
+        "test",
+      ]
+
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
     args: ["push", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"]
