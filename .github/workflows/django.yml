@@ -30,7 +30,7 @@ jobs:
           pipenv install --deploy --dev
 
       - name: Initialize .env
-        run: cp .env.example .env
+        run: cp .env_example .env
 
       # If we ever need to use secret manager for the .env file:
       #      - id: 'auth'
