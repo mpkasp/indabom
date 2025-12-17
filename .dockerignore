@@ -7,4 +7,5 @@
 !indabom/
 !scripts/
 !manage.py
-!.env_example # for running tests
+ # for running tests
+!.env_example
