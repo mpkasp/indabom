@@ -29,7 +29,10 @@ try:
     _, os.environ['GOOGLE_CLOUD_PROJECT'] = google.auth.default()
     project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
     logger.info(f'Project ID: {project_id}')
-except (google.auth.exceptions.DefaultCredentialsError, TypeError) as e:
+except (google.auth.exceptions.DefaultCredentialsError,
+        google.auth.exceptions.RefreshError,
+        google.auth.exceptions.TransportError,
+        TypeError) as e:
     logger.warning(f'Could not determine Google Cloud Project ID: {e}')
 
 # Load environment variables
@@ -268,7 +271,7 @@ STORAGES = {
     },
 }
 
-if GS_BUCKET_NAME:
+if GS_BUCKET_NAME and not env.bool("CI", False):
     logger.info(f"Using Google Cloud Storage bucket: {GS_BUCKET_NAME}")
 
     GCS_STORAGE_BACKEND = "storages.backends.gcloud.GoogleCloudStorage"
