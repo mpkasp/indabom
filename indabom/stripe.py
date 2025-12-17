@@ -150,7 +150,7 @@ def manage_subscription(request: HttpRequest, organization: Organization) -> Htt
             customer=customer_id,  # Use the Organization's Stripe Customer ID
             return_url=ROOT_DOMAIN + reverse('bom:settings'),
         )
-        return redirect(session.url, code=303)
+        return redirect(session.url)
     except Exception as e:
         logger.error(f"Error creating Stripe Billing Portal session: {e}", exc_info=True)
         messages.error(request, "Error creating stripe session, please try again or contact support.")
@@ -246,13 +246,40 @@ def subscription_changed_handler(event: stripe.Event):
     subscription_id = data.get('id')
     status = data.get('status')
 
-    quantity = data.get('quantity', 1)
-    prices = data.get('items', {}).get('data', [])
-    if len(prices) == 0:
-        logger.error(f"Subscription changed event for {organization.name} ({organization.id}) has no prices.")
+    # Pull from root first; fall back to first subscription item when Stripe sends fields there
+    items = (data.get('items') or {}).get('data', [])
+    first_item = items[0] if items else {}
+
+    quantity = data.get('quantity') or first_item.get('quantity') or 1
+
+    # Price ID may be under item.price.id (new) or item.plan.id (legacy)
+    price_id = (
+            (first_item.get('price') or {}).get('id')
+            or (first_item.get('plan') or {}).get('id')
+    )
+    if not price_id:
+        logger.error(
+            f"Subscription changed event for {organization.name} ({organization.id}) is missing price information.")
         return
-    price = prices[0]
-    price_id = price.get('price', {}).get('id')
+
+    # Current period times may be on root or on the subscription item in some events
+    current_period_start_timestamp = (
+            first_item.get('current_period_start')
+            or data.get('current_period_start')
+    )
+    current_period_end_timestamp = (
+            first_item.get('current_period_end')
+            or data.get('current_period_end')
+    )
+    # Ensure we don't store nulls in non-nullable DateTimeFields
+    if not current_period_start_timestamp:
+        current_period_start_datetime = datetime.now(timezone.utc)
+    else:
+        current_period_start_datetime = _to_dt(current_period_start_timestamp)
+    if not current_period_end_timestamp:
+        current_period_end_datetime = current_period_start_datetime
+    else:
+        current_period_end_datetime = _to_dt(current_period_end_timestamp)
 
     sub_obj, created = OrganizationSubscription.objects.update_or_create(
         stripe_subscription_id=subscription_id,
@@ -261,8 +288,8 @@ def subscription_changed_handler(event: stripe.Event):
             "stripe_price_id": price_id,
             "status": status,
             "quantity": quantity,
-            "current_period_start": _to_dt(data.get("current_period_start")),
-            "current_period_end": _to_dt(data.get("current_period_end")),
+            "current_period_start": current_period_start_datetime,
+            "current_period_end": current_period_end_datetime,
         },
     )
     if created and not sub_obj.started_by:

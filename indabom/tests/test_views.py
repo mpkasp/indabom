@@ -102,7 +102,7 @@ class IndabomViewTests(TestCase):
         self.assertIn(b"checkout", resp.content.lower())
 
     # --- checkout (POST) ---
-    @patch("indabom.views.stripe.subscribe", return_value=HttpResponseRedirect("/ok"))
+    @patch("indabom.views.stripe.subscribe", return_value=MagicMock(id="sess_1", url="/ok"))
     def test_checkout_post_valid_calls_subscribe(self, mock_subscribe):
         self.client.force_login(self.user)
 
@@ -110,10 +110,21 @@ class IndabomViewTests(TestCase):
             "price_id": "price_123",
             "organization": str(self.org.pk),
             "unit": 2,
+            "renewal_consent": True
         }
         resp = self.client.post(reverse("checkout"), data)
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 303)
         self.assertEqual(resp.url, "/ok")
+        mock_subscribe.assert_called_once()
+
+        data = {
+            "price_id": "price_123",
+            "organization": str(self.org.pk),
+            "unit": 2,
+            "renewal_consent": False
+        }
+        resp = self.client.post(reverse("checkout"), data)
+        self.assertEqual(resp.status_code, 200)
         mock_subscribe.assert_called_once()
 
     # --- stripe_manage ---

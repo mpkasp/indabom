@@ -8,7 +8,12 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseNotFound, HttpResponseRedirect, HttpResponseServerError, HttpResponse
+from django.http import (
+    HttpResponseNotFound,
+    HttpResponseRedirect,
+    HttpResponseServerError,
+    HttpResponse,
+)
 from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -179,7 +184,9 @@ class Checkout(IndabomTemplateView):
                 return HttpResponseRedirect(reverse('bom:settings'))
             checkout_session_record.checkout_session_id = checkout_session.id
             checkout_session_record.save()
-            return redirect(checkout_session.url, code=303)
+            response = redirect(checkout_session.url)
+            response.status_code = 303
+            return response
 
         if "unit" in form.fields:
             del form.fields["unit"]
