@@ -198,7 +198,7 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 # --- Database and Cache ---
 ## Database and Cache
 
-if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST:
+if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST and not os.environ.get("CI"):
     logger.info(f"Using Cloud-based database configuration.")
 
     DATABASES = {
