@@ -19,21 +19,14 @@ steps:
     args: ["build", "-t", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}", "--build-arg", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}", "."]
 
   - id: "run unittests"
-    name: "gcr.io/google-appengine/exec-wrapper"
+    name: "gcr.io/cloud-builders/docker"
     args:
       [
-        "-i",
+        "run",
+        "--env", "CI=true",
+        "--env", "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
         "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}",
-        "-s",
-        "${PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
-        "-e",
-        "SETTINGS_NAME=${_SECRET_SETTINGS_NAME}",
-        "-e",
-        "CI=true",
-        "--",
-        "python",
-        "manage.py",
-        "test",
+        "python", "manage.py", "test"
       ]
 
   - id: "push image"
@@ -103,7 +96,7 @@ steps:
     name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     waitFor: [ "apply migrations", "collect static", "create cache table", "push image", "run unittests" ]
-    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '--region', '${_LOCATION}' ]
+    args: [ 'run', 'deploy', '${_SERVICE_NAME}', '--image', '${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}', '--region', '${_LOCATION}', '--update-env-vars', 'GITHUB_SHORT_SHA=$SHORT_SHA' ]
 
   - id: "update exchange rates via fixer"
     name: "gcr.io/google-appengine/exec-wrapper"

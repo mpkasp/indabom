@@ -59,7 +59,7 @@ else:
 # Variables loaded via env.str/env.bool
 DEBUG = env.bool("DEBUG", False)
 ENVIRONMENT = env.str("ENVIRONMENT", "unset")
-GITHUB_SHA = env.str("GITHUB_SHA", "unset")
+GITHUB_SHA = env.str("GITHUB_SHA", env.str("GITHUB_SHORT_SHA", "unknown"))
 LOCALHOST = env.bool("LOCALHOST", False)
 SECRET_KEY = env.str("SECRET_KEY")
 
@@ -198,7 +198,7 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 # --- Database and Cache ---
 ## Database and Cache
 
-if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST and not os.environ.get("CI"):
+if os.environ.get("GOOGLE_CLOUD_PROJECT") and not LOCALHOST and not env.bool("CI", False):
     logger.info(f"Using Cloud-based database configuration.")
 
     DATABASES = {
@@ -355,11 +355,6 @@ LOGGING = {
 # Sentry.io config
 SENTRY_DSN = env.str("SENTRY_DSN")
 if not LOCALHOST and SENTRY_DSN and SENTRY_DSN != 'supersecretdsn':
-    try:
-        release = subprocess.check_output(["git", "describe", "--always"]).strip()
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        release = 'UNKNOWN'
-
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
