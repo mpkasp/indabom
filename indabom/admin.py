@@ -3,11 +3,18 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 from .models import (
+    OrganizationMeta,
     OrganizationSubscription,
     CheckoutSessionRecord
 )
 
 User = get_user_model()
+
+
+class OrganizationMetaAdmin(admin.ModelAdmin):
+    list_display = ('organization', 'stripe_customer_id',)
+    raw_id_fields = ('organization',)
+    ordering = ('organization__name',)
 
 
 class CheckoutSessionRecordInline(admin.TabularInline):
@@ -23,8 +30,9 @@ class OrganizationSubscriptionAdmin(admin.ModelAdmin):
 
 
 class CheckoutSessionRecordAdmin(admin.ModelAdmin):
-    list_display = ('user', 'organization_subscription')
-
+    list_display = ('user', 'organization_subscription', 'renewal_consent_timestamp')
+    raw_id_fields = ('user', 'organization_subscription',)
+    ordering = ('-renewal_consent_timestamp',)
 
 # Try to unregister User model
 try:
@@ -33,5 +41,6 @@ except admin.sites.NotRegistered:
     pass
 
 admin.site.register(User, UserAdmin)
+admin.site.register(OrganizationMeta, OrganizationMetaAdmin)
 admin.site.register(OrganizationSubscription, OrganizationSubscriptionAdmin)
 admin.site.register(CheckoutSessionRecord, CheckoutSessionRecordAdmin)
