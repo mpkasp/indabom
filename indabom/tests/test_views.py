@@ -45,8 +45,8 @@ class IndabomViewTests(TestCase):
     def test_signup_post_creates_and_logs_in(self):
         data = {
             "username": "charlie",
-            "password1": "S3cretPass!xyz",
-            "password2": "S3cretPass!xyz",
+            "password1": "secretpassword",
+            "password2": "secretpassword",
             "email": "charlie@example.com",
             "first_name": "Char",
             "last_name": "Lie",
