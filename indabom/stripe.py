@@ -346,7 +346,8 @@ def stripe_webhook(request: HttpRequest) -> HttpResponse:
     if event['type'] == 'checkout.session.completed':
         transaction.on_commit(lambda: subscription_completed_handler(event))
 
-    elif event['type'] == 'customer.subscription.updated' or event['type'] == 'customer.subscription.created':
+    elif (event['type'] == 'customer.subscription.updated' or event['type'] == 'customer.subscription.created' or
+          event['type'] == 'customer.subscription.deleted'):
         transaction.on_commit(lambda: subscription_changed_handler(event))
 
     elif event['type'] == 'invoice.payment_failed':
