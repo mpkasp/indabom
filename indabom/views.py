@@ -155,8 +155,7 @@ class Checkout(IndabomTemplateView):
 
         try:
             if stripe.get_active_subscription(organization) is not None:
-                messages.info(request,
-                              "You already have an active subscription. Forwarding to manage your subscription.")
+                messages.info(request, "You already have an active subscription.")
                 return HttpResponseRedirect(reverse('stripe-manage'))
         except Exception:  # Catch any exceptions from database lookup
             messages.error(request,

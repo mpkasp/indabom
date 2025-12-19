@@ -42,7 +42,8 @@ def get_active_subscription(organization: Organization) -> Optional[Organization
     except OrganizationSubscription.DoesNotExist:
         return None
     except OrganizationSubscription.MultipleObjectsReturned as e:
-        logger.error(f"Multiple active subscriptions found for organization {organization.name} ({organization.id}).")
+        logger.error(
+            f"Multiple active subscriptions found for organization {organization.name} ({organization.id}). Please contact support@indabom.com.")
         raise e
 
 
