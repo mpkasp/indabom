@@ -302,6 +302,7 @@ ANYMAIL = {
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 DEFAULT_FROM_EMAIL = "info@indabom.com"
 SERVER_EMAIL = "info@indabom.com"
+MAILGUN_DAILY_LIMIT = env.int("MAILGUN_DAILY_LIMIT", default=80)
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
