@@ -1,0 +1,34 @@
+{% extends 'indabom/base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>IndaBOM Updated Terms & Privacy</h1>
+  <p>
+    We’ve updated our Terms and Conditions and Privacy Policy effective {{ new_terms_effective|date }}
+    To continue using IndaBOM, please review and accept the updates below.
+  </p>
+
+  <ul class="collection">
+    <li class="collection-item">
+      <span class="title"><strong>Summary of changes</strong></span>
+      <p>
+        - Clarified data retention and deletion timelines.<br>
+        - Added details on subscription management and billing transparency.<br>
+        - Updated security and incident notification procedures.
+      </p>
+    </li>
+  </ul>
+
+  <p>
+    Read the full documents:
+    <a href="{% url 'terms-and-conditions' %}">Terms and Conditions</a> |
+    <a href="{% url 'privacy-policy' %}">Privacy Policy</a>
+  </p>
+
+  <form method="post" class="section">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="btn waves-effect waves-light">I Agree to the Updated Terms</button>
+  </form>
+</div>
+{% endblock %}

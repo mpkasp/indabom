@@ -2,6 +2,7 @@ import io
 import logging
 import os
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -9,6 +10,7 @@ import environ
 import google.auth
 import google.auth.exceptions
 import sentry_sdk
+from django.utils import timezone
 from google.cloud import secretmanager
 from sentry_sdk.integrations.django import DjangoIntegration
 
@@ -137,9 +139,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'indabom.middleware.TermsAcceptanceMiddleware',
 ]
 
 ROOT_URLCONF = 'indabom.urls'
+NEW_TERMS_EFFECTIVE = timezone.make_aware(datetime(2025, 1, 1, 0, 0, 0))
 
 # --- Templates and WSGI ---
 ## Templates and WSGI

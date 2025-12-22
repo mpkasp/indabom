@@ -17,13 +17,14 @@ from django.http import (
 from django.shortcuts import render, redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 
 from indabom import stripe
 from indabom.forms import SubscriptionForm, UserForm, PasswordConfirmForm
-from indabom.models import CheckoutSessionRecord
-from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID
+from indabom.models import CheckoutSessionRecord, IndabomUserMeta
+from indabom.settings import DEBUG, INDABOM_STRIPE_PRICE_ID, NEW_TERMS_EFFECTIVE
 
 logger = logging.getLogger(__name__)
 
@@ -276,3 +277,20 @@ def stripe_webhook(request):
     except Exception as e:
         logger.error(f"Failed to process Stripe webhook: {e}", exc_info=True)
         return HttpResponse('Webhook failed to process.', status=500)
+
+
+@login_required
+def update_terms(request):
+    if request.method == 'POST':
+        next_url = request.POST.get('next') or reverse('bom:home')
+        settings_obj, _ = IndabomUserMeta.objects.get_or_create(user=request.user)
+        settings_obj.terms_accepted_at = timezone.now()
+        settings_obj.save()
+        return redirect(next_url)
+
+    next_url = request.GET.get('next') or reverse('bom:home')
+    context = {
+        'next': next_url,
+        'new_terms_effective': NEW_TERMS_EFFECTIVE,
+    }
+    return TemplateResponse(request, 'indabom/update-terms.html', context)

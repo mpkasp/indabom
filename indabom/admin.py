@@ -13,6 +13,7 @@ from .models import (
 User = get_user_model()
 
 
+@admin.register(OrganizationMeta)
 class OrganizationMetaAdmin(admin.ModelAdmin):
     list_display = ('organization', 'stripe_customer_id',)
     raw_id_fields = ('organization',)
@@ -25,12 +26,14 @@ class CheckoutSessionRecordInline(admin.TabularInline):
     raw_id_fields = ('organization_subscription',)
 
 
+@admin.register(OrganizationSubscription)
 class OrganizationSubscriptionAdmin(admin.ModelAdmin):
     list_display = ('organization_meta', 'quantity', 'started_by', 'status')
     inlines = [CheckoutSessionRecordInline]
     raw_id_fields = ('organization_meta', 'started_by',)
 
 
+@admin.register(CheckoutSessionRecord)
 class CheckoutSessionRecordAdmin(admin.ModelAdmin):
     list_display = ('user', 'organization_subscription', 'renewal_consent_timestamp')
     raw_id_fields = ('user', 'organization_subscription',)
@@ -63,6 +66,3 @@ except admin.sites.NotRegistered:
     pass
 
 admin.site.register(User, UserAdmin)
-admin.site.register(OrganizationMeta, OrganizationMetaAdmin)
-admin.site.register(OrganizationSubscription, OrganizationSubscriptionAdmin)
-admin.site.register(CheckoutSessionRecord, CheckoutSessionRecordAdmin)

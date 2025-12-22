@@ -95,3 +95,12 @@ class EmailSendLog(models.Model):
 
     def __str__(self):
         return f"{self.email} - {self.template.name} - {self.status}"
+
+
+class IndabomUserMeta(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, db_index=True, on_delete=models.CASCADE,
+                                related_name='indabom_meta')
+    terms_accepted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Settings for {self.user.username}"

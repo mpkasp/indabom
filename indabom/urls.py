@@ -48,6 +48,7 @@ urlpatterns = [
     path('product/', views.Product.as_view(), name=views.Product.name),
     path('privacy-policy/', views.PrivacyPolicy.as_view(), name=views.PrivacyPolicy.name),
     path('terms-and-conditions/', views.TermsAndConditions.as_view(), name=views.TermsAndConditions.name),
+    path('update-terms/', views.update_terms, name='update-terms'),
     path('install/', views.Install.as_view(), name=views.Install.name),
     path('pricing/', views.Pricing.as_view(), name=views.Pricing.name),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
