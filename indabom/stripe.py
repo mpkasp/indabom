@@ -6,7 +6,9 @@ import stripe
 from bom.constants import SUBSCRIPTION_TYPE_FREE, SUBSCRIPTION_TYPE_PRO
 from bom.models import Organization
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.db import transaction
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -234,13 +236,35 @@ def subscription_completed_handler(event: stripe.Event):
                 owner = getattr(organization, 'owner', None)
                 owner_email = getattr(owner, 'email', None)
                 if owner_email:
-                    send_mail(
-                        'Welcome to IndaBOM',
-                        'Thanks for subscribing to IndaBOM! Your Pro subscription is now active. You can manage your organization and users anytime from your account settings.',
-                        'no-reply@indabom.com',
-                        [owner_email],
-                        fail_silently=True,
+                    # Build branded HTML email from template with plain text fallback
+                    context = {
+                        "owner": owner,
+                        "organization": organization,
+                        "quantity": quantity,
+                        "portal_url": ROOT_DOMAIN + "/settings",  # simple CTA
+                        "root_domain": ROOT_DOMAIN,
+                    }
+                    html_body = render_to_string("indabom/welcome-email.html", context)
+                    text_body = strip_tags(html_body)
+
+                    msg = EmailMultiAlternatives(
+                        subject='Welcome to IndaBOM',
+                        body=text_body,
+                        from_email='no-reply@indabom.com',
+                        to=[owner_email],
                     )
+                    msg.attach_alternative(html_body, "text/html")
+                    try:
+                        msg.send(fail_silently=True)
+                    except Exception:
+                        # As a fallback, attempt a simple text email
+                        send_mail(
+                            'Welcome to IndaBOM',
+                            text_body,
+                            'no-reply@indabom.com',
+                            [owner_email],
+                            fail_silently=True,
+                        )
                     logger.info(f"Welcome email sent to {owner_email} for organization {organization.name}.")
                 else:
                     logger.warning(
