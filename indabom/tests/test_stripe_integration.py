@@ -3,11 +3,12 @@ from unittest.mock import patch, MagicMock
 from bom.models import Organization
 from django.contrib.auth import get_user_model
 from django.core import mail
+from django.utils import timezone
 from django.test import TestCase, Client
 from django.urls import reverse
 
 from indabom import stripe as stripe_module
-from indabom.models import OrganizationMeta, OrganizationSubscription, CheckoutSessionRecord
+from indabom.models import OrganizationMeta, OrganizationSubscription, CheckoutSessionRecord, IndabomUserMeta
 
 User = get_user_model()
 
@@ -17,6 +18,8 @@ class StripeIntegrationTests(TestCase):
         self.client = Client()
         self.owner = User.objects.create_user(username="alice", email="alice@example.com", password="pw")
         self.org = Organization.objects.create(name="Acme", owner=self.owner)
+        # Ensure terms are accepted to bypass middleware redirects in tests
+        IndabomUserMeta.objects.create(user=self.owner, terms_accepted_at=timezone.now())
         self.client.force_login(self.owner)
 
     # --- subscribe() ---

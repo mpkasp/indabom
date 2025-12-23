@@ -2,9 +2,12 @@ from unittest.mock import patch, MagicMock
 
 from bom.models import Organization
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.test import TestCase, Client
 from django.urls import reverse
+
+from indabom.models import IndabomUserMeta
 
 User = get_user_model()
 
@@ -17,10 +20,13 @@ class IndabomViewTests(TestCase):
         profile = self.user.bom_profile()
         profile.organization = self.org
         profile.save()
+        # Mark terms accepted for authenticated users used in tests
+        IndabomUserMeta.objects.create(user=self.user, terms_accepted_at=timezone.now())
         self.other_user = User.objects.create_user(username="bob", email="bob@example.com", password="pw12345")
         other_profile = self.other_user.bom_profile()
         other_profile.organization = self.org
         other_profile.save()
+        IndabomUserMeta.objects.create(user=self.other_user, terms_accepted_at=timezone.now())
 
     def _set_owner_to_other_user(self):
         self.org.owner = self.other_user

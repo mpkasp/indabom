@@ -20,6 +20,7 @@ steps:
 
   - id: "run unittests"
     name: "gcr.io/cloud-builders/docker"
+    waitFor: [ "build image" ]
     args:
       [
         "run",
@@ -33,10 +34,12 @@ steps:
 
   - id: "push image"
     name: "gcr.io/cloud-builders/docker"
+    waitFor: [ "build image" ]
     args: ["push", "${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY}/${_IMAGE}"]
 
   - id: "collect static"
     name: "gcr.io/google-appengine/exec-wrapper"
+    waitFor: [ "build image" ]
     args:
       [
         "-i",
@@ -58,6 +61,7 @@ steps:
 
   - id: "apply migrations"
     name: "gcr.io/google-appengine/exec-wrapper"
+    waitFor: [ "build image" ]
     args:
       [
         "-i",
@@ -102,6 +106,7 @@ steps:
 
   - id: "update exchange rates via fixer"
     name: "gcr.io/google-appengine/exec-wrapper"
+    waitFor: [ "deploy image" ]
     args:
       [
         "-i",

@@ -2,10 +2,12 @@ from unittest.mock import patch, Mock
 
 from bom.models import Organization, UserMeta
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.test import TestCase
 from django.urls import reverse
 
 User = get_user_model()
+from indabom.models import IndabomUserMeta
 
 
 class AccountDeletionTests(TestCase):
@@ -13,6 +15,8 @@ class AccountDeletionTests(TestCase):
         # Create a base organization owner for some tests
         self.owner = User.objects.create_user(username='owner', password='ownerpass', email='owner@example.com')
         self.owner_meta = UserMeta.objects.create(user=self.owner, organization=None, role='A')
+        # Mark terms accepted for middleware
+        IndabomUserMeta.objects.create(user=self.owner, terms_accepted_at=timezone.now())
         # Owner's organization
         self.org = Organization.objects.create(name='Org Inc', subscription='F', owner=self.owner)
         self.owner_meta.organization = self.org
@@ -26,6 +30,7 @@ class AccountDeletionTests(TestCase):
         # Create a regular user in the owner's org
         user = User.objects.create_user(username='member', password='memberpass', email='m@example.com')
         UserMeta.objects.create(user=user, organization=self.org, role='M')
+        IndabomUserMeta.objects.create(user=user, terms_accepted_at=timezone.now())
 
         self.login(user, 'memberpass')
 
@@ -73,6 +78,7 @@ class AccountDeletionTests(TestCase):
         # Non-owner scenario
         user = User.objects.create_user(username='member2', password='memberpass2', email='m2@example.com')
         UserMeta.objects.create(user=user, organization=self.org, role='M')
+        IndabomUserMeta.objects.create(user=user, terms_accepted_at=timezone.now())
 
         self.login(user, 'memberpass2')
         url = reverse('account-delete')
