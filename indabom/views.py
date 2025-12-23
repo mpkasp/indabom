@@ -88,9 +88,19 @@ class Product(IndabomTemplateView):
 class PrivacyPolicy(IndabomTemplateView):
     name = 'privacy-policy'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PrivacyPolicy, self).get_context_data(**kwargs)
+        context['new_terms_effective'] = NEW_TERMS_EFFECTIVE
+        return context
+
 
 class TermsAndConditions(IndabomTemplateView):
     name = 'terms-and-conditions'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(TermsAndConditions, self).get_context_data(**kwargs)
+        context['new_terms_effective'] = NEW_TERMS_EFFECTIVE
+        return context
 
 
 class Install(IndabomTemplateView):

@@ -8,16 +8,23 @@ from .models import (
     CheckoutSessionRecord,
     EmailTemplate,
     EmailSendLog,
+    IndabomUserMeta,
 )
 
 User = get_user_model()
 
+
+class OrganizationSubscriptionInline(admin.TabularInline):
+    model = OrganizationSubscription
+    fk_name = 'organization_meta'
+    raw_id_fields = ('started_by',)
 
 @admin.register(OrganizationMeta)
 class OrganizationMetaAdmin(admin.ModelAdmin):
     list_display = ('organization', 'stripe_customer_id',)
     raw_id_fields = ('organization',)
     ordering = ('organization__name',)
+    inlines = [OrganizationSubscriptionInline]
 
 
 class CheckoutSessionRecordInline(admin.TabularInline):
@@ -59,10 +66,24 @@ class EmailSendLogAdmin(admin.ModelAdmin):
     search_fields = ("email", "message_id")
     readonly_fields = ("template", "user", "email", "status", "message_id", "error", "sent_at")
 
-# Try to unregister User model
-try:
-    admin.site.unregister(User)
-except admin.sites.NotRegistered:
-    pass
 
-admin.site.register(User, UserAdmin)
+class IndabomUserMetaInline(admin.TabularInline):
+    model = IndabomUserMeta
+    readonly_fields = ("terms_accepted_at",)
+    can_delete = False
+
+
+current_admin = admin.site._registry.get(User)
+
+if current_admin:
+    admin_class = current_admin.__class__
+    inlines = list(admin_class.inlines or [])
+    if IndabomUserMetaInline not in inlines:
+        inlines.append(IndabomUserMetaInline)
+        admin_class.inlines = inlines
+else:
+    class IndabomUserAdmin(UserAdmin):
+        inlines = [IndabomUserMetaInline]
+
+
+    admin.site.register(User, IndabomUserAdmin)

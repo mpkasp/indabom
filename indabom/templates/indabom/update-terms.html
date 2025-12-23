@@ -1,34 +1,51 @@
 {% extends 'indabom/base.html' %}
+{% load materializecss %}
+
+{% block head-title %}Updated Terms{% endblock %}
 
 {% block content %}
-<div class="container">
-  <h1>IndaBOM Updated Terms & Privacy</h1>
-  <p>
-    We’ve updated our Terms and Conditions and Privacy Policy effective {{ new_terms_effective|date }}
-    To continue using IndaBOM, please review and accept the updates below.
-  </p>
+    <div class="container page-v-pad-lg">
+        <div class="row mt-lg">
+            <div class="col m8 push-m2 l6 push-l3 s12">
+                <div class="card-panel hoverable z-depth-3 card-pad-lg" style="border-radius: 12px;">
 
-  <ul class="collection">
-    <li class="collection-item">
-      <span class="title"><strong>Summary of changes</strong></span>
-      <p>
-        - Clarified data retention and deletion timelines.<br>
-        - Added details on subscription management and billing transparency.<br>
-        - Updated security and incident notification procedures.
-      </p>
-    </li>
-  </ul>
+                    <h2 class="teal-text text-darken-3 light mt-0" style="font-size: 2.2rem;">We've Updated our Terms
+                        and Policies</h2>
+                    <h6 class="grey-text text-darken-1 light">We have updated our policies
+                        effective {{ new_terms_effective|date }}.</h6>
 
-  <p>
-    Read the full documents:
-    <a href="{% url 'terms-and-conditions' %}">Terms and Conditions</a> |
-    <a href="{% url 'privacy-policy' %}">Privacy Policy</a>
-  </p>
+                    <div class="divider" style="margin: 1.5rem 0;"></div>
 
-  <form method="post" class="section">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit" class="btn waves-effect waves-light">I Agree to the Updated Terms</button>
-  </form>
+                    <p class="grey-text text-darken-3"><strong>Key Changes:</strong></p>
+                    <ul class="browser-default grey-text text-darken-3"
+                        style="line-height: 1.5; font-size: 0.95rem; margin-bottom: 2rem;">
+                        <li>Clarified data retention and deletion timelines.</li>
+                        <li>Updated subscription and billing transparency.</li>
+                        <li>Refined security and incident notification protocols.</li>
+                    </ul>
+
+                    <p class="center-align" style="margin-bottom: 2rem;">
+                        <a href="{% url 'terms-and-conditions' %}" target="_blank" class="teal-text text-darken-1">Terms
+                            of Service</a>
+                        <span class="grey-text" style="margin: 0 10px;">&bull;</span>
+                        <a href="{% url 'privacy-policy' %}" target="_blank" class="teal-text text-darken-1">Privacy
+                            Policy</a>
+                    </p>
+
+                    <form method="post" class="center-align">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <button class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive"
+                                style="border-radius: 20px; width: 100%; text-transform: none;" type="submit">
+                            I Agree to the Updated Terms
+                        </button>
+                    </form>
+
+                    <div class="center-align grey-text text-darken-1" style="margin-top: 1.5rem; font-size: 0.8rem;">
+                        Agreement is required to continue using IndaBOM.
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 {% endblock %}

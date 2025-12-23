@@ -19,7 +19,7 @@
             <div class="col s12 m8 offset-m2 l6 offset-l3">
                 <div class="row">
                     {% if not user.is_authenticated %}
-                        <div class="col s12 m6">
+                        <div class="col s12 m6" style="margin-bottom: 16px;">
                             <a title="Get Started" href="{% url 'signup' %}"
                                class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
                                 Get Started
@@ -27,14 +27,14 @@
                         </div>
                     {% endif %}
                     {% if user.is_authenticated %}
-                        <div class="col s12 m6">
+                        <div class="col s12 m6" style="margin-bottom: 16px;">
                             <a title="Enter" href="{% url 'bom:home' %}"
                                class="waves-effect waves-light btn btn-large green darken-1 z-depth-2 btn-cta-responsive">
                                 Enter
                             </a>
                         </div>
                     {% endif %}
-                    <div class="col s12 m6">
+                    <div class="col s12 m6" style="margin-bottom: 16px;">
                         <a title="Pricing" href="{% url 'pricing' %}"
                            class="waves-effect waves-light btn btn-large teal darken-1 z-depth-2 btn-cta-responsive">
                             View Pricing

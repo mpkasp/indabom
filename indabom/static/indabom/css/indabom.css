@@ -9,38 +9,55 @@ main {
     min-height: 100vh;
 }
 
-p {
-    font-size: 1.2em;
+p, li {
+    font-size: 1.1rem; /* Slightly larger to compensate for thin weight */
     font-weight: 300;
 }
 
-li {
-    font-size: 1.2em;
-    font-weight: 300;
-}
-
+/* We use significant size differences to replace the lack of bold weights */
 h1 {
-    font-size: 3.5rem;
+    font-size: 2.5rem;
     font-weight: 300;
+    line-height: 1.1;
 }
 
 h2 {
-    font-size: 3.0rem;
+    font-size: 2.0rem;
     font-weight: 300;
 }
 
 h3 {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     font-weight: 300;
 }
 
 h4 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 300;
 }
 
 h5 {
     font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* H5 kept at 400 so it doesn't vanish */
+
+/* Desktop Scaling: To keep the "Premium" light look, we go big on large screens */
+@media only screen and (min-width: 992px) {
+    h1 {
+        font-size: 3.8rem;
+        letter-spacing: -1px;
+    }
+
+    h2 {
+        font-size: 3.0rem;
+        letter-spacing: -0.5px;
+    }
+
+    h3 {
+        font-size: 2.0rem;
+    }
 }
 
 .btn {

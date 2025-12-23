@@ -14,10 +14,10 @@
 {% endif %}
 {% if user.is_authenticated %}
     <li>
-        <form id="logoutForm" method="post" action="{% url 'logout' %}" style="display: none;">
+        <form class="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
             {% csrf_token %}
         </form>
-        <a href="#" id="logoutLink" title="IndaBOM | Log Out">
+        <a href="#" class="logout-link" title="IndaBOM | Log Out">
             Logout
         </a>
     </li>
@@ -35,12 +35,22 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-const logoutLink = document.getElementById('logoutLink');
-if (logoutLink) {
-    logoutLink.addEventListener('click', function(event) {
+  // Bind to ALL logout links (desktop nav and mobile sidenav) to avoid duplicate-id issues
+  var links = document.querySelectorAll('.logout-link');
+  if (links && links.length) {
+    links.forEach(function(link) {
+      // Prevent double-binding when this template is included multiple times
+      if (link.dataset.bound === '1') { return; }
+      link.dataset.bound = '1';
+      link.addEventListener('click', function(event) {
         event.preventDefault();
-        document.getElementById('logoutForm').submit();
+        var container = link.closest('li') || document;
+        var form = container.querySelector('.logout-form') || document.querySelector('.logout-form');
+        if (form) {
+          form.submit();
+        }
+      });
     });
-}
+  }
 });
 </script>

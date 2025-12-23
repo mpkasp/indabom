@@ -143,7 +143,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'indabom.urls'
-NEW_TERMS_EFFECTIVE = timezone.make_aware(datetime(2025, 1, 1, 0, 0, 0))
+NEW_TERMS_EFFECTIVE = timezone.make_aware(datetime(2025, 12, 22, 0, 0, 0))
 
 # --- Templates and WSGI ---
 ## Templates and WSGI

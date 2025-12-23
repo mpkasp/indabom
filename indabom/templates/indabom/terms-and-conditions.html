@@ -1,5 +1,24 @@
+{% extends 'indabom/base.html' %}
+
+{% load materializecss %}
+{% block head-title %}Privacy Policy{% endblock %}
+{% block title %}Privacy Policy{% endblock %}
+{% block head %}
+    <style>
+        .container ul {
+            padding-left: 20px !important;
+        }
+
+        .container li {
+            list-style: disc !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
 <h1>Terms and Conditions</h1>
-<p>Last updated: December 30, 2025</p>
+        <p>Last updated: {{ new_terms_effective|date }}</p>
 <p>Please read these terms and conditions carefully before using Our Service.</p>
 <h2>Interpretation and Definitions</h2>
 <h3>Interpretation</h3>
@@ -321,3 +340,5 @@
 <ul>
     <li>By email: info@indabom.com</li>
 </ul>
+    </div>
+{% endblock %}
