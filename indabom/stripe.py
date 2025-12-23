@@ -228,6 +228,30 @@ def subscription_completed_handler(event: stripe.Event):
             f"{organization.name}, and auto-renewal consent successfully linked."
         )
 
+        # Send a welcome email to the organization owner when a new subscription is created
+        try:
+            if created:
+                owner = getattr(organization, 'owner', None)
+                owner_email = getattr(owner, 'email', None)
+                if owner_email:
+                    send_mail(
+                        'Welcome to IndaBOM',
+                        'Thanks for subscribing to IndaBOM! Your Pro subscription is now active. You can manage your organization and users anytime from your account settings.',
+                        'no-reply@indabom.com',
+                        [owner_email],
+                        fail_silently=True,
+                    )
+                    logger.info(f"Welcome email sent to {owner_email} for organization {organization.name}.")
+                else:
+                    logger.warning(
+                        f"Could not send welcome email: organization owner email missing for {organization.name} ({organization.id})."
+                    )
+        except Exception as email_err:
+            logger.error(
+                f"Failed to send welcome email for organization {organization.name}: {email_err}",
+                exc_info=True,
+            )
+
     except OrganizationMeta.DoesNotExist:
         logger.error(f"OrganizationMeta not found for customer ID: {customer_id}.")
     except Exception as e:
